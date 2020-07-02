@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(View view) {
 
-                        Snackbar.make(activityRegisterBinding.coordinatorLayout, "Message successfully deleted.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(activityRegisterBinding.coordinatorLayout, "Message successfully deleted12.", Snackbar.LENGTH_SHORT).show();
 
                     }
                 });
