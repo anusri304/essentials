@@ -1,148 +1,165 @@
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.MovieActivity"
-       tools:ignore="Overdraw">
+        tools:ignore="Overdraw">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/editTextName"
-                android:layout_width="match_parent"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="22dp"
-                android:ems="10"
-                android:inputType="textPersonName"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="1dp"
+                app:errorEnabled="true"
+                app:errorTextAppearance="@style/ErrorText"
+                app:hintTextAppearance="@style/hintText"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:theme="@style/textLayoutStyle">
 
-            <EditText
-                android:id="@+id/editTextEmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:layout_marginStart="@dimen/margin_start"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                app:layout_constraintEnd_toEndOf="@+id/editTextName"
-                app:layout_constraintTop_toBottomOf="@+id/editTextName" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_name"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextMobileNo"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutEmailAdds"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="44dp"
-                android:ems="10"
-                android:inputType="phone"
-                app:layout_constraintStart_toStartOf="@+id/editTextEmailAddress"
-                app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddress" />
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_marginEnd="1dp"
+                app:errorEnabled="true"
+                app:errorTextAppearance="@style/ErrorText"
+                app:hintTextAppearance="@style/hintText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName"
+                app:theme="@style/textLayoutStyle">
 
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_email_address"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutMobileNo"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="44dp"
-                android:ems="10"
-                android:inputType="textPassword"
-                app:layout_constraintStart_toStartOf="@+id/editTextMobileNo"
-                app:layout_constraintTop_toBottomOf="@+id/editTextMobileNo" />
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_marginEnd="1dp"
+                app:errorEnabled="true"
+                app:errorTextAppearance="@style/ErrorText"
+                app:hintTextAppearance="@style/hintText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailAdds"
+                app:theme="@style/textLayoutStyle">
 
-            <EditText
-                android:id="@+id/editTextConfirmPassword"
-                android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextMobileNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_mobile_no"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutPassword"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
-                android:layout_marginTop="48dp"
-                android:ems="10"
-                android:inputType="textPassword"
-                app:layout_constraintStart_toStartOf="@+id/editTextPassword"
-                app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_marginEnd="1dp"
+                app:errorEnabled="true"
+                app:errorTextAppearance="@style/ErrorText"
+                app:hintTextAppearance="@style/hintText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutMobileNo"
+                app:passwordToggleEnabled="true"
+                app:theme="@style/textLayoutStyle">
 
-            <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutConfirmPwd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_start"
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_marginEnd="1dp"
+                app:errorEnabled="true"
+                app:errorTextAppearance="@style/ErrorText"
+                app:hintTextAppearance="@style/hintText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
+                app:passwordToggleEnabled="true"
+                app:theme="@style/textLayoutStyle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_confirm_password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
                 android:id="@+id/registerButton"
-                android:layout_width="214dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="52dp"
-                android:layout_marginEnd="32dp"
+                android:layout_width="0dp"
+                android:layout_height="67dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="125dp"
                 android:background="@drawable/register_button_bg"
                 android:text="@string/register"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editTextConfirmPassword"
-                app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
-
-            <TextView
-                android:id="@+id/textViewName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="@dimen/margin_start"
-                android:text="@string/customer_name"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toEndOf="@+id/progressBar2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textViewEmailAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:paddingLeft="@dimen/margin_start"
-                android:text="@string/customer_email_address"
-                app:layout_constraintBottom_toBottomOf="@+id/editTextEmailAddress"
-                app:layout_constraintStart_toStartOf="@+id/editTextEmailAddress" />
-
-            <TextView
-                android:id="@+id/textViewMobileNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:paddingLeft="@dimen/margin_start"
-                android:text="@string/customer_mobile_no"
-                app:layout_constraintBottom_toTopOf="@+id/editTextMobileNo"
-                app:layout_constraintStart_toStartOf="@+id/editTextEmailAddress" />
-
-            <TextView
-                android:id="@+id/textViewPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:paddingLeft="@dimen/margin_start"
-                android:text="@string/customer_password"
-                app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
-                app:layout_constraintStart_toStartOf="@+id/editTextPassword" />
-
-            <TextView
-                android:id="@+id/textViewConfirmPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="13dp"
-                android:paddingLeft="@dimen/margin_start"
-                android:text="@string/customer_confirm_password"
-                app:layout_constraintBottom_toTopOf="@+id/editTextConfirmPassword"
-                app:layout_constraintStart_toStartOf="@+id/editTextPassword" />
-
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
 
             <ProgressBar
-                android:id="@+id/progress_bar"
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_centerInParent="true"
-                android:layout_marginEnd="32dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="42dp"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editTextConfirmPassword"
-                app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintEnd_toStartOf="@+id/registerButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
