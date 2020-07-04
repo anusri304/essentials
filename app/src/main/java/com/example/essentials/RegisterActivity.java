@@ -1,5 +1,6 @@
 package com.example.essentials;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,11 +12,15 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.essentials.databinding.ActivityRegisterBinding;
+import com.example.essentials.domain.User;
 import com.example.essentials.service.CustomerService;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.viewmodel.UserViewModel;
+import com.example.essentials.viewmodel.UserViewModelFactory;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,12 +35,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "Main Activity";
     private static Retrofit retrofit = null;
     private AppCompatButton registerButton;
     ActivityRegisterBinding activityRegisterBinding;
+    UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TODO: validate email address, all fields are captured
         // add newsletters, first and last name
         // network connection and rotation
+
+        UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext(), 0);
+        userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
     }
 
     public static boolean isValidEmail(CharSequence target) {
@@ -199,6 +208,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "onResponse: " + registerTransportBean.getMessage());
                     if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.MODIFIED_SUCCESS)) {
                         showMessage(ApplicationConstants.REGISTER_SUCCESS);
+                        User user = new User();
+                        user.setFirstName(activityRegisterBinding.editTextName.getText().toString());
+                        user.setLastName(activityRegisterBinding.editTextName.getText().toString());
+                        user.setMobileNumber(activityRegisterBinding.editTextMobileNo.getText().toString());
+                        user.setEmailAddress(activityRegisterBinding.editTextEmailAddress.getText().toString());
+                        user.setPassword(activityRegisterBinding.editTextPassword.getText().toString());
+                         saveUser(user);
                     } else {
                         showMessage(ApplicationConstants.REGISTER_FAILURE);
                     }
@@ -211,6 +227,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+    }
+
+    private void saveUser(User user) {
+        userViewModel.insertUser(user);
+
     }
 
     private boolean validateFields() {
@@ -254,8 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!activityRegisterBinding.editTextConfirmPassword.getText().toString().equals(activityRegisterBinding.editTextPassword.getText().toString())) {
             activityRegisterBinding.textInputLayoutConfirmPwd.setError("Password Do Not Match");
             isValid = false;
-        }
-        else {
+        } else {
             activityRegisterBinding.textInputLayoutConfirmPwd.setError(null);
         }
         return isValid;
