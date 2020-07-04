@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         // add newsletters, first and last name
         // network connection and rotation
 
-        UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext(), 0);
+        UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
         userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
     }
 
