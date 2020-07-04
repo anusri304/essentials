@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initLayout() {
-        activityRegisterBinding.editTextName.addTextChangedListener(new TextWatcher() {
+        activityRegisterBinding.editTextFirstName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -77,9 +77,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0)
-                    activityRegisterBinding.textInputLayoutName.setError(ApplicationConstants.NAME_ERROR_MESSAGE);
+                    activityRegisterBinding.textInputLayoutFirstName.setError(ApplicationConstants.FIRST_NAME_ERROR_MESSAGE);
                 else
-                    activityRegisterBinding.textInputLayoutName.setError(null);
+                    activityRegisterBinding.textInputLayoutFirstName.setError(null);
+
+            }
+        });
+
+        activityRegisterBinding.editTextLastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0)
+                    activityRegisterBinding.textInputLayoutLastName.setError(ApplicationConstants.LAST_NAME_ERROR_MESSAGE);
+                else
+                    activityRegisterBinding.textInputLayoutLastName.setError(null);
 
             }
         });
@@ -195,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         .build();
             }
             CustomerService customerService = retrofit.create(CustomerService.class);
-            Call<RegisterTransportBean> call = customerService.registerCustomer(activityRegisterBinding.editTextEmailAddress.getText().toString(), activityRegisterBinding.editTextName.getText().toString(), activityRegisterBinding.editTextName.getText().toString(), activityRegisterBinding.editTextMobileNo.getText().toString(), activityRegisterBinding.editTextPassword.getText().toString());
+            Call<RegisterTransportBean> call = customerService.registerCustomer(activityRegisterBinding.editTextEmailAddress.getText().toString(), activityRegisterBinding.editTextFirstName.getText().toString(), activityRegisterBinding.editTextLastName.getText().toString(), activityRegisterBinding.editTextMobileNo.getText().toString(), activityRegisterBinding.editTextPassword.getText().toString());
 
 
             activityRegisterBinding.progressBar.setVisibility(View.VISIBLE);
@@ -209,12 +230,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.MODIFIED_SUCCESS)) {
                         showMessage(ApplicationConstants.REGISTER_SUCCESS);
                         User user = new User();
-                        user.setFirstName(activityRegisterBinding.editTextName.getText().toString());
-                        user.setLastName(activityRegisterBinding.editTextName.getText().toString());
+                        user.setFirstName(activityRegisterBinding.editTextFirstName.getText().toString());
+                        user.setLastName(activityRegisterBinding.editTextLastName.getText().toString());
                         user.setMobileNumber(activityRegisterBinding.editTextMobileNo.getText().toString());
                         user.setEmailAddress(activityRegisterBinding.editTextEmailAddress.getText().toString());
                         user.setPassword(activityRegisterBinding.editTextPassword.getText().toString());
-                         saveUser(user);
+                        saveUser(user);
                     } else {
                         showMessage(ApplicationConstants.REGISTER_FAILURE);
                     }
@@ -236,11 +257,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean validateFields() {
         boolean isValid = true;
-        if (activityRegisterBinding.editTextName.getText().toString().isEmpty()) {
+        if (activityRegisterBinding.editTextFirstName.getText().toString().isEmpty()) {
             isValid = false;
-            activityRegisterBinding.textInputLayoutName.setError(ApplicationConstants.NAME_ERROR_MESSAGE);
+            activityRegisterBinding.textInputLayoutFirstName.setError(ApplicationConstants.FIRST_NAME_ERROR_MESSAGE);
         } else {
-            activityRegisterBinding.textInputLayoutName.setError(null);
+            activityRegisterBinding.textInputLayoutFirstName.setError(null);
+        }
+
+        if (activityRegisterBinding.editTextLastName.getText().toString().isEmpty()) {
+            isValid = false;
+            activityRegisterBinding.textInputLayoutLastName.setError(ApplicationConstants.LAST_NAME_ERROR_MESSAGE);
+        } else {
+            activityRegisterBinding.textInputLayoutLastName.setError(null);
         }
 
         if (activityRegisterBinding.editTextEmailAddress.getText().toString().isEmpty()) {
@@ -268,16 +296,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             isValid = false;
             activityRegisterBinding.textInputLayoutConfirmPwd.setError(ApplicationConstants.CONFIRM_PASSWORD_ERROR_MESSAGE);
         } else {
-            activityRegisterBinding.textInputLayoutConfirmPwd.setError(null);
+            if (!activityRegisterBinding.editTextPassword.getText().toString().isEmpty()) {
+                if (!activityRegisterBinding.editTextConfirmPassword.getText().toString().equals(activityRegisterBinding.editTextPassword.getText().toString())) {
+                    isValid = false;
+                    activityRegisterBinding.textInputLayoutConfirmPwd.setError("Password Do Not Match");
+                } else {
+                    activityRegisterBinding.textInputLayoutConfirmPwd.setError(null);
+                }
+            }
         }
 
 
-        if (!activityRegisterBinding.editTextConfirmPassword.getText().toString().equals(activityRegisterBinding.editTextPassword.getText().toString())) {
-            activityRegisterBinding.textInputLayoutConfirmPwd.setError("Password Do Not Match");
-            isValid = false;
-        } else {
-            activityRegisterBinding.textInputLayoutConfirmPwd.setError(null);
-        }
         return isValid;
     }
 

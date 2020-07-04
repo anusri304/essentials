@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">essentials</string>
-    <string name="customer_name">NAME</string>
+    <string name="customer_last_name">LAST NAME</string>
     <string name="customer_email_address">EMAIL</string>
     <string name="customer_mobile_no">MOBILE NO</string>
     <string name="customer_password">PASSWORD</string>
     <string name="customer_confirm_password">CONFIRM PASSWORD</string>
     <string name="register">Register</string>
+    <string name="customer_firstName">FIRST NAME</string>
+    <string name="customer_first_name">FIRST NAME</string>
 </resources>
