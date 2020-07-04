@@ -62,7 +62,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
+
+
     private void initLayout() {
+
+        activityRegisterBinding.cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         activityRegisterBinding.editTextFirstName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
