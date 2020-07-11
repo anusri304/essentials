@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.login_title));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (!NetworkUtils.isNetworkConnected(this)) {
             EssentialsUtils.showAlertDialog(LoginActivity.this);
         } else {
@@ -35,6 +37,16 @@ public class LoginActivity extends AppCompatActivity {
             initLayout();
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initLayout() {
