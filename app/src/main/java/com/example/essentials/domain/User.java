@@ -12,11 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public int id;
     private String firstName;
     private String lastName;
     private String emailAddress;
     private String mobileNumber;
     private String password;
+    private String apiToken;
+
 }

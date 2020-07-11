@@ -1,7 +1,6 @@
 package com.example.essentials.activity;
 
 import android.app.Application;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,23 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.essentials.R;
 import com.example.essentials.databinding.ActivityRegisterBinding;
 import com.example.essentials.domain.User;
-import com.example.essentials.service.CustomerService;
+import com.example.essentials.service.RegisterCustomerService;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.UserViewModelFactory;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -220,7 +215,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private void getCustomerByEmail(View view) {
+    private void registerCustomer(View view) {
         if (validateFields()) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -238,8 +233,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .build();
             }
-            CustomerService customerService = retrofit.create(CustomerService.class);
-            Call<RegisterTransportBean> call = customerService.registerCustomer(activityRegisterBinding.editTextEmailAddress.getText().toString(), activityRegisterBinding.editTextFirstName.getText().toString(), activityRegisterBinding.editTextLastName.getText().toString(), activityRegisterBinding.editTextMobileNo.getText().toString(), activityRegisterBinding.editTextPassword.getText().toString());
+            RegisterCustomerService registerCustomerService = retrofit.create(RegisterCustomerService.class);
+            Call<RegisterTransportBean> call = registerCustomerService.registerCustomer(activityRegisterBinding.editTextEmailAddress.getText().toString(), activityRegisterBinding.editTextFirstName.getText().toString(), activityRegisterBinding.editTextLastName.getText().toString(), activityRegisterBinding.editTextMobileNo.getText().toString(), activityRegisterBinding.editTextPassword.getText().toString());
 
 
             activityRegisterBinding.progressBar.setVisibility(View.VISIBLE);
@@ -258,19 +253,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         user.setMobileNumber(activityRegisterBinding.editTextMobileNo.getText().toString());
                         user.setEmailAddress(activityRegisterBinding.editTextEmailAddress.getText().toString());
                         user.setPassword(activityRegisterBinding.editTextPassword.getText().toString());
+                        user.setId(registerTransportBean.getCustomerId());
                         saveUser(user);
 
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(intent);
 
                     } else {
-                        EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, ApplicationConstants.REGISTER_FAILURE);
+                        EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, registerTransportBean.getMessage());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<RegisterTransportBean> call, Throwable throwable) {
                     activityRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
+                    EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
                     Log.e(this.getClass().getName(), throwable.toString());
                 }
             });
@@ -339,7 +336,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        getCustomerByEmail(view);
+        registerCustomer(view);
     }
 
 }

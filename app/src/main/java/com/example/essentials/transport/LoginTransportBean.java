@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterTransportBean {
-    int customerId;
+public class LoginTransportBean {
     String message;
+    String apiToken;
+    String customerId;
 }

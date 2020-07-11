@@ -21,7 +21,7 @@ public class EssentialsUtils {
     }
 
     public static void showMessage(CoordinatorLayout coordinatorLayout, String message) {
-        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
     public static void showAlertDialog(Context context){

@@ -11,6 +11,11 @@ import com.example.essentials.executors.AppExecutors;
 
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @SuppressWarnings("ALL")
 public class UserRepository {
@@ -22,12 +27,43 @@ public class UserRepository {
     }
 
 
-    public void insertUser(User user){
+    public void insertUser(User user) {
         AppExecutors.getInstance().diskIO().execute(() -> userDao.insertUser(user));
+    }
+
+    public void updateUser(User user) {
+        AppExecutors.getInstance().diskIO().execute(() -> userDao.updateUser(user));
 
     }
 
-//    public LiveData<Movie> getMovie(int movieId) {
-//       return  movieDao.getMovie(movieId);
-//    }
+    public User getUser(int customerId) {
+
+//        AppExecutors.getInstance().diskIO().execute(() -> userDao.getUser(customerId));
+//        return userDao.getUser(customerId);
+        User user = null;
+        ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+        try {
+            final Future<User> future = emailExecutor.submit(new MyInfoCallable(customerId, userDao));
+            user = future.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    private static class MyInfoCallable implements Callable<User> {
+
+        int userId;
+        UserDao userDao;
+
+        public MyInfoCallable(int userId, UserDao userDao) {
+            this.userId = userId;
+            this.userDao = userDao;
+        }
+
+        @Override
+        public User call() throws Exception {
+            return userDao.getUser(userId);
+        }
+    }
 }
