@@ -1,26 +1,31 @@
-package com.example.essentials;
+package com.example.essentials.activity;
 
 import android.app.Application;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.essentials.R;
 import com.example.essentials.databinding.ActivityRegisterBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.CustomerService;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.UserViewModelFactory;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,36 +44,34 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private static final String TAG = "Main Activity";
     private static Retrofit retrofit = null;
-    private AppCompatButton registerButton;
     ActivityRegisterBinding activityRegisterBinding;
     UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
-        activityRegisterBinding.registerButton.setOnClickListener(this);
-        setTitle("Register");
-        initLayout();
-        //TODO: validate email address, all fields are captured
-        // add newsletters, first and last name
-        // network connection and rotation
 
-        UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
-        userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
+        //TODO: network connection and rotation
+        setTitle(getString(R.string.register_title));
+
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            EssentialsUtils.showAlertDialog(RegisterActivity.this);
+
+        } else {
+            activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
+            activityRegisterBinding.registerButton.setOnClickListener(this);
+            initLayout();
+            UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
+            userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
+        }
     }
-
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    }
-
-
 
     private void initLayout() {
 
         activityRegisterBinding.cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: check if this works
                 finish();
             }
         });
@@ -130,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0)
                     activityRegisterBinding.textInputLayoutEmailAdds.setError(ApplicationConstants.EMAIL_ADDRESS_ERROR_MESSAGE);
-                else if (!isValidEmail(s.toString())) {
+                else if (!EssentialsUtils.isValidEmail(s.toString())) {
                     activityRegisterBinding.textInputLayoutEmailAdds.setError(ApplicationConstants.EMAIL_ADDRESS_FORMAT_ERROR_MESSAGE);
                 } else
                     activityRegisterBinding.textInputLayoutEmailAdds.setError(null);
@@ -214,9 +217,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .build();
 // The App will not crash for malformed JSON.
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
+            Gson gson = new GsonBuilder().setLenient().create();
             if (retrofit == null) {
                 retrofit = new Retrofit.Builder()
                         .baseUrl(ApplicationConstants.BASE_URL)
@@ -236,8 +237,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     activityRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     RegisterTransportBean registerTransportBean = response.body();
                     Log.i(TAG, "onResponse: " + registerTransportBean.getMessage());
-                    if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.MODIFIED_SUCCESS)) {
-                        showMessage(ApplicationConstants.REGISTER_SUCCESS);
+                    if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.REGISTER_SUCCESS)) {
+                        EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, ApplicationConstants.REGISTER_SUCCESS);
                         User user = new User();
                         user.setFirstName(activityRegisterBinding.editTextFirstName.getText().toString());
                         user.setLastName(activityRegisterBinding.editTextLastName.getText().toString());
@@ -245,8 +246,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         user.setEmailAddress(activityRegisterBinding.editTextEmailAddress.getText().toString());
                         user.setPassword(activityRegisterBinding.editTextPassword.getText().toString());
                         saveUser(user);
+
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+
                     } else {
-                        showMessage(ApplicationConstants.REGISTER_FAILURE);
+                        EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, ApplicationConstants.REGISTER_FAILURE);
                     }
                 }
 
@@ -324,17 +329,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         getCustomerByEmail(view);
     }
 
-    private void showMessage(String message) {
-        Snackbar snackbar = Snackbar
-                .make(activityRegisterBinding.coordinatorLayout, message, Snackbar.LENGTH_LONG)
-                .setAction(ApplicationConstants.LOGIN, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Snackbar.make(activityRegisterBinding.coordinatorLayout, "Message successfully deleted12.", Snackbar.LENGTH_SHORT).show();
-
-                    }
-                });
-        snackbar.show();
-    }
 }
