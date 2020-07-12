@@ -75,14 +75,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initLayout() {
-
-        activityRegisterBinding.cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO: check if this works
-                finish();
-            }
-        });
         activityRegisterBinding.editTextFirstName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -246,7 +238,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     RegisterTransportBean registerTransportBean = response.body();
                     Log.i(TAG, "onResponse: " + registerTransportBean.getMessage());
                     if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.REGISTER_SUCCESS)) {
-                        EssentialsUtils.showMessage(activityRegisterBinding.coordinatorLayout, ApplicationConstants.REGISTER_SUCCESS);
                         User user = new User();
                         user.setFirstName(activityRegisterBinding.editTextFirstName.getText().toString());
                         user.setLastName(activityRegisterBinding.editTextLastName.getText().toString());
@@ -257,6 +248,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         saveUser(user);
 
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        intent.putExtra(ApplicationConstants.DISPLAY_TOAST,ApplicationConstants.REGISTER_SUCCESS);
                         startActivity(intent);
 
                     } else {

@@ -24,4 +24,5 @@ public class ApplicationConstants {
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
     public static final String LOGIN = "LOGIN";
 
+    public static final String DISPLAY_TOAST ="displayToast" ;
 }

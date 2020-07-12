@@ -156,10 +156,10 @@
             <Button
                 android:id="@+id/registerButton"
                 android:layout_width="133dp"
-                android:layout_height="47dp"
-                android:layout_marginStart="8dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginStart="130dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="125dp"
+                android:layout_marginEnd="130dp"
                 android:background="@drawable/register_button_bg"
                 android:text="@string/register"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -168,27 +168,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
 
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="133dp"
-                android:layout_height="47dp"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/register_button_bg"
-                android:text="@android:string/cancel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.934"
-                app:layout_constraintStart_toEndOf="@+id/registerButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="190dp"
+                android:layout_marginStart="194dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="38dp"
                 android:indeterminateTint="@color/colorPrimary"

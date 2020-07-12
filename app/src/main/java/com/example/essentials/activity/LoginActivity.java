@@ -59,6 +59,11 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
             initLayout();
+            if(getIntent()!=null && getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST)!=null){
+                if(getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST).equalsIgnoreCase(ApplicationConstants.REGISTER_SUCCESS)){
+                    EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.REGISTER_SUCCESS);
+                }
+            }
             UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
             userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
         }
@@ -170,12 +175,13 @@ public class LoginActivity extends AppCompatActivity {
                 .addFormDataPart("password", activityLoginBinding.editTextPassword.getText().toString())
                 .build();
         Call<LoginTransportBean> call = loginCustomerService.loginCustomer(requestBody);
-
+        activityLoginBinding.progressBar.setVisibility(View.VISIBLE);
 
         call.enqueue(new Callback<LoginTransportBean>() {
             @Override
             public void onResponse(Call<LoginTransportBean> call, Response<LoginTransportBean> response) {
                 LoginTransportBean loginTransportBean = response.body();
+                activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                 Log.i(TAG, "onResponse: " + loginTransportBean.getMessage());
                 if (loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
@@ -191,6 +197,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
+                activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                 EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
 //                    Log.e(this.getClass().getName(), throwable.toString());
             }
