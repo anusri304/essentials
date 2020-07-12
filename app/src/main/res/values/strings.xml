@@ -12,4 +12,10 @@
     <string name="login_title">Login</string>
     <string name="register_here">Register Here</string>
     <string name="customer_first_name">First Name</string>
+    <string name="home">Home</string>
+    <string name="promotions">Promotions</string>
+    <string name="category">Category</string>
+    <string name="order">Orders</string>
+    <string name="cart">Cart</string>
+    <string name="customerdetails">Customer Details</string>
 </resources>
