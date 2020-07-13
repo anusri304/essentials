@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,43 +13,100 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.essentials.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class ProductActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
+    NavigationView navView;
+    BottomNavigationView bottomNavigationView;
+    NavController navController;
+
+    AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigationView);
         drawerLayout = findViewById(R.id.drawer_layout);
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        navView = findViewById(R.id.nav_view);
         configureToolbar();
+        appBarConfiguration =
+                new AppBarConfiguration.Builder(R.id.nav_item_home, R.id.nav_item_blog, R.id.nav_item_app).setDrawerLayout(drawerLayout).build();
+//        configureNavigationDrawer();
+        //TODO: elevation for navigation drawer
+        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
+        NavigationUI.setupWithNavController(navView,navController);
+        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         configureNavigationDrawer();
 
     }
 
+//    @Override
+//    public boolean onSupportNavigateUp() {
+////        Log.d("onSupportNavigateUp()", "pressed");
+////        finish();
+////        return super.onSupportNavigateUp();
+//        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+//        return navController.navigateUp() || super.onSupportNavigateUp();
+//    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment fragment;
+            switch (item.getItemId()) {
+                case R.id.homeFragment:
+                    Log.d("Product Activity", "Inside home");
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_homeFragment);
+                    return true;
+                case R.id.directionFragment :
+                    Log.d("Product Activity", "Inside directionFragment ");
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_directionFragment);
+                    return true;
+                case R.id.commentFragment :
+                    Log.d("Product Activity", "Inside commentFragment ");
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_commentFragment);
+                    return true;
+            }
+            return false;
+        }
+    };
+
     private void configureToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.topAppBar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         // actionbar.setHomeAsUpIndicator(R.drawable.ic_action_menu_white);
-        actionbar.setDisplayHomeAsUpEnabled(true);
+       // actionbar.setDisplayHomeAsUpEnabled(true);
     }
-
+//
     private void configureNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navView = (NavigationView) findViewById(R.id.navigation);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
-                if (itemId == R.id.homeIcon) {
+                if (itemId == R.id.nav_item_home) {
                     //  f = new RefreshFragment();
                     Log.d("Product Activity","Inside home");
-                    Toast.makeText(ProductActivity.this, "Hello home", Toast.LENGTH_LONG).show();
+
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_item_home);
+                    drawerLayout.closeDrawers();
+                    return true;
                 } else if (itemId == R.id.login) {
                     Log.d("Product Activity","Inside login");
                     Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
