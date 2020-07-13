@@ -68,17 +68,21 @@ public class ProductActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
             switch (item.getItemId()) {
-                case R.id.homeFragment:
+                case R.id.bottom_home:
                     Log.d("Product Activity", "Inside home");
                     Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_homeFragment);
                     return true;
-                case R.id.directionFragment :
-                    Log.d("Product Activity", "Inside directionFragment ");
+                case R.id.bottom_category :
+                    Log.d("Product Activity", "Inside category ");
                     Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_directionFragment);
                     return true;
-                case R.id.commentFragment :
-                    Log.d("Product Activity", "Inside commentFragment ");
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_commentFragment);
+                case R.id.bottom_cart :
+                    Log.d("Product Activity", "Inside cart ");
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_directionFragment);
+                    return true;
+                case R.id.bottom_wishlist :
+                    Log.d("Product Activity", "Inside cart ");
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_directionFragment);
                     return true;
             }
             return false;
@@ -100,7 +104,7 @@ public class ProductActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
-                if (itemId == R.id.nav_item_home) {
+                if (itemId == R.id.homeIcon) {
                     //  f = new RefreshFragment();
                     Log.d("Product Activity","Inside home");
 
