@@ -28,7 +28,7 @@
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/drawer_header"
-            app:menu="@menu/drawermenu" />
+            app:menu="@menu/top_app_bar" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

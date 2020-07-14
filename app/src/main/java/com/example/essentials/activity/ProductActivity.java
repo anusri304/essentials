@@ -41,7 +41,7 @@ public class ProductActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_item_home, R.id.nav_item_blog, R.id.nav_item_app,R.id.nav_bottom_home,R.id.nav_bottom_category,R.id.nav_bottom_cart,R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_register,R.id.nav_top_promotion,R.id.nav_top_category,R.id.nav_top_order,R.id.nav_top_cart,R.id.nav_bottom_home,R.id.nav_bottom_category,R.id.nav_bottom_cart,R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
@@ -112,14 +112,14 @@ public class ProductActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
-                if (itemId == R.id.nav_item_home) {
+                if (itemId == R.id.nav_top_home) {
                     //  f = new RefreshFragment();
                     Log.d("Product Activity","Inside home");
 
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_item_home);
+                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     drawerLayout.closeDrawers();
                     return true;
-                } else if (itemId == R.id.nav_item_blog) {
+                } else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity","Inside login");
                     Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
                 }

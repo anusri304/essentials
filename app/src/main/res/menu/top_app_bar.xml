@@ -5,18 +5,18 @@
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_item_home"
+            android:id="@+id/nav_top_home"
             android:title="@string/home"
             app:showAsAction="ifRoom" />
 
         <item
-            android:id="@+id/login"
+            android:id="@+id/nav_top_login"
             android:title="@string/login_title"
             app:showAsAction="ifRoom" />
 
 
         <item
-            android:id="@+id/Register"
+            android:id="@+id/nav_top_register"
             android:title="@string/register_title"
             app:showAsAction="ifRoom" />
 
@@ -25,12 +25,12 @@
         android:id="@+id/menu_middle"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/promotions"
+            android:id="@+id/nav_top_promotion"
             android:title="@string/promotions"
             app:showAsAction="ifRoom" />
 
         <item
-            android:id="@+id/category"
+            android:id="@+id/nav_top_category"
             android:title="@string/category"
             app:showAsAction="ifRoom" />
     </group>
@@ -39,17 +39,17 @@
         android:id="@+id/menu_last"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/order"
+            android:id="@+id/nav_top_order"
             android:title="@string/order"
             app:showAsAction="ifRoom" />
 
         <item
-            android:id="@+id/cart"
+            android:id="@+id/nav_top_cart"
             android:title="@string/cart"
             app:showAsAction="ifRoom" />
 
         <item
-            android:id="@+id/customerdetails"
+            android:id="@+id/nav_top_customer_details"
             android:title="@string/customerdetails"
             app:showAsAction="ifRoom" />
     </group>
