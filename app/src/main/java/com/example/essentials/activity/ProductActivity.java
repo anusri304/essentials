@@ -112,12 +112,15 @@ public class ProductActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
+
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
                 if (itemId == R.id.nav_top_home) {
                     //  f = new RefreshFragment();
                     Log.d("Product Activity","Inside home");
 
                     Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_top_home);
-                    drawerLayout.closeDrawers();
                     return true;
                 } else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity","Inside login");

@@ -21,4 +21,5 @@
     <string name="wishlist">Wish list</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="product_content_description">Product Picture</string>
 </resources>

@@ -11,4 +11,8 @@ public class LoginTransportBean {
     String message;
     String apiToken;
     String customerId;
+    String firstname;
+    String lastname;
+    String email;
+    String telephone;
 }

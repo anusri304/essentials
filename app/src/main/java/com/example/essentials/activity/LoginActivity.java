@@ -59,8 +59,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
             initLayout();
-            if(getIntent()!=null && getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST)!=null){
-                if(getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST).equalsIgnoreCase(ApplicationConstants.REGISTER_SUCCESS)){
+            if (getIntent() != null && getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST) != null) {
+                if (getIntent().getStringExtra(ApplicationConstants.DISPLAY_TOAST).equalsIgnoreCase(ApplicationConstants.REGISTER_SUCCESS)) {
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.REGISTER_SUCCESS);
                 }
             }
@@ -186,9 +186,23 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                     User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
-                    user.setApiToken(loginTransportBean.getApiToken());
-                    userViewModel.updateUser(user);
-                    Log.d(TAG, "user 1234");
+                    // if the user has registered in website the user will  be in null
+                    if (user != null) {
+                        user.setApiToken(loginTransportBean.getApiToken());
+                        userViewModel.updateUser(user);
+                    } else {
+                        user = new User();
+                        user.setId(Integer.valueOf(loginTransportBean.getCustomerId()));
+                        user.setApiToken(loginTransportBean.getApiToken());
+                        user.setEmailAddress(loginTransportBean.getEmail());
+                        user.setFirstName(loginTransportBean.getFirstname());
+                        user.setLastName(loginTransportBean.getLastname());
+                        user.setMobileNumber(loginTransportBean.getTelephone());
+                        user.setPassword(activityLoginBinding.editTextPassword.getText().toString());
+                        userViewModel.insertUser(user);
+                    }
+                    Intent intent = new Intent(LoginActivity.this, ProductActivity.class);
+                    startActivity(intent);
 
                 } else {
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
