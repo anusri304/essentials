@@ -62,12 +62,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 ProductListTransportBean productTransportBeans = response.body();
                 Log.i(TAG, "onResponse: " + productTransportBeans.getProducts().size());
                 List<ProductPresentationBean> productPresentationBeans = new ArrayList<ProductPresentationBean>();
-                for(ProductTransportBean productTransportBean:productTransportBeans.getProducts()){
+                for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
                     ProductPresentationBean productPresentationBean = new ProductPresentationBean();
                     productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
                     //TODO: Replace the path in Opencart
-                    //productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/",ApplicationConstants.BASE_URL));
-                    productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg");
+                    productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
+                    //  productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg");
                     productPresentationBeans.add(productPresentationBean);
                 }
                 setData(productPresentationBeans);
@@ -88,11 +88,11 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
         ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
-        RecyclerView recyclerView =rootView.findViewById(R.id.rv_products);
+        RecyclerView recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
-       // recyclerView.setLayoutManager(manager);
+        // recyclerView.setLayoutManager(manager);
 //
 //      //  int columnCount = getResources().getInteger(R.integer.list_column_count);
         StaggeredGridLayoutManager sglm =
