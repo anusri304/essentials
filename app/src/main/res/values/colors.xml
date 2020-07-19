@@ -6,4 +6,5 @@
     <color name="black">#000000</color>
     <color name="red">#F44336</color>
     <color name="white">#FFFFFF</color>
+    <color name="photo_placeholder">#ccc</color>
 </resources>

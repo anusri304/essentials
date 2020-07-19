@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.LoginActivity;
@@ -65,7 +66,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     ProductPresentationBean productPresentationBean = new ProductPresentationBean();
                     productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
                     //TODO: Replace the path in Opencart
-                    productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/",ApplicationConstants.BASE_URL));
+                    //productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/",ApplicationConstants.BASE_URL));
+                    productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg");
                     productPresentationBeans.add(productPresentationBean);
                 }
                 setData(productPresentationBeans);
@@ -89,9 +91,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         RecyclerView recyclerView =rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
 
-        GridLayoutManager manager = new GridLayoutManager(getActivity(), 3);
-        recyclerView.setLayoutManager(manager);
-
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
+       // recyclerView.setLayoutManager(manager);
+//
+//      //  int columnCount = getResources().getInteger(R.integer.list_column_count);
+        StaggeredGridLayoutManager sglm =
+                new StaggeredGridLayoutManager(EssentialsUtils.getSpan(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(sglm);
     }
 
     private Retrofit getRetrofit() {

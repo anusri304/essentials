@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Patterns;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -35,6 +36,20 @@ public class EssentialsUtils {
         });
         builder.setMessage(ApplicationConstants.NO_INTERNET_MESSAGE);
         builder.create().show();
+    }
+
+    public static int getSpan(Context context) {
+        float scaledWidth = getScaledWidth(context);
+        if (scaledWidth > 600 && scaledWidth <= 900) {
+            return 2;
+        } else if (scaledWidth > 900) {
+            return 3;
+        } else return 1;
+    }
+
+    public static float getScaledWidth(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return (displayMetrics.widthPixels / displayMetrics.scaledDensity);
     }
 
 }

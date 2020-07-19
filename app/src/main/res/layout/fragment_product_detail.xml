@@ -1,17 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cardView"
-    android:layout_width="190dp"
-    android:layout_height="250dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:elevation="1dp"
+    app:pressedTranslationZ="8dp"
+    android:foreground="?selectableItemBackground">
 
-    <ImageView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <com.example.essentials.activity.ui.DynamicHeightNetworkImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:contentDescription="@string/product_content_description"/>
+        android:scaleType="centerCrop"
+        android:background="@color/photo_placeholder"
+        android:layout_height="0dp" android:contentDescription="@string/product_content_description"/>
+        <TextView
+            android:id="@+id/article_title"
+            android:text="Test"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="4dp"
+            android:fontFamily="sans-serif-black"
+            android:ellipsize="end"
+            android:maxLines="4" />
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

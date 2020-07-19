@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.R;
+import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
+import com.example.essentials.activity.ui.ImageLoaderHelper;
 
 import java.util.List;
 
@@ -36,11 +38,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final ImageView imageView;
+        private final DynamicHeightNetworkImageView imageView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
+            imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             itemView.setOnClickListener(this);
         }
 
@@ -62,8 +64,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
+        holder.imageView.setImageUrl(
+                "http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg",
+                ImageLoaderHelper.getInstance(mContext).getImageLoader());
+        holder.imageView.setAspectRatio(1.5f);
         Glide.with(mContext)
-                .load(mValues.get(position).getImage())
+              .load("http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg")
+              //  .load("https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58c5be64_sleepyhollow/sleepyhollow.jpg")
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
