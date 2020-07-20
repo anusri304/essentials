@@ -8,10 +8,8 @@
         android:id="@+id/promotionTxtView"
         android:text="@string/promotions"
         android:layout_width="250dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:layout_height="wrap_content"
-        android:textSize="25sp" />
+        style="@style/promotionTextStyle"
+        android:layout_height="wrap_content"/>
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkbox"

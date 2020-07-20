@@ -71,6 +71,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
                     // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                     productPresentationBean.setName(productTransportBean.getName());
+                    productPresentationBean.setPrice(productTransportBean.getPrice());
                     productPresentationBeans.add(productPresentationBean);
                 }
                 setData(productPresentationBeans);

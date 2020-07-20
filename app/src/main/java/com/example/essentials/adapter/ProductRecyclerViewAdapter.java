@@ -50,11 +50,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
+        TextView productPriceTxtView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
+            productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
             itemView.setOnClickListener(this);
         }
 
@@ -88,6 +90,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .error(R.drawable.error)
                 .into(holder.imageView);
         holder.productNameTxtView.setText( mValues.get(position).getName());
+        holder.productPriceTxtView.setText( mValues.get(position).getPrice());
+
     }
 
     @Override
