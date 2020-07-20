@@ -67,53 +67,61 @@ public class ProductActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
                 Toast.makeText(ProductActivity.this, "Expanded", Toast.LENGTH_SHORT).show();
-               // navBar.setVisibility(View.INVISIBLE);
+                // navBar.setVisibility(View.INVISIBLE);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 Toast.makeText(ProductActivity.this, "Collapsed", Toast.LENGTH_SHORT).show();
-              //  navBar.setVisibility(View.VISIBLE);
+                //  navBar.setVisibility(View.VISIBLE);
                 return true;
             }
         };
         menu.findItem(R.id.search).setOnActionExpandListener(onActionExpandListener);
         searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Log.d("Anandhi ", navController.getCurrentDestination().getDisplayName());
-                //com.example.essentials:id/nav_top_home
-                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
-                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
-                ((ProductFragment) fragment).filter(s);
-                return true;
-            }
+        // TODO: Add code so that search view is visible in only certain fragments
+        if (!navController.getCurrentDestination().getDisplayName().contains("nav_top_home")) {
+            menu.findItem(R.id.search).setVisible(false);
+        } else {
+            menu.findItem(R.id.search).setVisible(true);
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                // fastItemAdapter.filter(s);
-                // touchCallback.setIsDragEnabled(TextUtils.isEmpty(s));
+            searchView.setQueryHint(getString(R.string.search_hint));
 
-                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
-                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
-                ((ProductFragment) fragment).filter(s);
-                return true;
-            }
-        });
+            searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    Log.d("Anandhi ", navController.getCurrentDestination().getDisplayName());
+                    //com.example.essentials:id/nav_top_home
+                    Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                    Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                    ((ProductFragment) fragment).filter(s);
+                    return true;
+                }
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
-                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
-                ((ProductFragment) fragment).filter("");
-                return false;
-            }
-        });
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    // fastItemAdapter.filter(s);
+                    // touchCallback.setIsDragEnabled(TextUtils.isEmpty(s));
+
+                    Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                    Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                    ((ProductFragment) fragment).filter(s);
+                    return true;
+                }
+            });
+
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                    Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                    ((ProductFragment) fragment).filter("");
+                    return false;
+                }
+            });
+        }
 
         return true;
     }
@@ -133,6 +141,7 @@ public class ProductActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
+            invalidateOptionsMenu();
             switch (item.getItemId()) {
                 case R.id.nav_bottom_home:
                     Log.d("Product Activity", "Inside home");
