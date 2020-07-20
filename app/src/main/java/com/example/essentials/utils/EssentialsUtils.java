@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
@@ -50,6 +52,19 @@ public class EssentialsUtils {
     public static float getScaledWidth(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return (displayMetrics.widthPixels / displayMetrics.scaledDensity);
+    }
+
+    /**
+     * Call this method so that it hides the keyboard
+     *
+     * @param context context
+     */
+    public static void hideKeyboard(Context context) {
+        View view = ((Activity) context).getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null && view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }

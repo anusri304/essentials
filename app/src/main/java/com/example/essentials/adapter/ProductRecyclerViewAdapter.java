@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -15,15 +16,21 @@ import com.example.essentials.R;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.MovieViewHolder> {
 
-    final List<ProductPresentationBean> mValues;
+    List<ProductPresentationBean> mValues;
     final Context mContext;
     private final ListItemClickListener mOnClickListener;
+
+    private final List<ProductPresentationBean> unfilteredProductList;
 
     public interface ListItemClickListener {
 
@@ -31,10 +38,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     }
 
-    public ProductRecyclerViewAdapter(Context context, List<ProductPresentationBean> values, ListItemClickListener listener) {
-        mValues = values;
+    public ProductRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, ListItemClickListener listener) {
+        mValues = products;
         mOnClickListener = listener;
         mContext = context;
+        unfilteredProductList = Collections.synchronizedList(new ArrayList<ProductPresentationBean>(products));
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -81,5 +89,54 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+
+    public Filter getFilter() {
+        Filter itemListFilter = new Filter() {
+            // Custom filtering
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results;
+                try {
+                    results = new FilterResults();
+                    constraint = constraint.toString().toLowerCase(Locale.getDefault());
+
+                    List<ProductPresentationBean> filteredList = new ArrayList<ProductPresentationBean>();
+
+                    synchronized (unfilteredProductList) {
+                        for (ProductPresentationBean productPresentationBean : unfilteredProductList) {
+                            if (productPresentationBean.getImage().toLowerCase(Locale.getDefault()).contains(constraint.toString() )) {
+                                filteredList.add(productPresentationBean);
+                            }
+                        }
+                    }
+                    results.count = filteredList.size();
+                    results.values = filteredList;
+
+                    return results;
+                } finally {
+                    results = null;
+                }
+            }
+
+            // Publish filtered results
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mValues = (ArrayList<ProductPresentationBean>) results.values;
+                notifyDataSetChanged();
+                EssentialsUtils.hideKeyboard(mContext);
+            }
+        };
+
+        return itemListFilter;
+    }
+
+    public void performFilter(String query) {
+        if (query == null) {
+           return;
+        }
+        getFilter().filter(query);
     }
 }

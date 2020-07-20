@@ -17,7 +17,7 @@
         <activity android:name=".activity.RegisterActivity"></activity>
         <activity
             android:name=".activity.ProductActivity"
-
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

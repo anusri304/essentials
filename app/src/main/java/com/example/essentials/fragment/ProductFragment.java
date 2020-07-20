@@ -25,6 +25,7 @@ import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -45,6 +46,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     String TAG = "ProductFragment";
     List<ProductPresentationBean> productPresentationBeans = new ArrayList<>();
     View rootView;
+    ProductRecyclerViewAdapter adapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -87,7 +89,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
-        ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
+        adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
 
@@ -118,6 +120,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     .build();
         }
         return retrofit;
+    }
+
+    public void filter (String query) {
+         adapter.performFilter(query);
+        Log.d("TEsting",query);
+
     }
 
 }

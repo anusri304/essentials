@@ -2,12 +2,16 @@ package com.example.essentials.activity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -19,6 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.essentials.R;
+import com.example.essentials.fragment.ProductFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -30,6 +35,8 @@ public class ProductActivity extends AppCompatActivity {
 
     AppBarConfiguration appBarConfiguration;
 
+    androidx.appcompat.widget.SearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +44,78 @@ public class ProductActivity extends AppCompatActivity {
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigationView);
         drawerLayout = findViewById(R.id.drawer_layout);
-        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_register,R.id.nav_top_promotion,R.id.nav_top_category,R.id.nav_top_order,R.id.nav_top_cart,R.id.nav_bottom_home,R.id.nav_bottom_category,R.id.nav_bottom_cart,R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_register, R.id.nav_top_promotion, R.id.nav_top_category, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
-        NavigationUI.setupActionBarWithNavController(this,navController,appBarConfiguration);
-        NavigationUI.setupWithNavController(navView,navController);
-        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         configureNavigationDrawer();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_app_bar, menu);
+        BottomNavigationView navBar = findViewById(R.id.navigationView);
+        MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                Toast.makeText(ProductActivity.this, "Expanded", Toast.LENGTH_SHORT).show();
+               // navBar.setVisibility(View.INVISIBLE);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                Toast.makeText(ProductActivity.this, "Collapsed", Toast.LENGTH_SHORT).show();
+              //  navBar.setVisibility(View.VISIBLE);
+                return true;
+            }
+        };
+        menu.findItem(R.id.search).setOnActionExpandListener(onActionExpandListener);
+        searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setQueryHint(getString(R.string.search_hint));
+
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.d("Anandhi ", navController.getCurrentDestination().getDisplayName());
+                //com.example.essentials:id/nav_top_home
+                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                ((ProductFragment) fragment).filter(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // fastItemAdapter.filter(s);
+                // touchCallback.setIsDragEnabled(TextUtils.isEmpty(s));
+
+                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                ((ProductFragment) fragment).filter(s);
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                ((ProductFragment) fragment).filter("");
+                return false;
+            }
+        });
+
+        return true;
     }
 
     @Override
@@ -56,7 +123,7 @@ public class ProductActivity extends AppCompatActivity {
 //        Log.d("onSupportNavigateUp()", "pressed");
 //        finish();
 //        return super.onSupportNavigateUp();
-        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return navController.navigateUp() || super.onSupportNavigateUp();
     }
 
@@ -69,26 +136,27 @@ public class ProductActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.nav_bottom_home:
                     Log.d("Product Activity", "Inside home");
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_bottom_home);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_home);
                     return true;
-                case R.id.nav_bottom_category :
+                case R.id.nav_bottom_category:
                     Log.d("Product Activity", "Inside category ");
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_bottom_category);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_category);
                     return true;
-                case R.id.nav_bottom_cart :
+                case R.id.nav_bottom_cart:
                     Log.d("Product Activity", "Inside cart ");
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
                     return true;
-                case R.id.nav_bottom_wishlist :
+                case R.id.nav_bottom_wishlist:
                     Log.d("Product Activity", "Inside cart ");
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
                     return true;
             }
             return false;
         }
     };
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
@@ -101,10 +169,11 @@ public class ProductActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
 
-       // actionbar.setDisplayHomeAsUpEnabled(true);
+        // actionbar.setDisplayHomeAsUpEnabled(true);
 
     }
-//
+
+    //
     private void configureNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -118,12 +187,12 @@ public class ProductActivity extends AppCompatActivity {
                 }
                 if (itemId == R.id.nav_top_home) {
                     //  f = new RefreshFragment();
-                    Log.d("Product Activity","Inside home");
+                    Log.d("Product Activity", "Inside home");
 
-                    Navigation.findNavController(ProductActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_top_home);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     return true;
                 } else if (itemId == R.id.nav_top_login) {
-                    Log.d("Product Activity","Inside login");
+                    Log.d("Product Activity", "Inside login");
                     Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
                 }
 //                if (f != null) {
