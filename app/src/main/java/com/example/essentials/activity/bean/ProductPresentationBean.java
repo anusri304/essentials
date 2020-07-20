@@ -9,6 +9,10 @@ import lombok.Data;
 public class ProductPresentationBean implements Parcelable {
     private int id;
     private String image;
+    private String name;
+    private String description;
+    private String price;
+    private String special;
 
     public ProductPresentationBean() {
 

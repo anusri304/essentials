@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,10 +49,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final DynamicHeightNetworkImageView imageView;
+        TextView productNameTxtView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
+            productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
             itemView.setOnClickListener(this);
         }
 
@@ -84,6 +87,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
+        holder.productNameTxtView.setText( mValues.get(position).getName());
     }
 
     @Override

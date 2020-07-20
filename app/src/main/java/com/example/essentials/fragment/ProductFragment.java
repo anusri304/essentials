@@ -69,7 +69,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
                     //TODO: Replace the path in Opencart
                     productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
-                  // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
+                    // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
+                    productPresentationBean.setName(productTransportBean.getName());
                     productPresentationBeans.add(productPresentationBean);
                 }
                 setData(productPresentationBeans);
@@ -122,9 +123,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         return retrofit;
     }
 
-    public void filter (String query) {
-         adapter.performFilter(query);
-        Log.d("TEsting",query);
+    public void filter(String query) {
+        adapter.performFilter(query);
+        Log.d("TEsting", query);
 
     }
 

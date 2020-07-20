@@ -17,15 +17,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
     <com.example.essentials.activity.ui.DynamicHeightNetworkImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp" android:contentDescription="@string/product_content_description"/>
         <TextView
-            android:id="@+id/article_title"
-            android:text="Test"
+            android:id="@+id/product_name"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
