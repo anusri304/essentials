@@ -29,6 +29,19 @@
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imageView"/>
+
+        <TextView
+            android:id="@+id/product_special_price"
+            android:paddingTop="5dp"
+            android:paddingLeft="10dp"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/product_name"
+            android:layout_toEndOf="@+id/imageView"/>
+
         <TextView
             android:id="@+id/product_price"
             android:paddingTop="5dp"
@@ -39,7 +52,7 @@
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/product_name"/>
+            android:layout_below="@+id/product_special_price"/>
 
 </RelativeLayout>
 

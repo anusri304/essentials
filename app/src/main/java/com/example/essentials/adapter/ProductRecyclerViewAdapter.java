@@ -1,6 +1,7 @@
 package com.example.essentials.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +52,14 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
+        TextView productSpecialPriceTxtView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
             productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
+            productSpecialPriceTxtView = (TextView)  itemView.findViewById(R.id.product_special_price);
             itemView.setOnClickListener(this);
         }
 
@@ -89,8 +92,18 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
+        //todo Special
+        if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
+            holder.productSpecialPriceTxtView.setVisibility(View.GONE);
+        }
+        else {
+            holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.productSpecialPriceTxtView.setText( mValues.get(position).getSpecial());
+            holder.productPriceTxtView.setTextColor(mContext.getResources().getColor(R.color.red));
+        }
         holder.productNameTxtView.setText( mValues.get(position).getName());
         holder.productPriceTxtView.setText( mValues.get(position).getPrice());
+
 
     }
 

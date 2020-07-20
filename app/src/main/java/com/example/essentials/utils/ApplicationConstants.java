@@ -26,4 +26,5 @@ public class ApplicationConstants {
 
     public static final String DISPLAY_TOAST ="displayToast" ;
     public static final float ASPECT_RATIO = 1.5f;
+    public static final String FALSE = "false" ;
 }
