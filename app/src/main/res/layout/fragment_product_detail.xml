@@ -22,8 +22,6 @@
     <com.example.essentials.activity.ui.DynamicHeightNetworkImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:background="@color/photo_placeholder"
         android:layout_height="0dp" android:contentDescription="@string/product_content_description"/>
         <TextView
             android:id="@+id/article_title"

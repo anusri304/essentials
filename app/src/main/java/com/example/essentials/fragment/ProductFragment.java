@@ -67,7 +67,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
                     //TODO: Replace the path in Opencart
                     productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
-                    //  productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/apple_cinema_30-228x228.jpg");
+                  // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                     productPresentationBeans.add(productPresentationBean);
                 }
                 setData(productPresentationBeans);
@@ -92,12 +92,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         recyclerView.setAdapter(adapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
-        // recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(manager);
 //
 //      //  int columnCount = getResources().getInteger(R.integer.list_column_count);
-        StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(EssentialsUtils.getSpan(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(sglm);
+//        StaggeredGridLayoutManager sglm =
+//                new StaggeredGridLayoutManager(EssentialsUtils.getSpan(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+//        recyclerView.setLayoutManager(sglm);
     }
 
     private Retrofit getRetrofit() {
