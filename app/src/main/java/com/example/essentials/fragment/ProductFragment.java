@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -44,7 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener {
     private static Retrofit retrofit = null;
     String TAG = "ProductFragment";
-    List<ProductPresentationBean> productPresentationBeans = new ArrayList<>();
+    List<ProductPresentationBean> productPresentationBeans;
     View rootView;
     ProductRecyclerViewAdapter adapter;
 
@@ -63,7 +64,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             public void onResponse(Call<ProductListTransportBean> call, Response<ProductListTransportBean> response) {
                 ProductListTransportBean productTransportBeans = response.body();
                 Log.i(TAG, "onResponse: " + productTransportBeans.getProducts().size());
-                List<ProductPresentationBean> productPresentationBeans = new ArrayList<ProductPresentationBean>();
+                productPresentationBeans = new ArrayList<ProductPresentationBean>();
                 for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
                     ProductPresentationBean productPresentationBean = new ProductPresentationBean();
                     productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
@@ -89,7 +90,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
+        ProductPresentationBean productPresentationBean = productPresentationBeans.get(clickedItemIndex);
+        ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 
+       Navigation.findNavController(rootView).navigate(action);
+
+//https://www.youtube.com/watch?v=vx1-V3HH0IU
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {

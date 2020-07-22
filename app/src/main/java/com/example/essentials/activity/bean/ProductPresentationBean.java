@@ -22,6 +22,10 @@ public class ProductPresentationBean implements Parcelable {
     private ProductPresentationBean(Parcel in) {
         id = in.readInt();
         image = in.readString();
+        name = in.readString();
+        description = in.readString();
+        price = in.readString();
+        special = in.readString();
     }
 
     public static final Creator<ProductPresentationBean> CREATOR = new Creator<ProductPresentationBean>() {
@@ -45,5 +49,9 @@ public class ProductPresentationBean implements Parcelable {
     public void writeToParcel(Parcel dest, int i) {
         dest.writeInt(id);
         dest.writeString(image);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(price);
+        dest.writeString(special);
     }
 }

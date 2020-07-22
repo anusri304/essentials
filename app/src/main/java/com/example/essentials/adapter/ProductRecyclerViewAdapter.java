@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -74,7 +73,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_product_detail, viewGroup, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_product_list, viewGroup, false);
 
         return new MovieViewHolder(view);
     }

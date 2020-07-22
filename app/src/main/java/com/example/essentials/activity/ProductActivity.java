@@ -188,6 +188,7 @@ public class ProductActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                invalidateOptionsMenu();
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
 
