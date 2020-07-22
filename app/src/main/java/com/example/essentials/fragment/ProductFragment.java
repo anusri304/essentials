@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.LoginActivity;
+import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.RegisterActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
@@ -73,6 +74,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                     productPresentationBean.setName(productTransportBean.getName());
                     productPresentationBean.setPrice(productTransportBean.getPrice());
+                    productPresentationBean.setDescription(productTransportBean.getDescription());
                     //TODO: Only get special products
                     productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
                     productPresentationBeans.add(productPresentationBean);
@@ -91,9 +93,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     @Override
     public void onListItemClick(int clickedItemIndex) {
         ProductPresentationBean productPresentationBean = productPresentationBeans.get(clickedItemIndex);
-        ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
-
-       Navigation.findNavController(rootView).navigate(action);
+//        ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
+//
+//       Navigation.findNavController(rootView).navigate(action);
+        Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN,productPresentationBean);
+        startActivity(intent);
 
 //https://www.youtube.com/watch?v=vx1-V3HH0IU
     }

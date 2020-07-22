@@ -15,6 +15,9 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".activity.LoginActivity"></activity>
         <activity android:name=".activity.RegisterActivity"></activity>
+        <activity android:name=".activity.ProductDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".activity.ProductActivity"
             android:windowSoftInputMode="adjustNothing"
