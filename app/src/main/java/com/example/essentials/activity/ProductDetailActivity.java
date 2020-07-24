@@ -1,6 +1,8 @@
 package com.example.essentials.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 public class ProductDetailActivity extends AppCompatActivity {
 ProductPresentationBean productPresentationBean;
+CollapsingToolbarLayout collapsingToolbarLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +25,18 @@ ProductPresentationBean productPresentationBean;
 
         if (getIntent() != null) {
             productPresentationBean = getIntent().getParcelableExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
-            ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout)).setTitle(productPresentationBean.getName());
-        }
+           collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout));
+           collapsingToolbarLayout.setTitle(productPresentationBean.getName());
 
+            collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        }
+        View mUpButton = findViewById(R.id.app_bar);
+        mUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         setImageView();
 
 
