@@ -28,4 +28,9 @@ public class ApplicationConstants {
     public static final float ASPECT_RATIO = 1.5f;
     public static final String FALSE = "false" ;
     public static final String PRODUCT_PRESENTATION_BEAN ="productPresentationBean" ;
+    public static final String OFF = "OFF";
+    public static final String IN_STOCK ="In stock";
+    public static final String OUT_OF_STOCK ="Out of Stock" ;
+    public static final String PRODUCT_DESC = "productDescription" ;
+    public static final String PRODUCT_NAME = "productName" ;
 }

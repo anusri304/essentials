@@ -18,4 +18,6 @@ public class ProductTransportBean {
     String description;
     String quantity;
    String price;
+   String discPerc;
+   String inStock;
 }

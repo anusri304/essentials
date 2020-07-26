@@ -103,7 +103,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         holder.productNameTxtView.setText( mValues.get(position).getName());
         holder.productPriceTxtView.setText( mValues.get(position).getPrice());
 
-
     }
 
     @Override

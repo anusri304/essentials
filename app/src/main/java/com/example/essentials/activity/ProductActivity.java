@@ -24,6 +24,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.essentials.R;
 import com.example.essentials.fragment.ProductFragment;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -43,6 +44,7 @@ public class ProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigationView);
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navView = findViewById(R.id.nav_view);
@@ -62,6 +64,10 @@ public class ProductActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_app_bar, menu);
+
+        BadgeDrawable badgeDrawable= bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
+        badgeDrawable.setVisible(true);
+        badgeDrawable.setNumber(1);
         BottomNavigationView navBar = findViewById(R.id.navigationView);
         MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
             @Override

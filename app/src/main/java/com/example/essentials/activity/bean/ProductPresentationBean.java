@@ -13,6 +13,8 @@ public class ProductPresentationBean implements Parcelable {
     private String description;
     private String price;
     private String special;
+    private String discPerc;
+    private String inStock;
 
     public ProductPresentationBean() {
 
@@ -26,6 +28,8 @@ public class ProductPresentationBean implements Parcelable {
         description = in.readString();
         price = in.readString();
         special = in.readString();
+        discPerc = in.readString();
+        inStock = in.readString();
     }
 
     public static final Creator<ProductPresentationBean> CREATOR = new Creator<ProductPresentationBean>() {
@@ -53,5 +57,7 @@ public class ProductPresentationBean implements Parcelable {
         dest.writeString(description);
         dest.writeString(price);
         dest.writeString(special);
+        dest.writeString(discPerc);
+        dest.writeString(inStock);
     }
 }
