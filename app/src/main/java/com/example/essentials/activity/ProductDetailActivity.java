@@ -1,6 +1,7 @@
 package com.example.essentials.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     View mUpButton;
     private static Retrofit retrofit = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,13 +114,16 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void callWishListEndpoint() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
         WishlistService wishlistService = getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", "40")
-                .addFormDataPart("customerId", "5")
+                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart("customerId", String.valueOf(userId))
                 .build();
-        Call<WishlistTransportBean> call = wishlistService.addToWishlist("a7b92bf868dd4dab943691dcb5", requestBody);
+        Call<WishlistTransportBean> call = wishlistService.addToWishlist(apiToken, requestBody);
 
         call.enqueue(new Callback<WishlistTransportBean>() {
             @Override

@@ -1,7 +1,9 @@
 package com.example.essentials.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,11 +45,17 @@ public class LoginActivity extends AppCompatActivity {
     private static Retrofit retrofit = null;
     ActivityLoginBinding activityLoginBinding;
     UserViewModel userViewModel;
+    SharedPreferences sharedpreferences;
+    public static final String mypreference = ApplicationConstants.SHARED_PREF_NAME;
+    public static final String userId = "userId";
+    public static final String apiToken = "apiToken";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.login_title));
+        sharedpreferences = getSharedPreferences(mypreference, Context.MODE_PRIVATE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (!NetworkUtils.isNetworkConnected(this)) {
             EssentialsUtils.showNetworkAlertDialog(LoginActivity.this);
@@ -194,6 +202,10 @@ public class LoginActivity extends AppCompatActivity {
                         user.setLastName(loginTransportBean.getLastname());
                         user.setMobileNumber(loginTransportBean.getTelephone());
                         user.setPassword(activityLoginBinding.editTextPassword.getText().toString());
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putInt(ApplicationConstants.USER_ID, user.getId());
+                        editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
+                        editor.commit();
                         userViewModel.insertUser(user);
                     }
                     Intent intent = new Intent(LoginActivity.this, ProductActivity.class);

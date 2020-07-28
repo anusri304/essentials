@@ -36,4 +36,7 @@ public class ApplicationConstants {
     public static final String ERROR_SAVE_FILE = "Error while saving file to local directory" ;
     public static final String DATA_ERROR ="Data Error" ;
     public static final String ERROR_RETRIEVE_MESSAGE ="Error retrieving data. Please try later" ;
+    public static final String SHARED_PREF_NAME = "mypref";
+    public static final String USER_ID = "userId";
+    public static final String API_TOKEN = "apiToken";
 }
