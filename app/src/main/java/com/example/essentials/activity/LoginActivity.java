@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         setTitle(getString(R.string.login_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (!NetworkUtils.isNetworkConnected(this)) {
-            EssentialsUtils.showAlertDialog(LoginActivity.this);
+            EssentialsUtils.showNetworkAlertDialog(LoginActivity.this);
         } else {
             activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
             initLayout();

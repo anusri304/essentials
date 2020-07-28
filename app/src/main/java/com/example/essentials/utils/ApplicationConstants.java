@@ -34,4 +34,6 @@ public class ApplicationConstants {
     public static final String PRODUCT_DESC = "productDescription" ;
     public static final String PRODUCT_NAME = "productName" ;
     public static final String ERROR_SAVE_FILE = "Error while saving file to local directory" ;
+    public static final String DATA_ERROR ="Data Error" ;
+    public static final String ERROR_RETRIEVE_MESSAGE ="Error retrieving data. Please try later" ;
 }

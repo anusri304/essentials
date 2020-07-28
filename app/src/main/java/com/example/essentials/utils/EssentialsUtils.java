@@ -13,8 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.RegisterActivity;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 public class EssentialsUtils {
@@ -27,7 +25,7 @@ public class EssentialsUtils {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    public static void showAlertDialog(Context context){
+    public static void showNetworkAlertDialog(Context context){
         AlertDialog.Builder builder = new  AlertDialog.Builder(context, R.style.AlertDialogTheme);
         builder.setTitle(ApplicationConstants.NO_INTERNET_TITLE);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -37,6 +35,19 @@ public class EssentialsUtils {
             }
         });
         builder.setMessage(ApplicationConstants.NO_INTERNET_MESSAGE);
+        builder.create().show();
+    }
+
+    public static void showMessageAlertDialog(Context context){
+        AlertDialog.Builder builder = new  AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        builder.setTitle(ApplicationConstants.DATA_ERROR);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ((Activity) context).finish();
+            }
+        });
+        builder.setMessage(ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
         builder.create().show();
     }
 

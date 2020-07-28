@@ -3,47 +3,32 @@ package com.example.essentials.fragment;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.LoginActivity;
 import com.example.essentials.activity.ProductDetailActivity;
-import com.example.essentials.activity.RegisterActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Product;
-import com.example.essentials.domain.User;
 import com.example.essentials.service.ProductService;
-import com.example.essentials.service.RegisterCustomerService;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
-import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +69,15 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 if (!products.isEmpty()) {
                     setData(getProductPresentationBeans(products));
                 }
-
+                else {
+                    // No data is retrieved. Check if there is no internet
+                    if (!NetworkUtils.isNetworkConnected(getActivity().getApplicationContext())) {
+                        EssentialsUtils.showNetworkAlertDialog(getActivity().getApplicationContext());
+                    }
+                    else { // If there is internet then there is an error retrieving data. display error retrieve message
+                        EssentialsUtils.showMessageAlertDialog(getActivity().getApplicationContext());;
+                    }
+                }
         });
     }
 
@@ -117,7 +110,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     productPresentationBeans.add(productPresentationBean);
                 }
                 saveorUpdateProduct(productPresentationBeans);
-                //setData(productPresentationBeans);
             }
 
             @Override
@@ -164,7 +156,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 Log.d("insert",String.valueOf(productPresentationBean.getId()));
                 product.setId(Integer.valueOf(productPresentationBean.getId()));
                 product.setName(productPresentationBean.getName());
-              //  product.setImagePath(imagePath);
                 product.setPrice(productPresentationBean.getPrice());
                 product.setDescription(productPresentationBean.getDescription());
                 product.setSpecial(productPresentationBean.getSpecial());
@@ -196,11 +187,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
-//
-//      //  int columnCount = getResources().getInteger(R.integer.list_column_count);
-//        StaggeredGridLayoutManager sglm =
-//                new StaggeredGridLayoutManager(EssentialsUtils.getSpan(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(sglm);
     }
 
     private Retrofit getRetrofit() {

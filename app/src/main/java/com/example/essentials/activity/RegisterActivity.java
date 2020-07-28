@@ -53,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setTitle(getString(R.string.register_title));
 
         if (!NetworkUtils.isNetworkConnected(this)) {
-            EssentialsUtils.showAlertDialog(RegisterActivity.this);
+            EssentialsUtils.showNetworkAlertDialog(RegisterActivity.this);
 
         } else {
             activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
