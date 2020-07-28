@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -62,6 +63,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     View rootView;
     ProductRecyclerViewAdapter adapter;
     ProductViewModel productViewModel;
+    List<Product> products = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -69,7 +71,21 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+
+       observeChanges();
         return rootView;
+    }
+
+    private void observeChanges() {
+        Log.d("Anandhi...","observeChanges");
+        productViewModel.getAllProducts().observe(this, objProducts -> {
+            products = objProducts;
+
+                if (!products.isEmpty()) {
+                    setData(getProductPresentationBeans(products));
+                }
+
+        });
     }
 
     private void getProductsForCustomer() {
@@ -101,7 +117,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     productPresentationBeans.add(productPresentationBean);
                 }
                 saveorUpdateProduct(productPresentationBeans);
-                setData(productPresentationBeans);
+                //setData(productPresentationBeans);
             }
 
             @Override
@@ -111,6 +127,23 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         });
 
     }
+
+   List<ProductPresentationBean> getProductPresentationBeans(List<Product> products){
+        List<ProductPresentationBean> productPresentationBeans = new ArrayList<ProductPresentationBean>();
+        for(Product product: products) {
+            ProductPresentationBean productPresentationBean = new ProductPresentationBean();
+            productPresentationBean.setId(product.getId());
+            productPresentationBean.setName(product.getName());
+            productPresentationBean.setDescription(product.getDescription());
+            productPresentationBean.setInStock(product.getInStock());
+            productPresentationBean.setDiscPerc(product.getDiscPerc());
+            productPresentationBean.setSpecial(product.getSpecial());
+            productPresentationBean.setPrice(product.getPrice());
+            productPresentationBean.setImage(product.getImagePath());
+            productPresentationBeans.add(productPresentationBean);
+        }
+        return productPresentationBeans;
+   }
 
     private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
         for (ProductPresentationBean productPresentationBean : productPresentationBeans) {

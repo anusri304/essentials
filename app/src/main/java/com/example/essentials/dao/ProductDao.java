@@ -1,5 +1,6 @@
 package com.example.essentials.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,7 +24,7 @@ public interface ProductDao {
     void updateProduct(Product product);
 
     @Query("SELECT * from Product" )
-    List<Product> getAllProducts();
+    LiveData<List<Product>> getAllProducts();
 
     @Query("SELECT * from Product where id=:productId")
     Product getProduct(int productId);

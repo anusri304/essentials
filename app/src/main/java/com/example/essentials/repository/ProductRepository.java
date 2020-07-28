@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.essentials.dao.ProductDao;
 import com.example.essentials.dao.UserDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
@@ -105,7 +107,7 @@ public class ProductRepository {
         }
     }
 
-    private List<Product> getAllProducts() {
+    public LiveData<List<Product>> getAllProducts() {
         return productDao.getAllProducts();
     }
 }

@@ -8,6 +8,7 @@ import androidx.collection.LruCache;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.example.essentials.utils.LocalImageCache;
 
 public class ImageLoaderHelper {
     private static ImageLoaderHelper sInstance;
@@ -36,7 +37,8 @@ public class ImageLoaderHelper {
                 return mImageCache.get(key);
             }
         };
-        mImageLoader = new ImageLoader(queue, imageCache);
+        // use the LocalCache instead of the imageCache
+        mImageLoader = new ImageLoader(queue,  new LocalImageCache(applicationContext) );
     }
 
     public ImageLoader getImageLoader() {
