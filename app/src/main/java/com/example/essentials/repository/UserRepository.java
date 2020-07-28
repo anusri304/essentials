@@ -41,9 +41,9 @@ public class UserRepository {
 //        AppExecutors.getInstance().diskIO().execute(() -> userDao.getUser(customerId));
 //        return userDao.getUser(customerId);
         User user = null;
-        ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            final Future<User> future = emailExecutor.submit(new MyInfoCallable(customerId, userDao));
+            final Future<User> future = executorService.submit(new MyInfoCallable(customerId, userDao));
             user = future.get();
         } catch (Exception e) {
             e.printStackTrace();

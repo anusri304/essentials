@@ -8,26 +8,21 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.bean.LoginInputBean;
 import com.example.essentials.databinding.ActivityLoginBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.LoginCustomerService;
-import com.example.essentials.service.RegisterCustomerService;
 import com.example.essentials.transport.LoginTransportBean;
-import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
-import com.example.essentials.viewmodel.UserViewModelFactory;
+import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -64,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.REGISTER_SUCCESS);
                 }
             }
-            UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
+            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
             userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
         }
 

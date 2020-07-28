@@ -33,4 +33,5 @@ public class ApplicationConstants {
     public static final String OUT_OF_STOCK ="Out of Stock" ;
     public static final String PRODUCT_DESC = "productDescription" ;
     public static final String PRODUCT_NAME = "productName" ;
+    public static final String ERROR_SAVE_FILE = "Error while saving file to local directory" ;
 }

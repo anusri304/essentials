@@ -22,7 +22,7 @@ import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
-import com.example.essentials.viewmodel.UserViewModelFactory;
+import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             activityRegisterBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
             activityRegisterBinding.registerButton.setOnClickListener(this);
             initLayout();
-            UserViewModelFactory factory = new UserViewModelFactory((Application) getApplicationContext());
+            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
             userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
         }
     }

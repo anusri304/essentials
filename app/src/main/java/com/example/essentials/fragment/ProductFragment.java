@@ -1,13 +1,17 @@
 package com.example.essentials.fragment;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +23,7 @@ import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.RegisterActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
+import com.example.essentials.domain.Product;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.ProductService;
 import com.example.essentials.service.RegisterCustomerService;
@@ -27,10 +32,17 @@ import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.viewmodel.ProductViewModel;
+import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -49,10 +61,14 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     List<ProductPresentationBean> productPresentationBeans;
     View rootView;
     ProductRecyclerViewAdapter adapter;
+    ProductViewModel productViewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
         getProductsForCustomer();
+
+        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+        productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         return rootView;
     }
 
@@ -81,10 +97,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     //TODO: get disc perc
                     productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
                     //TODO: get inStock
-                    Log.d("Anandhi",productTransportBean.getInStock());
                     productPresentationBean.setInStock(productTransportBean.getInStock());
                     productPresentationBeans.add(productPresentationBean);
                 }
+                saveorUpdateProduct(productPresentationBeans);
                 setData(productPresentationBeans);
             }
 
@@ -96,6 +112,37 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     }
 
+    private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
+        for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
+            Product product = productViewModel.getProduct(productPresentationBean.getId());
+            if (product != null) {
+                product.setId(Integer.valueOf(productPresentationBean.getId()));
+                Log.d("update",String.valueOf(productPresentationBean.getId()));
+                product.setName(productPresentationBean.getName());
+                //  product.setImagePath(imagePath);
+                product.setPrice(productPresentationBean.getPrice());
+                product.setDescription(productPresentationBean.getDescription());
+                product.setSpecial(productPresentationBean.getSpecial());
+                product.setDiscPerc(productPresentationBean.getDiscPerc());
+                product.setInStock(productPresentationBean.getInStock());
+                productViewModel.updateProduct(product,getActivity().getApplicationContext(),productPresentationBean.getImage());
+            } else {
+                product = new Product();
+                Log.d("insert",String.valueOf(productPresentationBean.getId()));
+                product.setId(Integer.valueOf(productPresentationBean.getId()));
+                product.setName(productPresentationBean.getName());
+              //  product.setImagePath(imagePath);
+                product.setPrice(productPresentationBean.getPrice());
+                product.setDescription(productPresentationBean.getDescription());
+                product.setSpecial(productPresentationBean.getSpecial());
+                product.setDiscPerc(productPresentationBean.getDiscPerc());
+                product.setInStock(productPresentationBean.getInStock());
+                productViewModel.insertProduct(product,getActivity().getApplicationContext(),productPresentationBean.getImage());
+            }
+        }
+    }
+
+
     @Override
     public void onListItemClick(int clickedItemIndex) {
         ProductPresentationBean productPresentationBean = productPresentationBeans.get(clickedItemIndex);
@@ -103,7 +150,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 //
 //       Navigation.findNavController(rootView).navigate(action);
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
-        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN,productPresentationBean);
+        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, productPresentationBean);
         startActivity(intent);
 
 //https://www.youtube.com/watch?v=vx1-V3HH0IU

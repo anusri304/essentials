@@ -20,7 +20,6 @@ public class ProductDetailFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_product_detail, container, false);
 
         ProductPresentationBean productPresentationBean = productDetailFragmentArgs.getProductPresentationBean();
-        Log.d("Anandhi",productPresentationBean.getPrice());
         return rootView;
     }
 }
