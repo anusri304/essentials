@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wishlist {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
     public int userId;
     public int productId;

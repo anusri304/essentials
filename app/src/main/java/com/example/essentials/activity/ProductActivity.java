@@ -23,13 +23,21 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.essentials.R;
+import com.example.essentials.domain.Product;
+import com.example.essentials.domain.Wishlist;
 import com.example.essentials.fragment.ProductFragment;
+import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
@@ -40,6 +48,10 @@ public class ProductActivity extends AppCompatActivity {
     AppBarConfiguration appBarConfiguration;
 
     androidx.appcompat.widget.SearchView searchView;
+
+    WishlistViewModel wishlistViewModel;
+
+    List<Wishlist> wishlist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,8 @@ public class ProductActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         configureNavigationDrawer();
+        ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
     }
 
     @Override
@@ -68,9 +82,7 @@ public class ProductActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_app_bar, menu);
 
-        BadgeDrawable badgeDrawable= bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
-        badgeDrawable.setVisible(true);
-        badgeDrawable.setNumber(1);
+        observeChanges();
         BottomNavigationView navBar = findViewById(R.id.navigationView);
         MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
             @Override
@@ -133,6 +145,24 @@ public class ProductActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void drawBadge(int number) {
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
+        badgeDrawable.setVisible(true);
+        badgeDrawable.setNumber(number);
+    }
+
+
+    private void observeChanges() {
+        Log.d("Anandhi...", "observeChanges");
+        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+            wishlist = objWishlist;
+
+            if (!wishlist.isEmpty()) {
+                drawBadge(wishlist.size());
+            }
+        });
     }
 
     @Override
