@@ -18,6 +18,7 @@
     <string name="category">Category</string>
     <string name="order">Orders</string>
     <string name="cart">Cart</string>
+    <string name="view">View</string>
     <string name="customerdetails">Customer Details</string>
     <string name="wishlist">Wish list</string>
     <string name="drawer_open">Open navigation drawer</string>

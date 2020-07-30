@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -22,10 +23,12 @@ import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -44,6 +47,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ProductDetailActivity extends AppCompatActivity {
     ProductPresentationBean productPresentationBean;
     CollapsingToolbarLayout collapsingToolbarLayout;
+    CoordinatorLayout coordinatorLayout;
     View mUpButton;
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
@@ -60,6 +64,11 @@ public class ProductDetailActivity extends AppCompatActivity {
             collapsingToolbarLayout.setTitle(productPresentationBean.getName());
 
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+
+            coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        }
+        else {
+
         }
         mUpButton = findViewById(R.id.app_bar);
 
@@ -153,6 +162,23 @@ public class ProductDetailActivity extends AppCompatActivity {
             wishlist.setProductId(productId);
             wishlistViewModel.insertWishlist(wishlist);
         }
+        showSnackBar();
+    }
+
+    private void showSnackBar() {
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, ApplicationConstants.WISHLIST_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.view), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
 

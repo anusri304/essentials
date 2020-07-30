@@ -39,4 +39,5 @@ public class ApplicationConstants {
     public static final String SHARED_PREF_NAME = "mypref";
     public static final String USER_ID = "userId";
     public static final String API_TOKEN = "apiToken";
+    public static final String WISHLIST_SUCCESS_MESSAGE= "Item added to wishlist successfully";
 }
