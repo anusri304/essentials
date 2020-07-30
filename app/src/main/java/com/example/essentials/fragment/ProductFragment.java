@@ -72,7 +72,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     EssentialsUtils.showNetworkAlertDialog(getActivity().getApplicationContext());
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity().getApplicationContext());
-                    ;
                 }
             }
         });

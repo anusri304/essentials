@@ -1,5 +1,6 @@
 package com.example.essentials.activity;
 
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,18 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
-import com.example.essentials.domain.User;
-import com.example.essentials.service.ProductService;
+import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.WishlistService;
-import com.example.essentials.transport.LoginTransportBean;
-import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
-import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.viewmodel.ViewModelFactory;
+import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
@@ -46,6 +46,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     View mUpButton;
     private static Retrofit retrofit = null;
+    WishlistViewModel wishlistViewModel;
 
 
     @Override
@@ -63,6 +64,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         mUpButton = findViewById(R.id.app_bar);
 
         initLayout();
+
+        ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
 
     }
 
@@ -130,6 +134,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
                 WishlistTransportBean wishlistTransportBean = response.body();
                 Log.d("Anandhi total", wishlistTransportBean.getTotal());
+                saveWishListToDB(userId, productPresentationBean.getId());
 
             }
 
@@ -140,8 +145,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void addTowishList() {
+    private void saveWishListToDB(int userId, int productId) {
+        Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, productId);
+        if (wishlist == null) {
+            wishlist = new Wishlist();
+            wishlist.setUserId(userId);
+            wishlist.setProductId(productId);
+            wishlistViewModel.insertWishlist(wishlist);
+        }
     }
+
 
     private void setProductDescImageView() {
         ImageView forwardButton = (ImageView) findViewById(R.id.arrowForward);

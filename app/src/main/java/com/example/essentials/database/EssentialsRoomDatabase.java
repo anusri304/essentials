@@ -8,14 +8,17 @@ import androidx.room.RoomDatabase;
 
 import com.example.essentials.dao.ProductDao;
 import com.example.essentials.dao.UserDao;
+import com.example.essentials.dao.WishlistDao;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.User;
+import com.example.essentials.domain.Wishlist;
 
-@Database(entities = {User.class, Product.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Product.class, Wishlist.class}, version = 1, exportSchema = false)
 public abstract class EssentialsRoomDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
     public abstract ProductDao productDao();
+    public abstract WishlistDao wishlistDao();
     private static final Object LOCK = new Object();
 
     private static volatile EssentialsRoomDatabase essentialsRoomDatabase;

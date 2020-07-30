@@ -39,16 +39,21 @@ public class EssentialsUtils {
     }
 
     public static void showMessageAlertDialog(Context context){
-        AlertDialog.Builder builder = new  AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        builder.setTitle(ApplicationConstants.DATA_ERROR);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ((Activity) context).finish();
+        if ( context instanceof Activity ) {
+            Activity activity = (Activity) context;
+            if (!activity.isFinishing()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+                builder.setTitle(ApplicationConstants.DATA_ERROR);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ((Activity) context).finish();
+                    }
+                });
+                builder.setMessage(ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                builder.create().show();
             }
-        });
-        builder.setMessage(ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
-        builder.create().show();
+        }
     }
 
     public static int getSpan(Context context) {

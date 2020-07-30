@@ -212,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
 
                 } else {
+                    EssentialsUtils.hideKeyboard(getApplicationContext());
                     EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
                 }
             }

@@ -27,6 +27,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
        else if(modelClass.getName().contains("ProductViewModel")) {
            return (T) new ProductViewModel(application);
        }
+       else if(modelClass.getName().contains("WishlistViewModel")) {
+           return (T) new WishlistViewModel(application);
+       }
        else return null;
     }
 }
