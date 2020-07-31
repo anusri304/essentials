@@ -56,6 +56,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+
+        observeChanges();
         return rootView;
     }
 
@@ -65,7 +67,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             products = objProducts;
 
             if (!products.isEmpty()) {
-                setData(getProductPresentationBeans(products));
+                setData(EssentialsUtils.getProductPresentationBeans(products));
             } else {
                 // No data is retrieved. Check if there is no internet
                 if (!NetworkUtils.isNetworkConnected(getActivity().getApplicationContext())) {
@@ -116,22 +118,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     }
 
-    List<ProductPresentationBean> getProductPresentationBeans(List<Product> products) {
-        List<ProductPresentationBean> productPresentationBeans = new ArrayList<ProductPresentationBean>();
-        for (Product product : products) {
-            ProductPresentationBean productPresentationBean = new ProductPresentationBean();
-            productPresentationBean.setId(product.getId());
-            productPresentationBean.setName(product.getName());
-            productPresentationBean.setDescription(product.getDescription());
-            productPresentationBean.setInStock(product.getInStock());
-            productPresentationBean.setDiscPerc(product.getDiscPerc());
-            productPresentationBean.setSpecial(product.getSpecial());
-            productPresentationBean.setPrice(product.getPrice());
-            productPresentationBean.setImage(product.getImagePath());
-            productPresentationBeans.add(productPresentationBean);
-        }
-        return productPresentationBeans;
-    }
+
 
     private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
         for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
@@ -160,13 +147,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 productViewModel.insertProduct(product, getActivity().getApplicationContext(), productPresentationBean.getImage());
             }
         }
-        observeChanges();
+
     }
 
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        ProductPresentationBean productPresentationBean = getProductPresentationBeans(products).get(clickedItemIndex);
+        ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
 //        ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 //
 //       Navigation.findNavController(rootView).navigate(action);

@@ -1,7 +1,6 @@
 package com.example.essentials.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ public class ProductDetailFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ProductDetailFragmentArgs productDetailFragmentArgs = ProductDetailFragmentArgs.fromBundle(getArguments());
-        rootView = inflater.inflate(R.layout.fragment_product_detail, container, false);
+        rootView = inflater.inflate(R.layout.activity_product_detail, container, false);
 
         ProductPresentationBean productPresentationBean = productDetailFragmentArgs.getProductPresentationBean();
         return rootView;

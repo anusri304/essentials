@@ -23,13 +23,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.essentials.R;
-import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.fragment.ProductFragment;
-import com.example.essentials.utils.EssentialsUtils;
-import com.example.essentials.utils.NetworkUtils;
-import com.example.essentials.viewmodel.ProductViewModel;
-import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
@@ -82,7 +77,7 @@ public class ProductActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_app_bar, menu);
 
-        observeChanges();
+        observeWishlistChanges();
         BottomNavigationView navBar = findViewById(R.id.navigationView);
         MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
             @Override
@@ -154,7 +149,7 @@ public class ProductActivity extends AppCompatActivity {
     }
 
 
-    private void observeChanges() {
+    private void observeWishlistChanges() {
         Log.d("Anandhi...", "observeChanges");
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlist = objWishlist;

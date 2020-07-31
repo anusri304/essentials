@@ -23,7 +23,6 @@ import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
-import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -56,7 +55,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_product_detail);
+        setContentView(R.layout.activity_product_detail);
 
         if (getIntent() != null) {
             productPresentationBean = getIntent().getParcelableExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
@@ -130,6 +129,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken",apiToken);
         WishlistService wishlistService = getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

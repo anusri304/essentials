@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.MovieViewHolder> {
+public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductViewHolder> {
 
     List<ProductPresentationBean> mValues;
     final Context mContext;
@@ -46,14 +46,14 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         unfilteredProductList = Collections.synchronizedList(new ArrayList<ProductPresentationBean>(products));
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
         TextView productSpecialPriceTxtView;
 
-        public MovieViewHolder(View itemView) {
+        public ProductViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
@@ -71,15 +71,15 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_product_list, viewGroup, false);
 
-        return new MovieViewHolder(view);
+        return new ProductViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MovieViewHolder holder, int position) {
+    public void onBindViewHolder(ProductViewHolder holder, int position) {
         //mValues.get(position).getImage()
         holder.imageView.setImageUrl(
                 mValues.get(position).getImage(),

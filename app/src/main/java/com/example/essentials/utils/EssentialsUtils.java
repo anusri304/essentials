@@ -13,7 +13,12 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.domain.Product;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EssentialsUtils {
 
@@ -81,6 +86,23 @@ public class EssentialsUtils {
         if (imm != null && view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static List<ProductPresentationBean> getProductPresentationBeans(List<Product> products) {
+        List<ProductPresentationBean> productPresentationBeans = new ArrayList<ProductPresentationBean>();
+        for (Product product : products) {
+            ProductPresentationBean productPresentationBean = new ProductPresentationBean();
+            productPresentationBean.setId(product.getId());
+            productPresentationBean.setName(product.getName());
+            productPresentationBean.setDescription(product.getDescription());
+            productPresentationBean.setInStock(product.getInStock());
+            productPresentationBean.setDiscPerc(product.getDiscPerc());
+            productPresentationBean.setSpecial(product.getSpecial());
+            productPresentationBean.setPrice(product.getPrice());
+            productPresentationBean.setImage(product.getImagePath());
+            productPresentationBeans.add(productPresentationBean);
+        }
+        return productPresentationBeans;
     }
 
 }
