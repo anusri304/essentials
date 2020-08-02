@@ -10,11 +10,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/title_wishlist"
+        android:text="@string/your_wish_list"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        android:layout_marginLeft="90dp"
+        android:layout_width="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_wishlist"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_wishlist"/>
 
 </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
