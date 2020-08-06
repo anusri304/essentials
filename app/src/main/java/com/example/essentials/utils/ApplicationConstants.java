@@ -40,4 +40,7 @@ public class ApplicationConstants {
     public static final String USER_ID = "userId";
     public static final String API_TOKEN = "apiToken";
     public static final String WISHLIST_SUCCESS_MESSAGE= "Item added to wishlist successfully";
+    public static final String CART_SUCCESS_MESSAGE= "Item added to cart successfully";
+    public static final String PRODUCT_DETAILS_NOT_AVAILABLE = "Product Details not available";
+    public static final String LAUNCH_WISH_LIST = "launchWishList" ;
 }

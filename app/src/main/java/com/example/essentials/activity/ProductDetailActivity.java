@@ -11,15 +11,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.fragment.WishlistFragment;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
@@ -65,17 +68,21 @@ public class ProductDetailActivity extends AppCompatActivity {
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
 
             coordinatorLayout = findViewById(R.id.coordinatorLayout);
+
+            mUpButton = findViewById(R.id.app_bar);
+
+            initLayout();
+
+            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+            wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+        } else {
+            closeOnError();
         }
-        else {
+    }
 
-        }
-        mUpButton = findViewById(R.id.app_bar);
-
-        initLayout();
-
-        ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
-        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-
+    private void closeOnError() {
+        finish();
+        Toast.makeText(this, ApplicationConstants.PRODUCT_DETAILS_NOT_AVAILABLE, Toast.LENGTH_SHORT).show();
     }
 
     private void initLayout() {
@@ -132,7 +139,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
         Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken",apiToken);
+        Log.d("Anandhi apiToken", apiToken);
         WishlistService wishlistService = getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -174,7 +181,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        Intent intent = new Intent (ProductDetailActivity.this, ProductActivity.class);
+                        intent.putExtra(ApplicationConstants.LAUNCH_WISH_LIST,true);
+                        startActivity(intent);
                     }
                 });
         snackbar.setActionTextColor(Color.RED);

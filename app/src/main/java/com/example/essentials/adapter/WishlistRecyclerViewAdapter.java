@@ -2,11 +2,9 @@ package com.example.essentials.adapter;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,30 +16,37 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.utils.ApplicationConstants;
-import com.example.essentials.utils.EssentialsUtils;
+import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 
 public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRecyclerViewAdapter.WishlistViewHolder> {
 
     List<ProductPresentationBean> mValues;
     final Context mContext;
+    private final WishlistRecyclerViewAdapter.ListItemClickListener mOnClickListener;
 
-    public WishlistRecyclerViewAdapter(Context context, List<ProductPresentationBean> products) {
+    public interface ListItemClickListener {
+
+        void onListItemClick(int clickedItemIndex);
+
+    }
+
+
+    public WishlistRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, WishlistRecyclerViewAdapter.ListItemClickListener listener) {
         mValues = products;
+        mOnClickListener = listener;
         mContext = context;
     }
 
-    public class WishlistViewHolder extends RecyclerView.ViewHolder  {
+    public class WishlistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
         TextView productSpecialPriceTxtView;
+        MaterialButton addToCartButton;
 
         public WishlistViewHolder(View itemView) {
             super(itemView);
@@ -49,6 +54,13 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
             productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
             productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
             productSpecialPriceTxtView = (TextView)  itemView.findViewById(R.id.product_special_price);
+            addToCartButton = (MaterialButton) itemView.findViewById(R.id.add_to_cart_button);
+            addToCartButton.setOnClickListener(this);
+        }
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
         }
     }
 

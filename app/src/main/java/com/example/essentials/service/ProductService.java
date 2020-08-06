@@ -1,14 +1,8 @@
 package com.example.essentials.service;
 
-import com.example.essentials.transport.LoginTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
-import com.example.essentials.transport.ProductTransportBean;
 
-import java.util.List;
-
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

@@ -1,6 +1,5 @@
 package com.example.essentials.service;
 
-import com.example.essentials.transport.LoginTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 
 import okhttp3.RequestBody;

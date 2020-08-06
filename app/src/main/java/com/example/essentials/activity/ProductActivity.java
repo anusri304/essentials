@@ -25,6 +25,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.essentials.R;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.fragment.ProductFragment;
+import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
@@ -68,6 +69,11 @@ public class ProductActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         configureNavigationDrawer();
+        if (getIntent() != null) {
+            if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_WISH_LIST,false)){
+                Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
+            }
+        }
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
     }
@@ -150,7 +156,6 @@ public class ProductActivity extends AppCompatActivity {
 
 
     private void observeWishlistChanges() {
-        Log.d("Anandhi...", "observeChanges");
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlist = objWishlist;
 

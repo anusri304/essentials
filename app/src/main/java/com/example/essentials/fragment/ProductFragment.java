@@ -62,7 +62,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void observeChanges() {
-        Log.d("Anandhi...", "observeChanges");
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
 

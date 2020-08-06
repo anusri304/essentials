@@ -1,12 +1,16 @@
 package com.example.essentials.fragment;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,19 +18,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
-import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.service.CartService;
+import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-public class WishlistFragment extends Fragment {
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class WishlistFragment extends Fragment implements WishlistRecyclerViewAdapter.ListItemClickListener {
     String TAG = "WishlistFragment";
     WishlistViewModel wishlistViewModel;
     ProductViewModel productViewModel;
@@ -35,52 +57,134 @@ public class WishlistFragment extends Fragment {
     List<Product> products = new ArrayList<>();
     WishlistRecyclerViewAdapter wishlistRecyclerViewAdapter;
     View rootView;
+    private static Retrofit retrofit = null;
+    CoordinatorLayout coordinatorLayout;
 
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
 
-       // getWishlistProducts();
-        getAllProducts();
 
-        rootView =  inflater.inflate(R.layout.fragment_wishlist, container, false);
+        getAllProducts();
+        rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
+        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
         return rootView;
     }
 
     private void getWishlistProducts() {
-        Log.d("Anandhi...", "observeChanges");
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlists = objWishlist;
-
+            Log.d("wishlist", String.valueOf(wishlists.size()));
             if (!wishlists.isEmpty()) {
                 setData(wishlists);
             }
         });
     }
 
-    private void   getAllProducts(){
+    private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
+            Log.d("products", String.valueOf(products.size()));
+            if (!products.isEmpty()) {
+                getWishlistProducts();
+            }
 
-            setProductData(EssentialsUtils.getProductPresentationBeans(products));
         });
     }
 
     private void setData(List<Wishlist> wishlists) {
-        for(Wishlist wishlist:wishlists){
-            int productId = wishlist.getProductId();
-        }
+        List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean->
+                wishlists.stream().map(wishList->wishList.getProductId()).collect(Collectors.toSet())
+                        .contains(productPresentationBean.getId())).collect(Collectors.toList());
+        Log.d("filteredData", String.valueOf(filteredProductPresentationBeans.size()));
+        setProductData(filteredProductPresentationBeans);
+
     }
 
     private void setProductData(List<ProductPresentationBean> productPresentationBeans) {
-        Log.d("aNANDHI",String.valueOf(productPresentationBeans.size()));
-        wishlistRecyclerViewAdapter = new WishlistRecyclerViewAdapter(getActivity(), productPresentationBeans);
+        wishlistRecyclerViewAdapter = new WishlistRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_wishlist);
         recyclerView.setAdapter(wishlistRecyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
+        callCartEndPoint(productPresentationBean);
+    }
+
+    private void callCartEndPoint(ProductPresentationBean productPresentationBean) {
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken", apiToken);
+        CartService cartService = getRetrofit().create(CartService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart("customerId", String.valueOf(userId))
+                .build();
+        Call<CartTransportBean> call = cartService.addToCart(apiToken, requestBody);
+
+        call.enqueue(new Callback<CartTransportBean>() {
+            @Override
+            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
+                CartTransportBean cartTransportBean = response.body();
+                Log.d("Anandhi cart", cartTransportBean.getMessage());
+                showSnackBar();
+                // saveWishListToDB(userId, productPresentationBean.getId());
+
+            }
+
+            @Override
+            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private Retrofit getRetrofit() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .build();
+// The App will not crash for malformed JSON.
+        Gson gson = new GsonBuilder().setLenient().create();
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(ApplicationConstants.BASE_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofit;
+    }
+
+    private void showSnackBar() {
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.view), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Intent intent = new Intent (ProductDetailActivity.this, WishlistFragment.class);
+                        //startActivity(intent);
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
     }
 }

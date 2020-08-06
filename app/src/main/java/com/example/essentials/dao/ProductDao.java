@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.essentials.domain.Product;
-import com.example.essentials.domain.User;
 
 import java.util.List;
 

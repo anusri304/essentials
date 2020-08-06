@@ -38,7 +38,6 @@ public class ProductRepository {
     public void insertProduct(Product product, Context context, String imageURL) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             String imagePath = saveImagetoLocal(context, imageURL);
-            Log.d("Anandhi path", String.valueOf(product.getId()));
             product.setImagePath(imagePath);
             productDao.insertProduct(product);
         });

@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.utils.ApplicationConstants;

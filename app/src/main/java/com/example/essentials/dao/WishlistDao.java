@@ -7,8 +7,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.essentials.domain.Product;
-import com.example.essentials.domain.User;
 import com.example.essentials.domain.Wishlist;
 
 import java.util.List;
