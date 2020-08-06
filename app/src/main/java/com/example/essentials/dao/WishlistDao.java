@@ -28,7 +28,4 @@ public interface WishlistDao {
     @Query("SELECT * from Wishlist" )
     LiveData<List<Wishlist>> getAllWishlist();
 
-
-//    @Query("SELECT * from Movie where id=:movieId")
-//    LiveData<Movie> getMovie(int movieId);
 }

@@ -19,15 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.CartService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,27 +55,54 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class WishlistFragment extends Fragment implements WishlistRecyclerViewAdapter.ListItemClickListener {
     String TAG = "WishlistFragment";
     WishlistViewModel wishlistViewModel;
+    CartViewModel cartViewModel;
     ProductViewModel productViewModel;
     Wishlist wishlist;
     List<Wishlist> wishlists = new ArrayList<>();
+    List<Cart> cartItems = new ArrayList<>();
     List<Product> products = new ArrayList<>();
     WishlistRecyclerViewAdapter wishlistRecyclerViewAdapter;
     View rootView;
     private static Retrofit retrofit = null;
     CoordinatorLayout coordinatorLayout;
+    View view;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = getActivity().findViewById(android.R.id.content);
 
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
-
-
-        getAllProducts();
         rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+
+        getAllProducts();
+        cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+        observeCartChanges();
         return rootView;
     }
+
+    private void observeCartChanges() {
+        cartViewModel.getAllCartItems().observe(this, objCart -> {
+            cartItems = objCart;
+
+            if (!cartItems.isEmpty()) {
+                int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
+                if(totalQuantity>0) {
+                    drawBadge(totalQuantity);
+                }
+            }
+        });
+    }
+
+
+    private void drawBadge(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
+        badgeDrawable.setVisible(true);
+        badgeDrawable.setNumber(number);
+    }
+
 
     private void getWishlistProducts() {
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
@@ -95,8 +126,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void setData(List<Wishlist> wishlists) {
-        List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean->
-                wishlists.stream().map(wishList->wishList.getProductId()).collect(Collectors.toSet())
+        List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
+                wishlists.stream().map(wishList -> wishList.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
         Log.d("filteredData", String.valueOf(filteredProductPresentationBeans.size()));
         setProductData(filteredProductPresentationBeans);
@@ -139,9 +170,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
                 Log.d("Anandhi cart", cartTransportBean.getMessage());
-                showSnackBar();
-                // saveWishListToDB(userId, productPresentationBean.getId());
-
+                saveCartItemsToDB(userId, productPresentationBean.getId());
             }
 
             @Override
@@ -149,6 +178,22 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             }
         });
+    }
+
+    private void saveCartItemsToDB(int userId, int productId) {
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUserId(userId);
+            cart.setProductId(productId);
+            cart.setQuantity(cart.getQuantity()+1);
+            cartViewModel.insertCartItems(cart);
+        } else {
+            cart.setQuantity(cart.getQuantity() + 1);
+            cartViewModel.updateCartItems(cart);
+        }
+        //  EssentialsUtils.showMessage(coordinatorLayout,ApplicationConstants.CART_SUCCESS_MESSAGE);
+        showSnackBar();
     }
 
     private Retrofit getRetrofit() {
@@ -171,9 +216,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         return retrofit;
     }
 
+
     private void showSnackBar() {
         Snackbar snackbar = Snackbar
-                .make(coordinatorLayout, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
+                .make(view, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
