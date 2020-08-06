@@ -144,8 +144,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-        ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
+    public void onListItemClick( ProductPresentationBean productPresentationBean) {
+       // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
         callCartEndPoint(productPresentationBean);
     }
 

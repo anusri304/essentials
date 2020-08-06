@@ -20,64 +20,56 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
-
-public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRecyclerViewAdapter.WishlistViewHolder> {
-
+public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartViewHolder>{
     List<ProductPresentationBean> mValues;
     final Context mContext;
-    private final WishlistRecyclerViewAdapter.ListItemClickListener mOnClickListener;
-   ProductPresentationBean productPresentationBean;
-   int clickedPosition;
+    private final CartRecyclerViewAdapter.ListItemClickListener mOnClickListener;
 
     public interface ListItemClickListener {
 
-        void onListItemClick(ProductPresentationBean productPresentationBean);
+        void onListItemClick(int clickedItemIndex);
 
     }
 
-
-    public WishlistRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, WishlistRecyclerViewAdapter.ListItemClickListener listener) {
+    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartRecyclerViewAdapter.ListItemClickListener listener) {
         mValues = products;
         mOnClickListener = listener;
         mContext = context;
     }
 
-    public class WishlistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
-        TextView productSpecialPriceTxtView;
-        MaterialButton addToCartButton;
+        MaterialButton addToWishlistButton;
 
-        public WishlistViewHolder(View itemView) {
+        public CartViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
             productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
-            productSpecialPriceTxtView = (TextView)  itemView.findViewById(R.id.product_special_price);
-            addToCartButton = (MaterialButton) itemView.findViewById(R.id.add_to_cart_button);
-            addToCartButton.setOnClickListener(this);
+            addToWishlistButton = (MaterialButton) itemView.findViewById(R.id.add_to_wishlist_button);
+            addToWishlistButton.setOnClickListener(this);
         }
         @Override
         public void onClick(View v) {
-          //  int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick( mValues.get(clickedPosition));
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
         }
     }
 
     @NonNull
     @Override
-    public WishlistViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public CartRecyclerViewAdapter.CartViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_wishlist_list, viewGroup, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_cart_list, viewGroup, false);
 
-        return new WishlistViewHolder(view);
+        return new CartRecyclerViewAdapter.CartViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(WishlistViewHolder holder, int position) {
-        clickedPosition = position;
+    public void onBindViewHolder(CartRecyclerViewAdapter.CartViewHolder holder, int position) {
         //mValues.get(position).getImage()
         holder.imageView.setImageUrl(
                 mValues.get(position).getImage(),
@@ -89,15 +81,6 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
-        //todo Special
-        if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
-            holder.productSpecialPriceTxtView.setVisibility(View.GONE);
-        }
-        else {
-            holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.productSpecialPriceTxtView.setText( mValues.get(position).getSpecial());
-            holder.productPriceTxtView.setTextColor(mContext.getResources().getColor(R.color.red));
-        }
         holder.productNameTxtView.setText( mValues.get(position).getName());
         holder.productPriceTxtView.setText( mValues.get(position).getPrice());
 

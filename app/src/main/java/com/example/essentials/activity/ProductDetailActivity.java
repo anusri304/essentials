@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Wishlist;
-import com.example.essentials.fragment.WishlistFragment;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;

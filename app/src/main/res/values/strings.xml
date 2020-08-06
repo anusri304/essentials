@@ -31,4 +31,5 @@
     <string name="add_to_wish_list">Add To Wish list</string>
     <string name="add_to_cart">Add To Cart</string>
     <string name="your_wish_list">Your Wishlist items</string>
+    <string name="your_cart_items">Your Cart items</string>
 </resources>
