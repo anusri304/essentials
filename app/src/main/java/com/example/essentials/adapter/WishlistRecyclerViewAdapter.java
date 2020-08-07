@@ -61,7 +61,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
         }
         @Override
         public void onClick(View v) {
-          //  int clickedPosition = getAdapterPosition();
+           int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick( mValues.get(clickedPosition));
         }
     }
@@ -77,7 +77,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
     @Override
     public void onBindViewHolder(WishlistViewHolder holder, int position) {
-        clickedPosition = position;
+        //clickedPosition = position;
         //mValues.get(position).getImage()
         holder.imageView.setImageUrl(
                 mValues.get(position).getImage(),

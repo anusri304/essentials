@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
-import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
-import com.example.essentials.domain.Wishlist;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CartFragment extends Fragment implements CartRecyclerViewAdapter.ListItemClickListener {
+public class CartFragment extends Fragment implements CartRecyclerViewAdapter.ItemSelectedListener {
     View rootView;
     CartViewModel cartViewModel;
     ProductViewModel productViewModel;
@@ -43,6 +41,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         getAllProducts();
         return rootView;
     }
+
 
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
@@ -81,7 +80,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-
+    public void onItemSelected(int clickedItemIndex) {
+         Log.d("Anandhi....",String.valueOf(clickedItemIndex));
     }
 }
