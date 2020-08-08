@@ -1,6 +1,7 @@
 package com.example.essentials.fragment;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
+import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
@@ -80,7 +82,17 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.It
     }
 
     @Override
-    public void onItemSelected(int clickedItemIndex) {
-         Log.d("Anandhi....",String.valueOf(clickedItemIndex));
+    public void onItemSelected(int quantity, String test) {
+        // Log.d("Anandhi....",String.valueOf(clickedItemIndex));
+       //  updateCartQuantity(quantity,30);
+    }
+
+    private void updateCartQuantity(int quantity,int productId) {
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+        cart.setQuantity(quantity);
+        cartViewModel.updateCartItems(cart);
     }
 }

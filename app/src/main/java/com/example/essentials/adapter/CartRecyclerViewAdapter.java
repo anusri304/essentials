@@ -34,7 +34,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
     public interface ItemSelectedListener {
 
-        void onItemSelected(int clickedItemIndex);
+        void onItemSelected(int quantity,String test);
 
     }
 
@@ -67,7 +67,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            mOnSelectedListener.onItemSelected(Integer.valueOf(spinner.getSelectedItem().toString()));
+            mOnSelectedListener.onItemSelected(Integer.valueOf(spinner.getSelectedItem().toString()),"Test");
         }
 
         @Override
