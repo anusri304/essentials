@@ -1,6 +1,7 @@
 package com.example.essentials.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,36 +20,50 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.viewmodel.CartViewModel;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartViewHolder>{
+public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartViewHolder> {
     List<ProductPresentationBean> mValues;
     final Context mContext;
-    private final CartRecyclerViewAdapter.ItemSelectedListener mOnSelectedListener;
-
+    CartViewModel cartViewModel;
     List<Integer> quantityList = new ArrayList<Integer>();
+    ArrayAdapter<Integer> dataAdapter;
+    int currentItem = 0;
+    CartRecyclerViewAdapter.CartViewHolder holder;
+    int check = 0;
+    static int selectedPosition = 0;
+    BottomNavigationView bottomNavigationView;
 
 
-    public interface ItemSelectedListener {
+//    public interface ItemSelectedListener {
+//
+//        void onItemSelected(int quantity,String test);
+//
+//    }
 
-        void onItemSelected(int quantity,String test);
-
-    }
-
-    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartRecyclerViewAdapter.ItemSelectedListener listener) {
+    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartViewModel cartViewModel, BottomNavigationView bottomNavigationView) {
         mValues = products;
-        mOnSelectedListener = listener;
         mContext = context;
-        for (int i=1; i<=1000; i++){
+        this.bottomNavigationView = bottomNavigationView;
+        this.cartViewModel = cartViewModel;
+        for (int i = 1; i <= 1000; i++) {
             quantityList.add(i);
         }
+
+        dataAdapter = new ArrayAdapter<Integer>(mContext,
+                android.R.layout.simple_spinner_item, quantityList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
-    public class CartViewHolder extends RecyclerView.ViewHolder implements AdapterView.OnItemSelectedListener {
+    public class CartViewHolder extends RecyclerView.ViewHolder {
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
@@ -58,32 +74,35 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         public CartViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
-            productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
-            productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
+            productNameTxtView = (TextView) itemView.findViewById(R.id.product_name);
+            productPriceTxtView = (TextView) itemView.findViewById(R.id.product_price);
             addToWishlistButton = (MaterialButton) itemView.findViewById(R.id.add_to_wishlist_button);
             spinner = (Spinner) itemView.findViewById(R.id.qty_spinner);
-            spinner.setOnItemSelectedListener( this);
+            // spinner.setOnItemSelectedListener( this);
         }
 
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            mOnSelectedListener.onItemSelected(Integer.valueOf(spinner.getSelectedItem().toString()),"Test");
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
+//        @Override
+//        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//          //  mOnSelectedListener.onItemSelected(Integer.valueOf(spinner.getSelectedItem().toString()),"Test");
+//        }
+//
+//        @Override
+//        public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//        }
 
 
     }
+
     @NonNull
     @Override
     public CartRecyclerViewAdapter.CartViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_cart_list, viewGroup, false);
-
-        return new CartRecyclerViewAdapter.CartViewHolder(view);
+        CartViewHolder holder = new CartRecyclerViewAdapter.CartViewHolder(view);
+        holder.spinner.setAdapter(dataAdapter);
+        holder.spinner.setSelection(selectedPosition, true);
+        return holder;
     }
 
     @Override
@@ -99,33 +118,47 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
-        holder.productNameTxtView.setText( mValues.get(position).getName());
-        holder.productPriceTxtView.setText( mValues.get(position).getPrice());
-
-        ArrayAdapter<Integer> dataAdapter = new ArrayAdapter<Integer>(mContext,
-                android.R.layout.simple_spinner_item, quantityList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.spinner.setAdapter(dataAdapter);
+        holder.productNameTxtView.setText(mValues.get(position).getName());
+        holder.productPriceTxtView.setText(mValues.get(position).getPrice());
 
 
-//        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                // your code here
-//                Log.d("Spinner ",holder.spinner.getSelectedItem().toString());
-//            }
+        // holder.spinner.setSelection(position, false);
+        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code here
+                if (++check >= 1) {
+                    Log.d("Spinner ", parentView.getItemAtPosition(position).toString());
+                    selectedPosition = position;
+                    updateCartQuantity(Integer.valueOf(parentView.getItemAtPosition(position).toString()), 30);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+    }
+
+    private void updateCartQuantity(int quantity, int productId) {
+        SharedPreferences pref = mContext.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+        cart.setQuantity(quantity);
+        cartViewModel.updateCartItems(cart);
+     //   cartViewModel.getQuantity().setValue(quantity);
 //
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parentView) {
-//                // your code here
-//            }
-//
-//        });
-
     }
 
     @Override
     public int getItemCount() {
         return mValues.size();
     }
+
+
+
 }

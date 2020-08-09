@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Wishlist;
@@ -19,11 +20,19 @@ public class CartViewModel extends AndroidViewModel {
     int cartId;
     Cart cart;
     LiveData<List<Cart>> cartItems;
+    private MutableLiveData<Integer> quantity;
 
     public CartViewModel(@NonNull Application application) {
         super(application);
         cartRepository = new CartRepository(application);
         cartItems = cartRepository.getAllCartItems();
+    }
+
+    public MutableLiveData<Integer> getQuantity() {
+        if (quantity == null) {
+            quantity = new MutableLiveData<Integer>();
+        }
+        return quantity;
     }
 
     public CartViewModel(@NonNull Application application, int userId, int productId) {
