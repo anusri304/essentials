@@ -2,6 +2,7 @@ package com.example.essentials.fragment;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Product;
 import com.example.essentials.service.ProductService;
+import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
@@ -52,6 +54,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
+        getAllProducts();
         getProductsForCustomer();
 
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
@@ -78,7 +81,16 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         });
     }
 
-    private void getProductsForCustomer() {
+    private void getProductsForCustomer(){
+        ProductService productService = getRetrofit().create(ProductService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        Call<CustomerCartTransportBean> call = productService.getProductsForCustomer(String.valueOf(userId),apiToken);
+        //Save Products to cart
+    }
+
+    private void getAllProducts() {
         ProductService productService = getRetrofit().create(ProductService.class);
         Call<ProductListTransportBean> call = productService.getAllProducts();
 
