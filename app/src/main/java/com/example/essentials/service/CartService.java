@@ -11,4 +11,7 @@ import retrofit2.http.Query;
 public interface CartService {
     @POST("index.php?route=api/cart/add")
     Call<CartTransportBean> addToCart(@Query("api_token") String apiToken, @Body RequestBody cartBean);
+
+    @POST("index.php?route=api/cart/removeFromCart")
+    Call<CartTransportBean> removeFromCart(@Query("api_token") String apiToken, @Body RequestBody cartBean);
 }

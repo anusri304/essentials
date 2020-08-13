@@ -13,10 +13,12 @@ import android.widget.TextView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
@@ -223,8 +225,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Intent intent = new Intent (ProductDetailActivity.this, WishlistFragment.class);
-                        //startActivity(intent);
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
                     }
                 });
         snackbar.setActionTextColor(Color.RED);

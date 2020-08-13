@@ -12,4 +12,8 @@ public interface WishlistService {
 
     @POST("index.php?route=api/wishlist/add")
     Call<WishlistTransportBean> addToWishlist(@Query("api_token") String apiToken,@Body RequestBody wishListBean);
+
+
+    @POST("index.php?route=api/wishlist/remove")
+    Call<WishlistTransportBean> removeFromWishlist(@Query("api_token") String apiToken,@Body RequestBody wishListBean);
 }

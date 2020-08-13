@@ -40,20 +40,21 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     CartRecyclerViewAdapter.CartViewHolder holder;
     int check = 0;
     static int selectedPosition = 0;
-    BottomNavigationView bottomNavigationView;
+    private final CartRecyclerViewAdapter.ListItemClickListener mOnClickListener;
 
 
-//    public interface ItemSelectedListener {
-//
-//        void onItemSelected(int quantity,String test);
-//
-//    }
+    public interface ListItemClickListener {
 
-    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartViewModel cartViewModel, BottomNavigationView bottomNavigationView) {
+        void onListItemClick(ProductPresentationBean productPresentationBean);
+
+    }
+
+    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartViewModel cartViewModel,CartRecyclerViewAdapter.ListItemClickListener listener) {
         mValues = products;
+        mOnClickListener = listener;
         mContext = context;
-        this.bottomNavigationView = bottomNavigationView;
         this.cartViewModel = cartViewModel;
+        MaterialButton moveToWishListButton;
         for (int i = 1; i <= 1000; i++) {
             quantityList.add(i);
         }
@@ -63,12 +64,12 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 
-    public class CartViewHolder extends RecyclerView.ViewHolder {
+    public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
-        MaterialButton addToWishlistButton;
+        MaterialButton moveToWishlistButton;
         Spinner spinner;
 
         public CartViewHolder(View itemView) {
@@ -76,20 +77,16 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView) itemView.findViewById(R.id.product_name);
             productPriceTxtView = (TextView) itemView.findViewById(R.id.product_price);
-            addToWishlistButton = (MaterialButton) itemView.findViewById(R.id.add_to_wishlist_button);
+            moveToWishlistButton = (MaterialButton) itemView.findViewById(R.id.move_to_wishlist_button);
             spinner = (Spinner) itemView.findViewById(R.id.qty_spinner);
+            moveToWishlistButton.setOnClickListener(this);
             // spinner.setOnItemSelectedListener( this);
         }
-
-//        @Override
-//        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//          //  mOnSelectedListener.onItemSelected(Integer.valueOf(spinner.getSelectedItem().toString()),"Test");
-//        }
-//
-//        @Override
-//        public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//        }
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick( mValues.get(clickedPosition));
+        }
 
 
     }

@@ -73,6 +73,9 @@ public class ProductActivity extends AppCompatActivity {
             if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_WISH_LIST,false)){
                 Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
             }
+            else if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_CART,false)){
+                Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
+            }
         }
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);

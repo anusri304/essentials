@@ -16,15 +16,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
+import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -52,6 +55,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     View mUpButton;
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
+    CartViewModel cartViewModel;
 
 
     @Override
@@ -74,6 +78,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
             wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+            cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         } else {
             closeOnError();
         }
@@ -97,6 +102,65 @@ public class ProductDetailActivity extends AppCompatActivity {
         setProductView();
         setProductDescImageView();
         setWishListButton();
+        setCartButton();
+    }
+
+    private void setCartButton() {
+        MaterialButton addToCartButton = (MaterialButton) findViewById(R.id.add_to_cart_button);
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Anandhi", "clicked");
+                callCartEndPoint();
+            }
+        });
+    }
+
+    private void callCartEndPoint() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken", apiToken);
+        CartService cartService = getRetrofit().create(CartService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart("customerId", String.valueOf(userId))
+                .build();
+        Call<CartTransportBean> call = cartService.addToCart(apiToken, requestBody);
+
+        call.enqueue(new Callback<CartTransportBean>() {
+            @Override
+            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
+                CartTransportBean cartTransportBean = response.body();
+                Log.d("Anandhi cart", cartTransportBean.getMessage());
+                saveCartItemsToDB(userId, productPresentationBean.getId());
+            }
+
+            @Override
+            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void saveCartItemsToDB(int userId, int productId) {
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUserId(userId);
+            cart.setProductId(productId);
+            cart.setQuantity(cart.getQuantity() + 1);
+            cartViewModel.insertCartItems(cart);
+        } else {
+            cart.setQuantity(cart.getQuantity() + 1);
+            cartViewModel.updateCartItems(cart);
+        }
+        //  EssentialsUtils.showMessage(coordinatorLayout,ApplicationConstants.CART_SUCCESS_MESSAGE);
+        showCartSnackBar();
     }
 
     private void setWishListButton() {
@@ -171,17 +235,17 @@ public class ProductDetailActivity extends AppCompatActivity {
             wishlist.setProductId(productId);
             wishlistViewModel.insertWishlist(wishlist);
         }
-        showSnackBar();
+        showWishlistSnackBar();
     }
 
-    private void showSnackBar() {
+    private void showWishlistSnackBar() {
         Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, ApplicationConstants.WISHLIST_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent (ProductDetailActivity.this, ProductActivity.class);
-                        intent.putExtra(ApplicationConstants.LAUNCH_WISH_LIST,true);
+                        Intent intent = new Intent(ProductDetailActivity.this, ProductActivity.class);
+                        intent.putExtra(ApplicationConstants.LAUNCH_WISH_LIST, true);
                         startActivity(intent);
                     }
                 });
@@ -192,6 +256,24 @@ public class ProductDetailActivity extends AppCompatActivity {
         snackbar.show();
     }
 
+
+    private void showCartSnackBar() {
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.view), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ProductDetailActivity.this, ProductActivity.class);
+                        intent.putExtra(ApplicationConstants.LAUNCH_CART, true);
+                        startActivity(intent);
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
 
     private void setProductDescImageView() {
         ImageView forwardButton = (ImageView) findViewById(R.id.arrowForward);

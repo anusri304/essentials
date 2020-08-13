@@ -34,6 +34,11 @@ public class CartRepository {
 
     }
 
+    public void deleteCartItems(Cart cart) {
+        AppExecutors.getInstance().diskIO().execute(() -> cartDao.delete(cart));
+
+    }
+
     public Cart getCartItemsForUserAndProduct(int userId,int productId) {
         Cart cart = null;
         ExecutorService executorService = Executors.newSingleThreadExecutor();
