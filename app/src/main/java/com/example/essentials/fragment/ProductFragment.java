@@ -18,16 +18,21 @@ import com.example.essentials.R;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.service.ProductService;
+import com.example.essentials.transport.CustomerCartListTransportBean;
 import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
+import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -50,19 +55,42 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     View rootView;
     ProductRecyclerViewAdapter adapter;
     ProductViewModel productViewModel;
+    CartViewModel cartViewModel;
     List<Product> products = new ArrayList<>();
+    List<Cart> cartItems = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
         getAllProducts();
-        getProductsForCustomer();
-
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
-
+        cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         observeChanges();
+        observeCartChanges();
         return rootView;
     }
+
+    private void observeCartChanges() {
+        cartViewModel.getAllCartItems().observe(this, objCart -> {
+            cartItems = objCart;
+            int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
+            drawBadge(totalQuantity);
+
+        });
+    }
+
+    private void drawBadge(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
+        if(number>0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        }
+        else {
+            badgeDrawable.setVisible(false);
+        }
+    }
+
 
     private void observeChanges() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
@@ -81,13 +109,32 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         });
     }
 
-    private void getProductsForCustomer(){
+    private void getProductsForCustomer() {
         ProductService productService = getRetrofit().create(ProductService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-        Call<CustomerCartTransportBean> call = productService.getProductsForCustomer(String.valueOf(userId),apiToken);
+        Call<CustomerCartListTransportBean> call = productService.getProductsForCustomer(String.valueOf(userId), apiToken);
         //Save Products to cart
+        call.enqueue(new Callback<CustomerCartListTransportBean>() {
+            @Override
+            public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
+                CustomerCartListTransportBean customerCartListTransportBeans = response.body();
+                Log.i(TAG, "onResponse: " + customerCartListTransportBeans.getProducts().size());
+                for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
+                    Cart cart = new Cart();
+                    cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                    cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                    cart.setUserId(userId);
+                    cartViewModel.insertCartItems(cart);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
+                Log.e(this.getClass().getName(), throwable.toString());
+            }
+        });
     }
 
     private void getAllProducts() {
@@ -130,7 +177,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
 
-
     private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
         for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
             Product product = productViewModel.getProduct(productPresentationBean.getId());
@@ -158,7 +204,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 productViewModel.insertProduct(product, getActivity().getApplicationContext(), productPresentationBean.getImage());
             }
         }
-
+        getProductsForCustomer();
     }
 
 

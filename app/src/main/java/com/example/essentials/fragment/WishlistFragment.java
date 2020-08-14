@@ -87,13 +87,9 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     private void observeCartChanges() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
+            int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
+            drawBadge(totalQuantity);
 
-            if (!cartItems.isEmpty()) {
-                int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-                if(totalQuantity>0) {
-                    drawBadge(totalQuantity);
-                }
-            }
         });
     }
 
@@ -146,8 +142,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     @Override
-    public void onListItemClick( ProductPresentationBean productPresentationBean) {
-       // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
+    public void onListItemClick(ProductPresentationBean productPresentationBean) {
+        // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
         callCartEndPoint(productPresentationBean);
     }
 
@@ -188,7 +184,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             cart = new Cart();
             cart.setUserId(userId);
             cart.setProductId(productId);
-            cart.setQuantity(cart.getQuantity()+1);
+            cart.setQuantity(cart.getQuantity() + 1);
             cartViewModel.insertCartItems(cart);
         } else {
             cart.setQuantity(cart.getQuantity() + 1);
