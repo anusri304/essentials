@@ -20,9 +20,12 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
+import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.ProductService;
+import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CustomerCartListTransportBean;
 import com.example.essentials.transport.CustomerCartTransportBean;
+import com.example.essentials.transport.CustomerWishListTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
@@ -31,6 +34,7 @@ import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -56,8 +60,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     ProductRecyclerViewAdapter adapter;
     ProductViewModel productViewModel;
     CartViewModel cartViewModel;
+    WishlistViewModel wishlistViewModel;
     List<Product> products = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
+    List<Wishlist> wishListItems = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -65,6 +71,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         observeChanges();
         observeCartChanges();
         return rootView;
@@ -128,6 +135,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     cart.setUserId(userId);
                     cartViewModel.insertCartItems(cart);
                 }
+                getWishlistProductsForCustomer();
             }
 
             @Override
@@ -136,6 +144,34 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             }
         });
     }
+
+    private void getWishlistProductsForCustomer() {
+        WishlistService wishlistService = getRetrofit().create(WishlistService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        Call<CustomerWishListTransportBean> call = wishlistService.getWishListProductsForCustomer(String.valueOf(userId), apiToken);
+        //Save Products to cart
+        call.enqueue(new Callback<CustomerWishListTransportBean>() {
+            @Override
+            public void onResponse(Call<CustomerWishListTransportBean> call, Response<CustomerWishListTransportBean> response) {
+                CustomerWishListTransportBean customerWishListTransportBeans = response.body();
+                Log.i(TAG, "onResponse: " + customerWishListTransportBeans.getProducts().size());
+                for (CustomerCartTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
+                    Wishlist wishlist = new Wishlist();
+                    wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                    wishlist.setUserId(userId);
+                    wishlistViewModel.insertWishlist(wishlist);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
+                Log.e(this.getClass().getName(), throwable.toString());
+            }
+        });
+    }
+
 
     private void getAllProducts() {
         ProductService productService = getRetrofit().create(ProductService.class);
