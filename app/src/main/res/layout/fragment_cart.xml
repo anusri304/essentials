@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:paddingLeft="76dp"
-            android:text="R1234"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -48,5 +47,15 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="10dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/checkout_button"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="75dp"
+        android:layout_marginLeft="150dp"
+        android:text="@string/checkout"
+        android:textAllCaps="false"/>
 </LinearLayout>
 
