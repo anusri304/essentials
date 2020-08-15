@@ -1,5 +1,7 @@
 package com.example.essentials.utils;
 
+import java.text.DecimalFormat;
+
 public class ApplicationConstants {
     //  public static final String BASE_URL = "http://10.0.2.2/Opencart/";
     public static final String BASE_URL = "http://10.0.75.1/Opencart/";
@@ -45,4 +47,6 @@ public class ApplicationConstants {
     public static final String PRODUCT_DETAILS_NOT_AVAILABLE = "Product Details not available";
     public static final String LAUNCH_WISH_LIST = "launchWishList" ;
     public static final String LAUNCH_CART = "launchCart" ;
+    public static final String CURRENCY_SYMBOL = "$" ;
+    public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 }

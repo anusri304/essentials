@@ -1,7 +1,6 @@
 package com.example.essentials.service;
 
 import com.example.essentials.transport.CustomerCartListTransportBean;
-import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 
 import retrofit2.Call;

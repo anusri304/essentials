@@ -1,7 +1,6 @@
 package com.example.essentials.fragment;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,11 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.ProductActivity;
-import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
-import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
@@ -66,12 +62,14 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     WishlistViewModel wishlistViewModel;
     CartRecyclerViewAdapter cartRecyclerViewAdapter;
     View view;
+    TextView totalTxtView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_cart, container, false);
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         view = getActivity().findViewById(android.R.id.content);
+        totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
 
         //tODO: Remove the below code if not used
 //
@@ -109,7 +107,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             cartItems = objCart;
             setData(cartItems);
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-                drawBadge(totalQuantity);
+            drawBadge(totalQuantity);
         });
 
     }
@@ -117,11 +115,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private void drawBadge(int number) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
-        if(number>0) {
+        if (number > 0) {
             badgeDrawable.setVisible(true);
             badgeDrawable.setNumber(number);
-        }
-        else {
+        } else {
             badgeDrawable.setVisible(false);
         }
     }
@@ -130,7 +127,11 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
-        setProductData(filteredProductPresentationBeans);
+        if(filteredProductPresentationBeans!=null && filteredProductPresentationBeans.size()>0) {
+            double totalPrice = filteredProductPresentationBeans.stream().mapToDouble(productPresentationBean -> Double.parseDouble(productPresentationBean.getPrice().substring(1))).sum();
+            totalTxtView.setText(ApplicationConstants.CURRENCY_SYMBOL.concat(ApplicationConstants.decimalFormat.format(totalPrice)));
+            setProductData(filteredProductPresentationBeans);
+        }
 
     }
 

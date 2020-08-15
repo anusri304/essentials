@@ -12,7 +12,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,8 +22,6 @@ import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.viewmodel.CartViewModel;
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;

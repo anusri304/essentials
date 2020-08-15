@@ -7,10 +7,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.essentials.dao.ProductDao;
-import com.example.essentials.dao.UserDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Product;
-import com.example.essentials.domain.User;
 import com.example.essentials.executors.AppExecutors;
 import com.example.essentials.utils.ApplicationConstants;
 

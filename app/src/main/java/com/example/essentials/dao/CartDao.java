@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.essentials.domain.Cart;
-import com.example.essentials.domain.Wishlist;
 
 import java.util.List;
 

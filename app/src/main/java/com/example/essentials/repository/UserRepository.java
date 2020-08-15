@@ -2,17 +2,12 @@ package com.example.essentials.repository;
 
 import android.app.Application;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.essentials.dao.UserDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.User;
 import com.example.essentials.executors.AppExecutors;
 
-
-import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;

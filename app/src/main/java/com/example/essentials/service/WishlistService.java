@@ -1,6 +1,5 @@
 package com.example.essentials.service;
 
-import com.example.essentials.transport.CustomerCartListTransportBean;
 import com.example.essentials.transport.CustomerWishListTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 

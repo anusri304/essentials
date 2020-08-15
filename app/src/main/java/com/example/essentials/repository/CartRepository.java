@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.essentials.dao.CartDao;
-import com.example.essentials.dao.WishlistDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Cart;
-import com.example.essentials.domain.Wishlist;
 import com.example.essentials.executors.AppExecutors;
 
 import java.util.List;
