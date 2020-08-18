@@ -105,13 +105,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             if (!products.isEmpty()) {
                 setData(EssentialsUtils.getProductPresentationBeans(products));
-            } else {
-                // No data is retrieved. Check if there is no internet
-                if (!NetworkUtils.isNetworkConnected(getActivity().getApplicationContext())) {
-                    EssentialsUtils.showNetworkAlertDialog(getActivity().getApplicationContext());
-                } else { // If there is internet then there is an error retrieving data. display error retrieve message
-                    EssentialsUtils.showMessageAlertDialog(getActivity().getApplicationContext());
-                }
             }
         });
     }
@@ -216,6 +209,14 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             @Override
             public void onFailure(Call<ProductListTransportBean> call, Throwable throwable) {
                 Log.e(this.getClass().getName(), throwable.toString());
+                    // No data is retrieved. Check if there is no internet
+                    if (!NetworkUtils.isNetworkConnected(getActivity())) {
+                        EssentialsUtils.showMessageAlertDialog1(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+                        return;
+                    } else { // If there is internet then there is an error retrieving data. display error retrieve message
+                        EssentialsUtils.showMessageAlertDialog1(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                        return;
+                    }
             }
         });
 
