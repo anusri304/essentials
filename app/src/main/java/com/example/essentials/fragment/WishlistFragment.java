@@ -1,6 +1,5 @@
 package com.example.essentials.fragment;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -35,7 +33,6 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -117,7 +114,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             else {
                 TextView titleTextView = rootView.findViewById(R.id.title_wishlist);
                 titleTextView.setVisibility(View.INVISIBLE);
-                EssentialsUtils.showMessageAlertDialog1(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
+                EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
 
             }
         });
@@ -233,7 +230,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(WishlistFragmentDirections.actionNavBottomWishlistToNavBottomCart());
                     }
                 });
         snackbar.setActionTextColor(Color.RED);

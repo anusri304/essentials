@@ -45,7 +45,7 @@ public class EssentialsUtils {
     }
 
 
-    public static void showMessageAlertDialog1(Context context,String title, String message ){
+    public static void showMessageAlertDialog(Context context, String title, String message ){
         if (  context instanceof Activity) {
             Activity activity = ((Activity) context);
             if (!activity.isFinishing()) {

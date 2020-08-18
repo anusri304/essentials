@@ -211,10 +211,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 Log.e(this.getClass().getName(), throwable.toString());
                     // No data is retrieved. Check if there is no internet
                     if (!NetworkUtils.isNetworkConnected(getActivity())) {
-                        EssentialsUtils.showMessageAlertDialog1(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
                         return;
                     } else { // If there is internet then there is an error retrieving data. display error retrieve message
-                        EssentialsUtils.showMessageAlertDialog1(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
                         return;
                     }
             }

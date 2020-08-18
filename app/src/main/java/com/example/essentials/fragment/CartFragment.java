@@ -118,7 +118,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 totalTextView.setVisibility(View.INVISIBLE);
                 MaterialButton checkoutButton = rootView.findViewById(R.id.checkout_button);
                 checkoutButton.setVisibility(View.INVISIBLE);
-                EssentialsUtils.showMessageAlertDialog1(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_CART);
+                EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_CART);
             }
 
         });
