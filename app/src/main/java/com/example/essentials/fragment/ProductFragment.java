@@ -26,6 +26,7 @@ import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CustomerCartListTransportBean;
 import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.CustomerWishListTransportBean;
+import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
@@ -89,11 +90,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     private void drawBadge(int number) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
-        if(number>0) {
+        if (number > 0) {
             badgeDrawable.setVisible(true);
             badgeDrawable.setNumber(number);
-        }
-        else {
+        } else {
             badgeDrawable.setVisible(false);
         }
     }
@@ -126,16 +126,19 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         call.enqueue(new Callback<CustomerCartListTransportBean>() {
             @Override
             public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
-                CustomerCartListTransportBean customerCartListTransportBeans = response.body();
-                Log.i(TAG, "onResponse: " + customerCartListTransportBeans.getProducts().size());
-                for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
-                    Cart cart = new Cart();
-                    cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
-                    cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
-                    cart.setUserId(userId);
-                    cartViewModel.insertCartItems(cart);
+                if (response.isSuccessful()) {
+                    CustomerCartListTransportBean customerCartListTransportBeans = response.body();
+                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts().size() > 0) {
+                        for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
+                            Cart cart = new Cart();
+                            cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                            cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                            cart.setUserId(userId);
+                            cartViewModel.insertCartItems(cart);
+                        }
+                        getWishlistProductsForCustomer();
+                    }
                 }
-                getWishlistProductsForCustomer();
             }
 
             @Override
@@ -155,13 +158,16 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         call.enqueue(new Callback<CustomerWishListTransportBean>() {
             @Override
             public void onResponse(Call<CustomerWishListTransportBean> call, Response<CustomerWishListTransportBean> response) {
-                CustomerWishListTransportBean customerWishListTransportBeans = response.body();
-                Log.i(TAG, "onResponse: " + customerWishListTransportBeans.getProducts().size());
-                for (CustomerCartTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
-                    Wishlist wishlist = new Wishlist();
-                    wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
-                    wishlist.setUserId(userId);
-                    wishlistViewModel.insertWishlist(wishlist);
+                if (response.isSuccessful()) {
+                    CustomerWishListTransportBean customerWishListTransportBeans = response.body();
+                    if (customerWishListTransportBeans != null && customerWishListTransportBeans.getProducts().size() > 0) {
+                        for (CustomerWishTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
+                            Wishlist wishlist = new Wishlist();
+                            wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                            wishlist.setUserId(userId);
+                            wishlistViewModel.insertWishlist(wishlist);
+                        }
+                    }
                 }
             }
 
@@ -180,28 +186,31 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         call.enqueue(new Callback<ProductListTransportBean>() {
             @Override
             public void onResponse(Call<ProductListTransportBean> call, Response<ProductListTransportBean> response) {
-                ProductListTransportBean productTransportBeans = response.body();
-                Log.i(TAG, "onResponse: " + productTransportBeans.getProducts().size());
-                productPresentationBeans = new ArrayList<ProductPresentationBean>();
-                for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
-                    ProductPresentationBean productPresentationBean = new ProductPresentationBean();
-                    productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
-                    //TODO: Replace the path in Opencart
-                    productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
-                    // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
-                    productPresentationBean.setName(productTransportBean.getName());
-                    productPresentationBean.setPrice(productTransportBean.getPrice());
-                    //TODO: Get full description
-                    productPresentationBean.setDescription(productTransportBean.getDescription());
-                    //TODO: Only get special products
-                    productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
-                    //TODO: get disc perc
-                    productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
-                    //TODO: get inStock
-                    productPresentationBean.setInStock(productTransportBean.getInStock());
-                    productPresentationBeans.add(productPresentationBean);
+                if (response.isSuccessful()) {
+                    ProductListTransportBean productTransportBeans = response.body();
+                    productPresentationBeans = new ArrayList<ProductPresentationBean>();
+                    if (productTransportBeans != null && productTransportBeans.getProducts().size() > 0) {
+                        for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
+                            ProductPresentationBean productPresentationBean = new ProductPresentationBean();
+                            productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
+                            //TODO: Replace the path in Opencart
+                            productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
+                            // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
+                            productPresentationBean.setName(productTransportBean.getName());
+                            productPresentationBean.setPrice(productTransportBean.getPrice());
+                            //TODO: Get full description
+                            productPresentationBean.setDescription(productTransportBean.getDescription());
+                            //TODO: Only get special products
+                            productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
+                            //TODO: get disc perc
+                            productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
+                            //TODO: get inStock
+                            productPresentationBean.setInStock(productTransportBean.getInStock());
+                            productPresentationBeans.add(productPresentationBean);
+                        }
+                        saveorUpdateProduct(productPresentationBeans);
+                    }
                 }
-                saveorUpdateProduct(productPresentationBeans);
             }
 
             @Override

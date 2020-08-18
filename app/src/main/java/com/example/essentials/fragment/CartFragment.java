@@ -33,6 +33,7 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -105,9 +106,21 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private void getCartItems() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
-            setData(cartItems);
-            int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-            drawBadge(totalQuantity);
+            if (!cartItems.isEmpty()) {
+                setData(cartItems);
+                int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
+                drawBadge(totalQuantity);
+            }
+            else {
+                TextView titleTextView = rootView.findViewById(R.id.title_cart);
+                titleTextView.setVisibility(View.INVISIBLE);
+                TextView totalTextView = rootView.findViewById(R.id.total_title_text_view);
+                totalTextView.setVisibility(View.INVISIBLE);
+                MaterialButton checkoutButton = rootView.findViewById(R.id.checkout_button);
+                checkoutButton.setVisibility(View.INVISIBLE);
+                EssentialsUtils.showMessageAlertDialog1(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_CART);
+            }
+
         });
 
     }
@@ -127,7 +140,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
-        if(filteredProductPresentationBeans!=null && filteredProductPresentationBeans.size()>0) {
+        if (filteredProductPresentationBeans != null && filteredProductPresentationBeans.size() > 0) {
             double totalPrice = filteredProductPresentationBeans.stream().mapToDouble(productPresentationBean -> Double.parseDouble(productPresentationBean.getPrice().substring(1))).sum();
             totalTxtView.setText(ApplicationConstants.CURRENCY_SYMBOL.concat(ApplicationConstants.decimalFormat.format(totalPrice)));
             setProductData(filteredProductPresentationBeans);
@@ -173,8 +186,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
-                Log.d("Anandhi cart", cartTransportBean.getMessage());
-                deleteCartItemsFromDB(userId, productPresentationBean.getId());
+                if(response.isSuccessful()) {
+                    deleteCartItemsFromDB(userId, productPresentationBean.getId());
+                }
             }
 
             @Override
@@ -233,8 +247,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             @Override
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
                 WishlistTransportBean wishlistTransportBean = response.body();
-                Log.d("Anandhi total", wishlistTransportBean.getTotal());
-                saveWishListToDB(userId, productId);
+                if(response.isSuccessful()) {
+                    saveWishListToDB(userId, productId);
+                }
 
             }
 

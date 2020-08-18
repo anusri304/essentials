@@ -1,5 +1,6 @@
 package com.example.essentials.fragment;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -73,10 +76,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+        getAllProducts();
         rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
         coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
-        getAllProducts();
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         observeCartChanges();
         return rootView;
@@ -95,8 +98,12 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     private void drawBadge(int number) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
-        badgeDrawable.setVisible(true);
-        badgeDrawable.setNumber(number);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
     }
 
 
@@ -106,6 +113,12 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             Log.d("wishlist", String.valueOf(wishlists.size()));
             if (!wishlists.isEmpty()) {
                 setData(wishlists);
+            }
+            else {
+                TextView titleTextView = rootView.findViewById(R.id.title_wishlist);
+                titleTextView.setVisibility(View.INVISIBLE);
+                EssentialsUtils.showMessageAlertDialog1(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
+
             }
         });
     }
@@ -165,8 +178,9 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
-                Log.d("Anandhi cart", cartTransportBean.getMessage());
-                saveCartItemsToDB(userId, productPresentationBean.getId());
+                if(response.isSuccessful()) {
+                    saveCartItemsToDB(userId, productPresentationBean.getId());
+                }
             }
 
             @Override
@@ -189,7 +203,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             cartViewModel.updateCartItems(cart);
         }
         //  EssentialsUtils.showMessage(coordinatorLayout,ApplicationConstants.CART_SUCCESS_MESSAGE);
-        showSnackBar();
+        showSuccessSnackBar();
     }
 
     private Retrofit getRetrofit() {
@@ -213,7 +227,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
 
-    private void showSnackBar() {
+    private void showSuccessSnackBar() {
         Snackbar snackbar = Snackbar
                 .make(view, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.view), new View.OnClickListener() {
@@ -222,6 +236,16 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
                     }
                 });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
+
+    private void showSnackBar() {
+        Snackbar snackbar = Snackbar
+                .make(view, ApplicationConstants.NO_ITEMS_WISH_LIST, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.RED);
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);

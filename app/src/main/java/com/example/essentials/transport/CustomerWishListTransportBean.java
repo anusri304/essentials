@@ -10,5 +10,5 @@ import lombok.Data;
 public class CustomerWishListTransportBean {
     int id;
     @SerializedName("products")
-    List<CustomerCartTransportBean> products;
+    List<CustomerWishTransportBean> products;
 }

@@ -48,5 +48,9 @@ public class ApplicationConstants {
     public static final String LAUNCH_WISH_LIST = "launchWishList" ;
     public static final String LAUNCH_CART = "launchCart" ;
     public static final String CURRENCY_SYMBOL = "$" ;
+    public static final String NO_ITEMS = "No Items" ;
+    public static final String NO_ITEMS_CART = "There are no items in Cart";
+    public static final String NO_ITEMS_WISH_LIST = "There are no items in Wishlist";
     public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    public static final String API_SUCCESS = "Success";
 }

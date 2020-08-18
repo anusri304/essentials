@@ -15,6 +15,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Product;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -57,6 +58,23 @@ public class EssentialsUtils {
                 });
                 builder.setMessage(ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
                 builder.create().show();
+            }
+        }
+    }
+
+    public static void showMessageAlertDialog1(Context context,String title, String message ){
+        if (  context instanceof Activity) {
+            Activity activity = ((Activity) context);
+            if (!activity.isFinishing()) {
+//                        new MaterialAlertDialogBuilder(getActivity(), R.style.Body_ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+//                                .setTitle("Test")
+//                                .setMessage("Test1")
+//                                .setPositiveButton("Ok", null)
+//                                .show();
+                new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme).setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("Ok", null)
+                        .show();
             }
         }
     }
