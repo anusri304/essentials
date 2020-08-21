@@ -123,11 +123,14 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     CustomerCartListTransportBean customerCartListTransportBeans = response.body();
                     if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts().size() > 0) {
                         for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
-                            Cart cart = new Cart();
-                            cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
-                            cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
-                            cart.setUserId(userId);
-                            cartViewModel.insertCartItems(cart);
+                            Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
+                            if (cart == null) {
+                                cart = new Cart();
+                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                cart.setUserId(userId);
+                                cartViewModel.insertCartItems(cart);
+                            }
                         }
                         getWishlistProductsForCustomer();
                     }
@@ -209,14 +212,14 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             @Override
             public void onFailure(Call<ProductListTransportBean> call, Throwable throwable) {
                 Log.e(this.getClass().getName(), throwable.toString());
-                    // No data is retrieved. Check if there is no internet
-                    if (!NetworkUtils.isNetworkConnected(getActivity())) {
-                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
-                        return;
-                    } else { // If there is internet then there is an error retrieving data. display error retrieve message
-                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
-                        return;
-                    }
+                // No data is retrieved. Check if there is no internet
+                if (!NetworkUtils.isNetworkConnected(getActivity())) {
+                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+                    return;
+                } else { // If there is internet then there is an error retrieving data. display error retrieve message
+                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                    return;
+                }
             }
         });
 

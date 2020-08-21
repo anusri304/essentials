@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
@@ -141,18 +142,19 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
         if (filteredProductPresentationBeans != null && filteredProductPresentationBeans.size() > 0) {
-            double totalPrice = filteredProductPresentationBeans.stream().mapToDouble(productPresentationBean -> Double.parseDouble(productPresentationBean.getPrice().substring(1))).sum();
-            totalTxtView.setText(ApplicationConstants.CURRENCY_SYMBOL.concat(ApplicationConstants.decimalFormat.format(totalPrice)));
-            setProductData(filteredProductPresentationBeans);
+
+            setProductData(EssentialsUtils.getCartPresentationBeans(cartItems,filteredProductPresentationBeans));
         }
 
     }
 
-    private void setProductData(List<ProductPresentationBean> productPresentationBeans) {
+    private void setProductData(List<CartPresentationBean> cartPresentationBeans) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
-        cartRecyclerViewAdapter = new CartRecyclerViewAdapter(getActivity(), productPresentationBeans, cartViewModel, this);
+        cartRecyclerViewAdapter = new CartRecyclerViewAdapter(getActivity(), cartPresentationBeans, cartViewModel, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_cart);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
+        double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
+        totalTxtView.setText(ApplicationConstants.CURRENCY_SYMBOL.concat(ApplicationConstants.decimalFormat.format(totalPrice)));
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
@@ -160,24 +162,23 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
 
     @Override
-    public void onListItemClick(ProductPresentationBean productPresentationBean) {
+    public void onListItemClick(CartPresentationBean cartPresentationBean) {
         //Remove the product from cart and add to wishlist
-        callCartEndPoint(productPresentationBean);
+        callCartEndPoint(cartPresentationBean);
 
     }
 
-    private void callCartEndPoint(ProductPresentationBean productPresentationBean) {
+    private void callCartEndPoint(CartPresentationBean cartPresentationBean) {
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
         Log.d("Anandhi userId", String.valueOf(userId));
         Log.d("Anandhi apiToken", apiToken);
         CartService cartService = getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
                 .addFormDataPart("customerId", String.valueOf(userId))
                 .build();
         Call<CartTransportBean> call = cartService.removeFromCart(apiToken, requestBody);
@@ -187,7 +188,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
                 if(response.isSuccessful()) {
-                    deleteCartItemsFromDB(userId, productPresentationBean.getId());
+                    deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
                 }
             }
 

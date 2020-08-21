@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
-import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.domain.Cart;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartViewHolder> {
-    List<ProductPresentationBean> mValues;
+    List<CartPresentationBean> mValues;
     final Context mContext;
     CartViewModel cartViewModel;
     List<Integer> quantityList = new ArrayList<Integer>();
@@ -38,16 +38,17 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     int check = 0;
     static int selectedPosition = 0;
     private final CartRecyclerViewAdapter.ListItemClickListener mOnClickListener;
+    boolean itemSelected = false;
 
 
     public interface ListItemClickListener {
 
-        void onListItemClick(ProductPresentationBean productPresentationBean);
+        void onListItemClick(CartPresentationBean cartPresentationBean);
 
     }
 
-    public CartRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, CartViewModel cartViewModel,CartRecyclerViewAdapter.ListItemClickListener listener) {
-        mValues = products;
+    public CartRecyclerViewAdapter(Context context, List<CartPresentationBean> cartItems, CartViewModel cartViewModel,CartRecyclerViewAdapter.ListItemClickListener listener) {
+        mValues = cartItems;
         mOnClickListener = listener;
         mContext = context;
         this.cartViewModel = cartViewModel;
@@ -95,7 +96,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_cart_list, viewGroup, false);
         CartViewHolder holder = new CartRecyclerViewAdapter.CartViewHolder(view);
         holder.spinner.setAdapter(dataAdapter);
-        holder.spinner.setSelection(selectedPosition, true);
+        //   holder.spinner.setSelection(selectedPosition, true);
         return holder;
     }
 
@@ -113,19 +114,28 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                 .error(R.drawable.error)
                 .into(holder.imageView);
         holder.productNameTxtView.setText(mValues.get(position).getName());
-        holder.productPriceTxtView.setText(mValues.get(position).getPrice());
+        int quantity = mValues.get(position).getQuantity();
+        int productId = mValues.get(position).getProductId();
+        double price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
+        holder.productPriceTxtView.setText(String.valueOf(price));
 
+//       if(!itemSelected) {
+//           holder.spinner.setSelection(quantity - 1, true);
+//       }
 
-        // holder.spinner.setSelection(position, false);
+        holder.spinner.setSelection(quantity - 1, false);
         holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
+
                 if (++check >= 1) {
+                    itemSelected = true;
                     Log.d("Spinner ", parentView.getItemAtPosition(position).toString());
-                    selectedPosition = position;
-                    updateCartQuantity(Integer.valueOf(parentView.getItemAtPosition(position).toString()), 30);
-                    notifyDataSetChanged();
+                    //selectedPosition = position;
+                  //  holder.spinner.setSelection(selectedPosition, true);
+                    updateCartQuantity(Integer.valueOf(parentView.getItemAtPosition(position).toString()),productId);
+                    //notifyDataSetChanged();
                 }
             }
 
@@ -144,7 +154,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
         cart.setQuantity(quantity);
         cartViewModel.updateCartItems(cart);
-     //   cartViewModel.getQuantity().setValue(quantity);
+        //   cartViewModel.getQuantity().setValue(quantity);
 //
     }
 

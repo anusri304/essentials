@@ -13,13 +13,16 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EssentialsUtils {
 
@@ -99,6 +102,25 @@ public class EssentialsUtils {
             productPresentationBeans.add(productPresentationBean);
         }
         return productPresentationBeans;
+    }
+
+
+    public static List<CartPresentationBean> getCartPresentationBeans(List<Cart> cartItems,  List<ProductPresentationBean> filteredProductPresentationBeans) {
+        List<CartPresentationBean> cartPresentationBeans = new ArrayList<CartPresentationBean>();
+        for (Cart cart : cartItems) {
+            CartPresentationBean cartPresentationBean = new CartPresentationBean();
+            cartPresentationBean.setId(cart.getId());
+            cartPresentationBean.setQuantity(cart.getQuantity());
+
+            ProductPresentationBean matchingProductPresentationBean=  filteredProductPresentationBeans.stream().filter(productPresentationBean -> productPresentationBean.getId() == cart.getProductId()).findAny().get();
+            cartPresentationBean.setName(matchingProductPresentationBean.getName());
+            cartPresentationBean.setPrice(matchingProductPresentationBean.getPrice());
+            cartPresentationBean.setProductId(matchingProductPresentationBean.getId());
+            cartPresentationBean.setImage(matchingProductPresentationBean.getImage());
+            cartPresentationBeans.add(cartPresentationBean);
+
+        }
+        return cartPresentationBeans;
     }
 
 }
