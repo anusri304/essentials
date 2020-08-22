@@ -20,12 +20,21 @@ import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.domain.Cart;
+import com.example.essentials.service.CartService;
+import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartViewHolder> {
     List<CartPresentationBean> mValues;
@@ -134,7 +143,8 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                     Log.d("Spinner ", parentView.getItemAtPosition(position).toString());
                     //selectedPosition = position;
                   //  holder.spinner.setSelection(selectedPosition, true);
-                    updateCartQuantity(Integer.valueOf(parentView.getItemAtPosition(position).toString()),productId);
+                    callEditCartEndPoint(Integer.valueOf(parentView.getItemAtPosition(position).toString()),productId);
+                   // updateCartQuantity(Integer.valueOf(parentView.getItemAtPosition(position).toString()),productId);
                     //notifyDataSetChanged();
                 }
             }
@@ -161,6 +171,38 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    private void callEditCartEndPoint(int quantity,int productId) {
+        SharedPreferences pref = mContext.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken", apiToken);
+        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("productId", String.valueOf(productId))
+                .addFormDataPart("customerId", String.valueOf(userId))
+                .addFormDataPart("quantity", String.valueOf(quantity))
+                .build();
+        Call<CartTransportBean> call = cartService.editCartItems(apiToken, requestBody);
+
+        call.enqueue(new Callback<CartTransportBean>() {
+            @Override
+            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
+                CartTransportBean cartTransportBean = response.body();
+                if(response.isSuccessful()) {
+                    updateCartQuantity(quantity,productId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
+
+            }
+        });
     }
 
 

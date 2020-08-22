@@ -14,4 +14,9 @@ public interface CartService {
 
     @POST("index.php?route=api/cart/removeFromCart")
     Call<CartTransportBean> removeFromCart(@Query("api_token") String apiToken, @Body RequestBody cartBean);
+
+    @POST("index.php?route=api/cart/editItemsInCart")
+    Call<CartTransportBean> editCartItems(@Query("api_token") String apiToken, @Body RequestBody cartBean);
+
+
 }

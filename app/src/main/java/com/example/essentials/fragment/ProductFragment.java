@@ -29,6 +29,7 @@ import com.example.essentials.transport.CustomerWishListTransportBean;
 import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
@@ -110,7 +111,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getProductsForCustomer() {
-        ProductService productService = getRetrofit().create(ProductService.class);
+        ProductService productService = APIUtils.getRetrofit().create(ProductService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -145,7 +146,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getWishlistProductsForCustomer() {
-        WishlistService wishlistService = getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -158,10 +159,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     CustomerWishListTransportBean customerWishListTransportBeans = response.body();
                     if (customerWishListTransportBeans != null && customerWishListTransportBeans.getProducts().size() > 0) {
                         for (CustomerWishTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
-                            Wishlist wishlist = new Wishlist();
-                            wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
-                            wishlist.setUserId(userId);
-                            wishlistViewModel.insertWishlist(wishlist);
+                            Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, Integer.parseInt(customerWishlistTransportBean.getProductId()));
+                            if (wishlist == null) {
+                                wishlist = new Wishlist();
+                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                wishlist.setUserId(userId);
+                                wishlistViewModel.insertWishlist(wishlist);
+                            }
                         }
                     }
                 }
@@ -176,7 +180,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
 
     private void getAllProducts() {
-        ProductService productService = getRetrofit().create(ProductService.class);
+        ProductService productService = APIUtils.getRetrofit().create(ProductService.class);
         Call<ProductListTransportBean> call = productService.getAllProducts();
 
         call.enqueue(new Callback<ProductListTransportBean>() {
@@ -277,26 +281,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
-    }
-
-    private Retrofit getRetrofit() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .retryOnConnectionFailure(true)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build();
-// The App will not crash for malformed JSON.
-        Gson gson = new GsonBuilder().setLenient().create();
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(ApplicationConstants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-        }
-        return retrofit;
     }
 
     public void filter(String query) {
