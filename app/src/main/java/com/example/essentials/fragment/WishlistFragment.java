@@ -24,7 +24,9 @@ import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.CartService;
+import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
@@ -152,9 +154,50 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     @Override
     public void onListItemClick(ProductPresentationBean productPresentationBean) {
         // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-        callCartEndPoint(productPresentationBean);
+callRemoveWishListEndpoint(productPresentationBean);
+callCartEndPoint(productPresentationBean);
+
     }
 
+
+    private void callRemoveWishListEndpoint(ProductPresentationBean productPresentationBean) {
+        SharedPreferences pref = getActivity().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken", apiToken);
+        WishlistService wishlistService = getRetrofit().create(WishlistService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart("customerId", String.valueOf(userId))
+                .build();
+        Call<WishlistTransportBean> call = wishlistService.addToWishlist(apiToken, requestBody);
+
+        call.enqueue(new Callback<WishlistTransportBean>() {
+            @Override
+            public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
+                WishlistTransportBean wishlistTransportBean = response.body();
+                Log.d("Anandhi total", wishlistTransportBean.getTotal());
+               removeWishlistFromDB(userId, productPresentationBean.getId());
+
+            }
+
+            @Override
+            public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void removeWishlistFromDB(int userId, int productId) {
+        Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, productId);
+        if (wishlist != null) {
+            wishlistViewModel.deleteWishlistItems(wishlist);
+        }
+    }
     private void callCartEndPoint(ProductPresentationBean productPresentationBean) {
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
@@ -226,7 +269,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
     private void showSuccessSnackBar() {
         Snackbar snackbar = Snackbar
-                .make(view, ApplicationConstants.CART_SUCCESS_MESSAGE, Snackbar.LENGTH_LONG)
+                .make(view, ApplicationConstants.CART_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -274,7 +274,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
     private void showSnackBar() {
         Snackbar snackbar = Snackbar
-                .make(view, ApplicationConstants.CART_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG);
+                .make(view, ApplicationConstants.WISHLIST_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.RED);
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);

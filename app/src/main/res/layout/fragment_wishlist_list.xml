@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_price"
             android:layout_marginLeft="200dp"
-            android:text="@string/add_to_cart"
+            android:text="@string/move"
             android:textAllCaps="false"
             app:icon="@drawable/shopping_cart" />
 

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.repository.WishlistRepository;
 
@@ -41,6 +42,10 @@ public class WishlistViewModel extends AndroidViewModel {
 
     public Wishlist getWishlistForUserAndProduct(int userId, int productId){
         return wishlistRepository.getWishlistForUserAndProduct(userId,productId);
+    }
+
+    public void deleteWishlistItems(Wishlist wishlist){
+        wishlistRepository.deleteWishlistItems(wishlist);
     }
 
     public LiveData<List<Wishlist>> getAllWishlist() {

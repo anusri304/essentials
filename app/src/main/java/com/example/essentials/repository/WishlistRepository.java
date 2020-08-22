@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.essentials.dao.WishlistDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
+import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.executors.AppExecutors;
 
@@ -68,6 +69,14 @@ public class WishlistRepository {
             return wishlistDao.getWishlistForUserAndProduct(userId,productId);
         }
     }
+
+
+
+    public void deleteWishlistItems(Wishlist wishlist) {
+        AppExecutors.getInstance().diskIO().execute(() -> wishlistDao.delete(wishlist));
+
+    }
+
 
 
 }
