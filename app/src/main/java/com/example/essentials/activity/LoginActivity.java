@@ -20,6 +20,7 @@ import com.example.essentials.databinding.ActivityLoginBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.LoginCustomerService;
 import com.example.essentials.transport.LoginTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
@@ -147,29 +148,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private Retrofit getRetrofit() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .retryOnConnectionFailure(true)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build();
-// The App will not crash for malformed JSON.
-        Gson gson = new GsonBuilder().setLenient().create();
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(ApplicationConstants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-        }
-        return retrofit;
-    }
 
     private void loginCustomer() {
 
-        LoginCustomerService loginCustomerService = getRetrofit().create(LoginCustomerService.class);
+        LoginCustomerService loginCustomerService = APIUtils.getRetrofit().create(LoginCustomerService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("username", ApplicationConstants.API_USER)

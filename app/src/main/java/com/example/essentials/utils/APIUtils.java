@@ -146,4 +146,13 @@ public class APIUtils {
         return customerWishListTransportBeanList;
     }
 
+
+    public static boolean isUserLogged(Context context){
+        SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        return apiToken.equalsIgnoreCase("") ? false:true;
+
+
+    }
+
 }

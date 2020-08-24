@@ -52,6 +52,9 @@ public class ApplicationConstants {
     public static final String NO_ITEMS = "No Items" ;
     public static final String NO_ITEMS_CART = "There are no items in Cart";
     public static final String NO_ITEMS_WISH_LIST = "There are no items in Wishlist";
+    public static final String NO_LOGIN = "Login Required" ;
+    public static final String NO_LOGIN_MESSAGE_CART = "Please login to add products to the Cart" ;
     public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
     public static final String API_SUCCESS = "Success";
+    public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
 }

@@ -26,6 +26,7 @@ import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -124,7 +125,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
         Log.d("Anandhi userId", String.valueOf(userId));
         Log.d("Anandhi apiToken", apiToken);
-        CartService cartService = getRetrofit().create(CartService.class);
+        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
@@ -174,27 +175,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
-
-    private Retrofit getRetrofit() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .retryOnConnectionFailure(true)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build();
-// The App will not crash for malformed JSON.
-        Gson gson = new GsonBuilder().setLenient().create();
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(ApplicationConstants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-        }
-        return retrofit;
-    }
-
     private void callWishListEndpoint() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
@@ -203,7 +183,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
         Log.d("Anandhi userId", String.valueOf(userId));
         Log.d("Anandhi apiToken", apiToken);
-        WishlistService wishlistService = getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))

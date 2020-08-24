@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
@@ -83,7 +84,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-            drawBadge(totalQuantity);
+            if(APIUtils.isUserLogged(getActivity())) {
+                drawBadge(totalQuantity);
+            }
 
         });
     }
@@ -122,7 +125,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
                 if (response.isSuccessful()) {
                     CustomerCartListTransportBean customerCartListTransportBeans = response.body();
-                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts().size() > 0) {
+                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts()!=null && customerCartListTransportBeans.getProducts().size() > 0) {
                         for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
                             Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
                             if (cart == null) {

@@ -26,6 +26,7 @@ import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
@@ -175,7 +176,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
         Log.d("Anandhi userId", String.valueOf(userId));
         Log.d("Anandhi apiToken", apiToken);
-        CartService cartService = getRetrofit().create(CartService.class);
+        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
@@ -199,26 +200,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         });
     }
 
-    private Retrofit getRetrofit() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .retryOnConnectionFailure(true)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .build();
-// The App will not crash for malformed JSON.
-        Gson gson = new GsonBuilder().setLenient().create();
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(ApplicationConstants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-        }
-        return retrofit;
-    }
-
     private void deleteCartItemsFromDB(int userId, int productId) {
         Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
         if (cart != null) {
@@ -236,7 +217,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productId));
         Log.d("Anandhi userId", String.valueOf(userId));
         Log.d("Anandhi apiToken", apiToken);
-        WishlistService wishlistService = getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productId))

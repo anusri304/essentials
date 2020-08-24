@@ -25,7 +25,9 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.essentials.R;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.fragment.ProductFragment;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
@@ -162,7 +164,7 @@ public class ProductActivity extends AppCompatActivity {
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlist = objWishlist;
 
-            if (!wishlist.isEmpty()) {
+            if (!wishlist.isEmpty() && APIUtils.isUserLogged(ProductActivity.this)) {
                 drawBadge(wishlist.size());
             }
         });
@@ -195,11 +197,21 @@ public class ProductActivity extends AppCompatActivity {
                     return true;
                 case R.id.nav_bottom_cart:
                     Log.d("Product Activity", "Inside cart ");
-                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
+                    if(APIUtils.isUserLogged(ProductActivity.this)) {
+                        Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
+                    }
+                    else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this,ApplicationConstants.NO_LOGIN,ApplicationConstants.NO_LOGIN_MESSAGE_CART);
+                    }
                     return true;
                 case R.id.nav_bottom_wishlist:
                     Log.d("Product Activity", "Inside cart ");
-                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
+                    if(APIUtils.isUserLogged(ProductActivity.this)) {
+                        Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
+                    }
+                    else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this,ApplicationConstants.NO_LOGIN,ApplicationConstants.NO_LOGIN_MESSAGE_WISHLIST);
+                    }
                     return true;
             }
             return false;
