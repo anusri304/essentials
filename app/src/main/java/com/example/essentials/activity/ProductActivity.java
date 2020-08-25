@@ -267,6 +267,8 @@ public class ProductActivity extends AppCompatActivity {
                 invalidateOptionsMenu();
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
+                // Highlight the item selected in the navigation drawer
+                navView.setCheckedItem(itemId);
 
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
