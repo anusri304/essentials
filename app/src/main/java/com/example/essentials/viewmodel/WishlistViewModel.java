@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.repository.WishlistRepository;
 

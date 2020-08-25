@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.essentials.activity.bean.ProductPresentationBean;
-import com.example.essentials.domain.Cart;
-import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.ProductService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CustomerCartListTransportBean;

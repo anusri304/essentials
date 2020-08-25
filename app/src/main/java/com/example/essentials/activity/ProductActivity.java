@@ -1,6 +1,7 @@
 package com.example.essentials.activity;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -257,7 +258,11 @@ public class ProductActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity", "Inside login");
-                    Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ProductActivity.this,LoginActivity.class);
+                    startActivity(intent);
+
+                    //Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_login);
+                    //Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
                 }
 //                if (f != null) {
 //                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
