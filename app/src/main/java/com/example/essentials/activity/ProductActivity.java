@@ -7,15 +7,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -69,7 +72,7 @@ public class ProductActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_promotion, R.id.nav_top_category, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -246,6 +249,7 @@ public class ProductActivity extends AppCompatActivity {
     //
     private void configureNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+         configureHeaderView();
         if(!APIUtils.isUserLogged(ProductActivity.this)){
             navView.getMenu().findItem(R.id.nav_top_logout).setVisible(false);
             navView.getMenu().findItem(R.id.nav_top_login).setVisible(true);
@@ -283,6 +287,17 @@ public class ProductActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void configureHeaderView() {
+        View headerView = navView.getHeaderView(0);
+        AppCompatTextView navUsername = (AppCompatTextView) headerView.findViewById(R.id.username);
+        if(!APIUtils.isUserLogged(ProductActivity.this)) {
+            navUsername.setVisibility(View.INVISIBLE);
+        }
+        else {
+            navUsername.setText(TextUtils.concat(ApplicationConstants.HELLO, " ", APIUtils.getLoggedInUser(getApplicationContext())));
+        }
     }
 
     public void showLogoutMessageAlertDialog(Context context, String title, String message ){

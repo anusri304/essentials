@@ -56,6 +56,8 @@ public class ApplicationConstants {
     public static final String NO_LOGIN_MESSAGE_CART = "Please login to add products to the Cart" ;
     public static final String LOG_OUT_TITLE = "Logout";
     public static final String LOG_OUT_MESSAGE = "You have been logged out sucessfully";
+    public static final String USERNAME = "username";
+    public static final String HELLO = "Hello" ;
     public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
     public static final String API_SUCCESS = "Success";
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";

@@ -28,6 +28,7 @@ import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
@@ -105,7 +106,12 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("Anandhi", "clicked");
-                callCartEndPoint();
+                if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
+                    callCartEndPoint();
+                }
+                else {
+                    EssentialsUtils.showMessageAlertDialog(ProductDetailActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_CART);
+                }
             }
         });
     }
@@ -163,7 +169,13 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("Anandhi", "clicked");
-                callWishListEndpoint();
+                if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
+                    callWishListEndpoint();
+                }
+                else {
+                    EssentialsUtils.showMessageAlertDialog(ProductDetailActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_WISHLIST);
+                }
+
             }
         });
     }

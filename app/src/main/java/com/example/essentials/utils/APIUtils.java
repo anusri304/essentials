@@ -153,4 +153,9 @@ public class APIUtils {
 
     }
 
+    public static String getLoggedInUser(Context context){
+        SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        return pref.getString(ApplicationConstants.USERNAME, "");
+    }
+
 }

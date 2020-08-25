@@ -13,15 +13,6 @@
         android:id="@+id/menu_middle"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_top_promotion"
-            android:title="@string/promotions"
-            app:showAsAction="ifRoom" />
-
-        <item
-            android:id="@+id/nav_top_category"
-            android:title="@string/category"
-            app:showAsAction="ifRoom" />
-        <item
             android:id="@+id/nav_top_order"
             android:title="@string/order"
             app:showAsAction="ifRoom" />
