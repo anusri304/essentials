@@ -150,7 +150,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void loginCustomer() {
-
         LoginCustomerService loginCustomerService = APIUtils.getRetrofit().create(LoginCustomerService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

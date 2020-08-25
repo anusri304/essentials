@@ -1,7 +1,11 @@
 package com.example.essentials.activity;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +37,7 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -64,7 +69,7 @@ public class ProductActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_register, R.id.nav_top_promotion, R.id.nav_top_category, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_promotion, R.id.nav_top_category, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -73,10 +78,9 @@ public class ProductActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         configureNavigationDrawer();
         if (getIntent() != null) {
-            if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_WISH_LIST,false)){
+            if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_WISH_LIST, false)) {
                 Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
-            }
-            else if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_CART,false)){
+            } else if (getIntent().getBooleanExtra(ApplicationConstants.LAUNCH_CART, false)) {
                 Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
             }
         }
@@ -156,8 +160,12 @@ public class ProductActivity extends AppCompatActivity {
 
     private void drawBadge(int number) {
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
-        badgeDrawable.setVisible(true);
-        badgeDrawable.setNumber(number);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
     }
 
 
@@ -198,20 +206,18 @@ public class ProductActivity extends AppCompatActivity {
                     return true;
                 case R.id.nav_bottom_cart:
                     Log.d("Product Activity", "Inside cart ");
-                    if(APIUtils.isUserLogged(ProductActivity.this)) {
+                    if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
-                    }
-                    else {
-                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this,ApplicationConstants.NO_LOGIN,ApplicationConstants.NO_LOGIN_MESSAGE_CART);
+                    } else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_CART);
                     }
                     return true;
                 case R.id.nav_bottom_wishlist:
                     Log.d("Product Activity", "Inside cart ");
-                    if(APIUtils.isUserLogged(ProductActivity.this)) {
+                    if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
-                    }
-                    else {
-                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this,ApplicationConstants.NO_LOGIN,ApplicationConstants.NO_LOGIN_MESSAGE_WISHLIST);
+                    } else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_WISHLIST);
                     }
                     return true;
             }
@@ -240,6 +246,17 @@ public class ProductActivity extends AppCompatActivity {
     //
     private void configureNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(!APIUtils.isUserLogged(ProductActivity.this)){
+            navView.getMenu().findItem(R.id.nav_top_logout).setVisible(false);
+            navView.getMenu().findItem(R.id.nav_top_login).setVisible(true);
+            navView.getMenu().findItem(R.id.nav_top_register).setVisible(true);
+        }
+        else{
+            navView.getMenu().findItem(R.id.nav_top_login).setVisible(false);
+            navView.getMenu().findItem(R.id.nav_top_register).setVisible(false);
+            navView.getMenu().findItem(R.id.nav_top_logout).setVisible(true);
+        }
+
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -251,30 +268,50 @@ public class ProductActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
                 if (itemId == R.id.nav_top_home) {
-                    //  f = new RefreshFragment();
                     Log.d("Product Activity", "Inside home");
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     return true;
                 } else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity", "Inside login");
-                    Intent intent = new Intent(ProductActivity.this,LoginActivity.class);
+                    Intent intent = new Intent(ProductActivity.this, LoginActivity.class);
                     startActivity(intent);
-
-                    //Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_login);
-                    //Toast.makeText(ProductActivity.this, "Hello login", Toast.LENGTH_LONG).show();
                 }
-//                if (f != null) {
-//                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.frame, f);
-//                    transaction.commit();
-//                    drawerLayout.closeDrawers();
-//                    return true;
-//                }
+                else if (itemId == R.id.nav_top_logout){
+                    showLogoutMessageAlertDialog(ProductActivity.this,ApplicationConstants.LOG_OUT_TITLE,ApplicationConstants.LOG_OUT_MESSAGE);
+                }
                 return false;
             }
         });
     }
+
+    public void showLogoutMessageAlertDialog(Context context, String title, String message ){
+        if (  context instanceof Activity) {
+            Activity activity = ((Activity) context);
+            if (!activity.isFinishing()) {
+                new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme).setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString(ApplicationConstants.API_TOKEN, "");
+                                editor.commit();
+                                configureNavigationDrawer();
+                                // clear wishlist
+                                drawBadge(0);
+                                Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+                                Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                                // clear cart
+                                ((ProductFragment) fragment).drawBadge(0);
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

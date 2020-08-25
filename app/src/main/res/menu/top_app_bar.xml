@@ -8,18 +8,6 @@
             android:id="@+id/nav_top_home"
             android:title="@string/home"
             app:showAsAction="ifRoom" />
-
-        <item
-            android:id="@+id/nav_top_login"
-            android:title="@string/login_title"
-            app:showAsAction="ifRoom" />
-
-
-        <item
-            android:id="@+id/nav_top_register"
-            android:title="@string/register_title"
-            app:showAsAction="ifRoom" />
-
     </group>
     <group
         android:id="@+id/menu_middle"
@@ -33,11 +21,6 @@
             android:id="@+id/nav_top_category"
             android:title="@string/category"
             app:showAsAction="ifRoom" />
-    </group>
-
-    <group
-        android:id="@+id/menu_last"
-        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_top_order"
             android:title="@string/order"
@@ -52,6 +35,25 @@
             android:id="@+id/nav_top_customer_details"
             android:title="@string/customerdetails"
             app:showAsAction="ifRoom" />
+    </group>
+
+    <group
+        android:id="@+id/menu_last"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_top_register"
+            android:title="@string/register_title"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/nav_top_login"
+            android:title="@string/login_title"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/nav_top_logout"
+            android:title="@string/logout"
+            app:showAsAction="ifRoom" />
+
     </group>
 
 </menu>

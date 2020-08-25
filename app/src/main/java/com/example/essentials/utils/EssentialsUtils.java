@@ -59,6 +59,7 @@ public class EssentialsUtils {
         }
     }
 
+
     public static int getSpan(Context context) {
         float scaledWidth = getScaledWidth(context);
         if (scaledWidth > 600 && scaledWidth <= 900) {

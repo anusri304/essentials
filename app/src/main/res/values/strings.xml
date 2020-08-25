@@ -35,6 +35,7 @@
     <string name="your_wish_list">Your Wishlist items</string>
     <string name="your_cart_items">Your Cart items</string>
     <string name="checkout">Checkout</string>
+    <string name="logout">Logout</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

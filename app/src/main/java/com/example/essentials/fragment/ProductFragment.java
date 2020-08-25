@@ -73,6 +73,16 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         return rootView;
     }
 
+    public void drawBadge(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
+    }
     private void observeCartChanges() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
@@ -83,18 +93,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         });
     }
-
-    private void drawBadge(int number) {
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
-        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
-        if (number > 0) {
-            badgeDrawable.setVisible(true);
-            badgeDrawable.setNumber(number);
-        } else {
-            badgeDrawable.setVisible(false);
-        }
-    }
-
 
     private void observeChanges() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
