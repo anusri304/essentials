@@ -32,6 +32,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
        else if(modelClass.getName().contains("CartViewModel")) {
            return (T) new CartViewModel(application);
        }
+       else if(modelClass.getName().contains("CategoryViewModel")) {
+           return (T) new CategoryViewModel(application);
+       }
        else return null;
     }
 }

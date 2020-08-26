@@ -19,21 +19,27 @@ import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
+import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.service.CategoryService;
 import com.example.essentials.service.ProductService;
 import com.example.essentials.service.WishlistService;
+import com.example.essentials.transport.CategoryListTransportBean;
+import com.example.essentials.transport.CategoryTransportBean;
 import com.example.essentials.transport.CustomerCartListTransportBean;
 import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.CustomerWishListTransportBean;
 import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
+import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.CartViewModel;
+import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
@@ -57,20 +63,54 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     ProductViewModel productViewModel;
     CartViewModel cartViewModel;
     WishlistViewModel wishlistViewModel;
+    CategoryViewModel categoryViewModel;
     List<Product> products = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
     List<Wishlist> wishListItems = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
-        getAllProducts();
+        getAllCategories();
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+        categoryViewModel = new ViewModelProvider(this,factory).get(CategoryViewModel.class);
         observeChanges();
         observeCartChanges();
         return rootView;
+    }
+
+    private void getAllCategories() {
+        CategoryService categoryService = APIUtils.getRetrofit().create(CategoryService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
+        Call<CategoryListTransportBean> call = categoryService.getAllCategories(apiToken);
+
+        call.enqueue(new Callback<CategoryListTransportBean>() {
+            @Override
+            public void onResponse(Call<CategoryListTransportBean> call, Response<CategoryListTransportBean> response) {
+                if(response.isSuccessful()){
+                    CategoryListTransportBean categoryListTransportBean = response.body();
+                    if(categoryListTransportBean!=null && categoryListTransportBean.getCategories()!=null ){
+                        for(CategoryTransportBean categoryTransportBean:categoryListTransportBean.getCategories()){
+                            Category category = new Category();
+                            category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
+                            category.setName(categoryTransportBean.getName());
+                            categoryViewModel.insertCategory(category);
+                        }
+                    }
+                    getAllProducts();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CategoryListTransportBean> call, Throwable throwable) {
+
+            }
+        });
     }
 
     public void drawBadge(int number) {
