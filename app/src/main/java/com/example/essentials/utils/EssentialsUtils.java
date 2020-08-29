@@ -14,8 +14,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
+import com.example.essentials.activity.bean.CategoryPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Cart;
+import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Product;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -102,6 +104,18 @@ public class EssentialsUtils {
             productPresentationBeans.add(productPresentationBean);
         }
         return productPresentationBeans;
+    }
+
+    public static List<CategoryPresentationBean> getCategoryPresentationBean(List<Category> categories) {
+        List<CategoryPresentationBean> categoryPresentationBeans = new ArrayList<CategoryPresentationBean>();
+        for(Category category: categories){
+            CategoryPresentationBean categoryPresentationBean = new CategoryPresentationBean();
+            categoryPresentationBean.setId(category.getId());
+            categoryPresentationBean.setName(category.getName());
+            categoryPresentationBeans.add(categoryPresentationBean);
+        }
+        return categoryPresentationBeans;
+
     }
 
 
