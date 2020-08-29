@@ -152,8 +152,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                 setData(wishlists);
             }
             else {
-                TextView titleTextView = rootView.findViewById(R.id.title_wishlist);
-                titleTextView.setVisibility(View.INVISIBLE);
                 EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
 
             }

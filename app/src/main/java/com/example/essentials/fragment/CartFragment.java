@@ -150,8 +150,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 drawBadge(totalQuantity);
             }
             else {
-                TextView titleTextView = rootView.findViewById(R.id.title_cart);
-                titleTextView.setVisibility(View.INVISIBLE);
                 TextView totalTextView = rootView.findViewById(R.id.total_title_text_view);
                 totalTextView.setVisibility(View.INVISIBLE);
                 MaterialButton checkoutButton = rootView.findViewById(R.id.checkout_button);
