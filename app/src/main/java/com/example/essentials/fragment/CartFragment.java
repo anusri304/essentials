@@ -1,6 +1,7 @@
 package com.example.essentials.fragment;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -85,6 +91,42 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         //cartViewModel.getQuantity().observe(this,nameObserver);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+
+        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+        titleView.setText(getResources().getString(R.string.your_cart_items));
+
+        if (actionBar != null) {
+            // enable the customized view and disable title
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(actionBarView);
+            //  actionBar.setTitle(getResources().getString(R.string.categories));
+            actionBar.setDisplayShowTitleEnabled(false);
+
+
+            // remove Burger Icon
+            toolbar.setNavigationIcon(null);
+        }
+        actionBarView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionBar.setDisplayShowCustomEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(true);
+                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                        getActivity(), drawer, toolbar, R.string.drawer_open,
+                        R.string.drawer_close);
+                // All that to re-synchronize the Drawer State
+                toggle.syncState();
+                getActivity().onBackPressed();
+            }
+        });
         getAllProducts();
         return rootView;
     }

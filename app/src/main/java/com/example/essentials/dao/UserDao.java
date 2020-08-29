@@ -3,6 +3,7 @@ package com.example.essentials.dao;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,10 +14,10 @@ public interface UserDao {
     @Delete
     void delete(User user);
 
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.IGNORE)
     void insertUser(User user);
 
-    @Update
+    @Update (onConflict = OnConflictStrategy.IGNORE)
     void updateUser(User user);
 
     @Query("SELECT * from User where id=:customerId")

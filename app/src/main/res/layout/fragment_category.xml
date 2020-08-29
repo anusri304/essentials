@@ -1,28 +1,12 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/all_category"
-        android:text="@string/all_category"
-        android:layout_marginTop="5dp"
-        android:textSize="20sp"
-        android:layout_marginLeft="90dp"
-        android:layout_width="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_category"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/all_category"/>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.example.essentials.fragment;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -76,6 +81,20 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         categoryViewModel = new ViewModelProvider(this,factory).get(CategoryViewModel.class);
+
+
+        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+        titleView.setText(getResources().getString(R.string.app_name));
+
+        actionBar.setDisplayShowCustomEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(true);
         observeChanges();
         observeCartChanges();
         return rootView;
@@ -94,10 +113,18 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     CategoryListTransportBean categoryListTransportBean = response.body();
                     if(categoryListTransportBean!=null && categoryListTransportBean.getCategories()!=null ){
                         for(CategoryTransportBean categoryTransportBean:categoryListTransportBean.getCategories()){
-                            Category category = new Category();
-                            category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
-                            category.setName(categoryTransportBean.getName());
-                            categoryViewModel.insertCategory(category);
+                            Category category = categoryViewModel.getCategory(Integer.valueOf(categoryTransportBean.getCategoryId()));
+                            if(category == null) {
+                                category = new Category();
+                                category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
+                                category.setName(categoryTransportBean.getName());
+                                categoryViewModel.insertCategory(category);
+                            }
+                            else {
+                                category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
+                                category.setName(categoryTransportBean.getName());
+                                categoryViewModel.updateCategory(category);
+                            }
                         }
                     }
                     getAllProducts();
@@ -166,6 +193,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 cart.setUserId(userId);
                                 cartViewModel.insertCartItems(cart);
                             }
+                            else {
+                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                cart.setUserId(userId);
+                                cartViewModel.updateCartItems(cart);
+                            }
                         }
                         getWishlistProductsForCustomer();
                     }
@@ -199,6 +232,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
                                 wishlist.setUserId(userId);
                                 wishlistViewModel.insertWishlist(wishlist);
+                            }else {
+                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                wishlist.setUserId(userId);
+                                wishlistViewModel.updateWishlist(wishlist);
                             }
                         }
                     }

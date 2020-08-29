@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
@@ -59,6 +60,8 @@ public class ProductActivity extends AppCompatActivity {
     WishlistViewModel wishlistViewModel;
 
     List<Wishlist> wishlist = new ArrayList<>();
+
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,9 +241,11 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void configureToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
+
+
 
         // actionbar.setDisplayHomeAsUpEnabled(true);
 
@@ -249,6 +254,15 @@ public class ProductActivity extends AppCompatActivity {
     //
     private void configureNavigationDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.drawer_open,
+                R.string.drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+
+
          configureHeaderView();
         if(!APIUtils.isUserLogged(ProductActivity.this)){
             navView.getMenu().findItem(R.id.nav_top_logout).setVisible(false);
