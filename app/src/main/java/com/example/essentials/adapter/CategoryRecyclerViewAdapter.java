@@ -1,6 +1,7 @@
 package com.example.essentials.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,8 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         //clickedPosition = position;
         //mValues.get(position).getImage()
         holder.categoryNameTxtView.setText(mValues.get(position).getName());
+
+        //holder.categoryNameTxtView.setBackgroundColor(Color.LTGRAY);
 
     }
 

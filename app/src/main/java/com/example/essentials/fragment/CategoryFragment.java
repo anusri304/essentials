@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,6 +62,9 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
         categoryRecyclerViewAdapter = new CategoryRecyclerViewAdapter(getActivity(), EssentialsUtils.getCategoryPresentationBean(categories), this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_category);
         recyclerView.setAdapter(categoryRecyclerViewAdapter);
+
+//        DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+//        itemDecorator.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider));
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
