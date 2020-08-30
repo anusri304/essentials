@@ -94,6 +94,7 @@ public class EssentialsUtils {
         for (Product product : products) {
             ProductPresentationBean productPresentationBean = new ProductPresentationBean();
             productPresentationBean.setId(product.getId());
+            productPresentationBean.setCategoryId(product.getCategoryId());
             productPresentationBean.setName(product.getName());
             productPresentationBean.setDescription(product.getDescription());
             productPresentationBean.setInStock(product.getInStock());

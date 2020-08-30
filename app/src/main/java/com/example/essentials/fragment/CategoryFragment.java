@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -112,6 +113,11 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
 
     @Override
     public void onListItemClick(CategoryPresentationBean categoryPresentationBean) {
-
+        Log.d(TAG,"ANandhi"+categoryPresentationBean.getId());
+       // ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
+        CategoryFragmentDirections.ActionNavBottomCategoryToNavBottomHome action = CategoryFragmentDirections.actionNavBottomCategoryToNavBottomHome();
+        action.setCategoryId(categoryPresentationBean.getId());
+       // Navigation.findNavController(rootView).navigate(action);
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
     }
 }

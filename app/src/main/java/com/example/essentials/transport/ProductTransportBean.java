@@ -14,6 +14,8 @@ public class ProductTransportBean {
     String special;
     @SerializedName("product_id")
     String productId;
+    @SerializedName("category_id")
+    String categoryId;
     String name;
     String description;
     String quantity;

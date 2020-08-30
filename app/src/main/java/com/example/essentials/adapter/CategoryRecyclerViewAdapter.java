@@ -51,6 +51,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         public CategoryViewHolder(View itemView) {
             super(itemView);
             categoryNameTxtView = (TextView) itemView.findViewById(R.id.category_name);
+            itemView.setOnClickListener(this);
         }
 
         @Override

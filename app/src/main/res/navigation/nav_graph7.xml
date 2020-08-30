@@ -31,12 +31,21 @@
         android:id="@+id/nav_bottom_home"
         android:name="com.example.essentials.fragment.ProductFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_nav" />
+        tools:layout="@layout/fragment_nav" >
+        <argument
+            android:name="categoryId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <fragment
         android:id="@+id/nav_bottom_category"
         android:name="com.example.essentials.fragment.CategoryFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_nav" />
+        tools:layout="@layout/fragment_nav" >
+        <action
+            android:id="@+id/action_nav_bottom_category_to_nav_bottom_home"
+            app:destination="@id/nav_bottom_home" />
+    </fragment>
     <fragment
         android:id="@+id/nav_bottom_cart"
         android:name="com.example.essentials.fragment.CartFragment"

@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class ProductPresentationBean implements Parcelable {
     private int id;
+    private int categoryId;
     private String image;
     private String name;
     private String description;
@@ -23,6 +24,7 @@ public class ProductPresentationBean implements Parcelable {
 
     private ProductPresentationBean(Parcel in) {
         id = in.readInt();
+        categoryId = in.readInt();
         image = in.readString();
         name = in.readString();
         description = in.readString();
@@ -52,6 +54,7 @@ public class ProductPresentationBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeInt(id);
+        dest.writeInt(categoryId);
         dest.writeString(image);
         dest.writeString(name);
         dest.writeString(description);

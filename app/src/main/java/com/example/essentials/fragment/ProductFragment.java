@@ -53,6 +53,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +73,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     List<Product> products = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
     List<Wishlist> wishListItems = new ArrayList<>();
+    int categoryId;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -81,7 +83,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         categoryViewModel = new ViewModelProvider(this,factory).get(CategoryViewModel.class);
-
+        if(getArguments()!=null) {
+            categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
+            Log.d("Anandhi", "CategoryId" + categoryId);
+        }
 
         final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -269,6 +274,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                             productPresentationBean.setName(productTransportBean.getName());
                             productPresentationBean.setPrice(productTransportBean.getPrice());
+                            productPresentationBean.setCategoryId(Integer.valueOf(productTransportBean.getCategoryId()));
                             //TODO: Get full description
                             productPresentationBean.setDescription(productTransportBean.getDescription());
                             //TODO: Only get special products
@@ -310,6 +316,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 product.setName(productPresentationBean.getName());
                 //  product.setImagePath(imagePath);
                 product.setPrice(productPresentationBean.getPrice());
+                product.setCategoryId(Integer.valueOf(productPresentationBean.getCategoryId()));
                 product.setDescription(productPresentationBean.getDescription());
                 product.setSpecial(productPresentationBean.getSpecial());
                 product.setDiscPerc(productPresentationBean.getDiscPerc());
@@ -323,6 +330,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 product.setPrice(productPresentationBean.getPrice());
                 product.setDescription(productPresentationBean.getDescription());
                 product.setSpecial(productPresentationBean.getSpecial());
+                product.setCategoryId(Integer.valueOf(productPresentationBean.getCategoryId()));
                 product.setDiscPerc(productPresentationBean.getDiscPerc());
                 product.setInStock(productPresentationBean.getInStock());
                 productViewModel.insertProduct(product, getActivity().getApplicationContext(), productPresentationBean.getImage());
@@ -335,7 +343,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     @Override
     public void onListItemClick(int clickedItemIndex) {
         ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-//        ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
+       //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 //
 //       Navigation.findNavController(rootView).navigate(action);
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
@@ -346,6 +354,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
+        if(categoryId !=0){
+            productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
+                    String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
+        }
         adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
