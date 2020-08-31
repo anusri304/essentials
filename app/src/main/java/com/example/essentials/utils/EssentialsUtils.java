@@ -27,6 +27,8 @@ import java.util.List;
 
 public class EssentialsUtils {
 
+    static androidx.appcompat.app.AlertDialog alertDialog;
+
     public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
@@ -52,12 +54,30 @@ public class EssentialsUtils {
     public static void showMessageAlertDialog(Context context, String title, String message ){
         if (  context instanceof Activity) {
             Activity activity = ((Activity) context);
+            AlertDialog alert = new AlertDialog.Builder(context).create();
             if (!activity.isFinishing()) {
-                new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme).setTitle(title)
+               MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme);
+               builder.setTitle(title)
                         .setMessage(message)
-                        .setPositiveButton("Ok", null)
-                        .show();
+                        .setPositiveButton("Ok", null);
+
+               boolean isShowing= isAlertDialogShowing(alertDialog);
+
+                if(!isShowing){
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
             }
+        }
+    }
+
+    public static boolean isAlertDialogShowing(androidx.appcompat.app.AlertDialog thisAlertDialog) {
+        if (thisAlertDialog != null) {
+            return thisAlertDialog.isShowing();
+        }
+        else {
+            return false;
         }
     }
 

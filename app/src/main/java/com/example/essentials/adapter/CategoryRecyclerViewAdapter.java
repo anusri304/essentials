@@ -57,6 +57,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
+            v.setSelected(true);
             mOnClickListener.onListItemClick(mValues.get(clickedPosition));
         }
     }

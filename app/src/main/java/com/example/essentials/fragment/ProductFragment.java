@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -50,6 +51,7 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     List<Cart> cartItems = new ArrayList<>();
     List<Wishlist> wishListItems = new ArrayList<>();
     int categoryId;
+    MaterialCheckBox materialCheckBox;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -82,13 +85,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-        categoryViewModel = new ViewModelProvider(this,factory).get(CategoryViewModel.class);
-        if(getArguments()!=null) {
+        categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
+        if (getArguments() != null) {
             categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
             Log.d("Anandhi", "CategoryId" + categoryId);
         }
 
-        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity()
@@ -98,11 +101,49 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
         titleView.setText(getResources().getString(R.string.app_name));
 
+        materialCheckBox = rootView.findViewById(R.id.checkbox);
+
+        initCheckBox();
+
         actionBar.setDisplayShowCustomEnabled(false);
         actionBar.setDisplayShowTitleEnabled(true);
         observeChanges();
         observeCartChanges();
         return rootView;
+    }
+
+    private void initCheckBox() {
+        materialCheckBox.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                Log.d("Anandhi", "Check changed");
+                if (productPresentationBeans != null) {
+                    if (categoryId != 0) {
+                        productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
+                                String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
+                    }
+                    if (checked) {
+                        List<ProductPresentationBean> onSpecialProductPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
+                        if (onSpecialProductPresentationBeans.size() == 0) {
+                            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                            setData(onSpecialProductPresentationBeans);
+                        } else {
+                            setData(onSpecialProductPresentationBeans);
+                        }
+                    } else {
+                        if (productPresentationBeans.size() == 0) {
+                            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+                            setData(productPresentationBeans);
+                        } else {
+                            setData(productPresentationBeans);
+                        }
+                    }
+                }
+            }
+
+
+        });
+
     }
 
     private void getAllCategories() {
@@ -114,18 +155,17 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         call.enqueue(new Callback<CategoryListTransportBean>() {
             @Override
             public void onResponse(Call<CategoryListTransportBean> call, Response<CategoryListTransportBean> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     CategoryListTransportBean categoryListTransportBean = response.body();
-                    if(categoryListTransportBean!=null && categoryListTransportBean.getCategories()!=null ){
-                        for(CategoryTransportBean categoryTransportBean:categoryListTransportBean.getCategories()){
+                    if (categoryListTransportBean != null && categoryListTransportBean.getCategories() != null) {
+                        for (CategoryTransportBean categoryTransportBean : categoryListTransportBean.getCategories()) {
                             Category category = categoryViewModel.getCategory(Integer.valueOf(categoryTransportBean.getCategoryId()));
-                            if(category == null) {
+                            if (category == null) {
                                 category = new Category();
                                 category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
                                 category.setName(categoryTransportBean.getName());
                                 categoryViewModel.insertCategory(category);
-                            }
-                            else {
+                            } else {
                                 category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
                                 category.setName(categoryTransportBean.getName());
                                 categoryViewModel.updateCategory(category);
@@ -155,11 +195,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             badgeDrawable.setVisible(false);
         }
     }
+
     private void observeCartChanges() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-            if(APIUtils.isUserLogged(getActivity())) {
+            if (APIUtils.isUserLogged(getActivity())) {
                 drawBadge(totalQuantity);
             }
 
@@ -171,7 +212,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             products = objProducts;
 
             if (!products.isEmpty()) {
-                setData(EssentialsUtils.getProductPresentationBeans(products));
+                List<ProductPresentationBean> onSpecialProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
+                if (onSpecialProductPresentationBeans.size() == 0) {
+                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                    setData(onSpecialProductPresentationBeans);
+                } else {
+                    setData(onSpecialProductPresentationBeans);
+                }
             }
         });
     }
@@ -188,7 +235,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
                 if (response.isSuccessful()) {
                     CustomerCartListTransportBean customerCartListTransportBeans = response.body();
-                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts()!=null && customerCartListTransportBeans.getProducts().size() > 0) {
+                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts() != null && customerCartListTransportBeans.getProducts().size() > 0) {
                         for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
                             Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
                             if (cart == null) {
@@ -197,8 +244,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
                                 cart.setUserId(userId);
                                 cartViewModel.insertCartItems(cart);
-                            }
-                            else {
+                            } else {
                                 cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
                                 cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
                                 cart.setUserId(userId);
@@ -237,7 +283,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
                                 wishlist.setUserId(userId);
                                 wishlistViewModel.insertWishlist(wishlist);
-                            }else {
+                            } else {
                                 wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
                                 wishlist.setUserId(userId);
                                 wishlistViewModel.updateWishlist(wishlist);
@@ -343,7 +389,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     @Override
     public void onListItemClick(int clickedItemIndex) {
         ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-       //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
+        //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 //
 //       Navigation.findNavController(rootView).navigate(action);
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
@@ -354,10 +400,14 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
-        if(categoryId !=0){
+        if (categoryId != 0) {
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
         }
+        if (productPresentationBeans.size() == 0) {
+            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+        }
+
         adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
