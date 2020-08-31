@@ -2,6 +2,7 @@ package com.example.essentials.fragment;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.DeliveryAddressActivity;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
@@ -68,6 +70,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     List<Wishlist> wishLists = new ArrayList<>();
     View view;
     TextView totalTxtView;
+    com.google.android.material.button.MaterialButton checkoutButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_cart, container, false);
@@ -75,6 +78,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         view = getActivity().findViewById(android.R.id.content);
         totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
+        checkoutButton = (MaterialButton)  rootView.findViewById(R.id.checkout_button);
 
         //tODO: Remove the below code if not used
 //
@@ -131,8 +135,21 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         });
         getAllProducts();
 
+
+        initCheckoutButton();
         observeWishlistChanges();
         return rootView;
+    }
+
+    private void initCheckoutButton() {
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
+                startActivity(intent);
+
+            }
+        });
     }
 
 

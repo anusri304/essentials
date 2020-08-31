@@ -11,22 +11,23 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity(foreignKeys = {
-        @ForeignKey(entity = Category.class,
+        @ForeignKey(entity = User.class,
                 parentColumns = "id",
-                childColumns = "categoryId")
+                childColumns = "userId")
+
 })
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    @PrimaryKey
+public class Address {
+    @PrimaryKey(autoGenerate = true)
     public int id;
     @ColumnInfo(index = true)
-    public int categoryId;
-    public String name;
-    public String imagePath;
-    public String description;
-    public String price;
-    public String special;
-    public String discPerc;
-    public String inStock;
+    public int userId;
+    private String firstName;
+    private String lastName;
+    private String addressLine1;
+    private String addressLine2;
+    private String city;
+    private String country;
+    private String postalCode;
 }

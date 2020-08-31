@@ -38,6 +38,8 @@
     <string name="your_cart_items">Your Cart items</string>
     <string name="checkout">Checkout</string>
     <string name="logout">Logout</string>
+    <string name="capture_delivery_adddress">Capture Delivery Address</string>
+    <string name="delivery_address">Delivery Address</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>
