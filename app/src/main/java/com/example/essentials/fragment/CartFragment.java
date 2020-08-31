@@ -64,6 +64,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
     CartRecyclerViewAdapter cartRecyclerViewAdapter;
+    List<Wishlist> wishLists = new ArrayList<>();
     View view;
     TextView totalTxtView;
 
@@ -128,6 +129,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             }
         });
         getAllProducts();
+
+        observeWishlistChanges();
         return rootView;
     }
 
@@ -141,6 +144,25 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         });
     }
 
+    private void observeWishlistChanges() {
+        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+            wishLists= objWishlist;
+
+            drawBadgeForWishlist(wishLists.size());
+        });
+    }
+
+    private void drawBadgeForWishlist(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
+    }
+
     private void getCartItems() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
@@ -152,9 +174,14 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             else {
                 TextView totalTextView = rootView.findViewById(R.id.total_title_text_view);
                 totalTextView.setVisibility(View.INVISIBLE);
+                TextView totalValueTextView = rootView.findViewById(R.id.total_value_text_view);
+                totalValueTextView.setVisibility(View.INVISIBLE);
+
                 MaterialButton checkoutButton = rootView.findViewById(R.id.checkout_button);
                 checkoutButton.setVisibility(View.INVISIBLE);
                 EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_CART);
+                setData(cartItems);
+                drawBadge(0);
             }
 
         });
@@ -176,7 +203,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
-        if (filteredProductPresentationBeans != null && filteredProductPresentationBeans.size() > 0) {
+        if (filteredProductPresentationBeans != null ) {
 
             setProductData(EssentialsUtils.getCartPresentationBeans(cartItems,filteredProductPresentationBeans));
         }

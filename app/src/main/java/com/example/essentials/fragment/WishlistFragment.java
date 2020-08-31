@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
@@ -63,6 +64,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     Wishlist wishlist;
     List<Wishlist> wishlists = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
+    List<Wishlist> wishLists = new ArrayList<>();
     List<Product> products = new ArrayList<>();
     WishlistRecyclerViewAdapter wishlistRecyclerViewAdapter;
     View rootView;
@@ -82,6 +84,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         observeCartChanges();
+
+      //  observeWishlistChanges();
 
 
         final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -122,19 +126,38 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         return rootView;
     }
 
+    private void observeWishlistChanges() {
+        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+            wishlists= objWishlist;
+
+            drawBadgeForWishlist(wishlists.size());
+        });
+    }
+
     private void observeCartChanges() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
-            drawBadge(totalQuantity);
+            drawBadgeForCart(totalQuantity);
 
         });
     }
 
 
-    private void drawBadge(int number) {
+    private void drawBadgeForCart(int number) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_cart);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
+    }
+
+    private void drawBadgeForWishlist(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
         if (number > 0) {
             badgeDrawable.setVisible(true);
             badgeDrawable.setNumber(number);
@@ -153,18 +176,20 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             }
             else {
                 EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
+                setData(wishlists);
+//                // To refresh the wishlist when an item is moved from wishlist to cart
+//                drawBadgeForCart(0);
 
             }
         });
+        drawBadgeForWishlist(wishlists.size());
     }
 
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
             Log.d("products", String.valueOf(products.size()));
-            if (!products.isEmpty()) {
                 getWishlistProducts();
-            }
 
         });
     }

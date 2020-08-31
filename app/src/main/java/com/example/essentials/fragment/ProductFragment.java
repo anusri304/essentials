@@ -251,8 +251,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 cartViewModel.updateCartItems(cart);
                             }
                         }
-                        getWishlistProductsForCustomer();
+
                     }
+                    getWishlistProductsForCustomer();
                 }
             }
 
