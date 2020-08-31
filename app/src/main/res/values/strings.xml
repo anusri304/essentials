@@ -40,6 +40,13 @@
     <string name="logout">Logout</string>
     <string name="capture_delivery_adddress">Capture Delivery Address</string>
     <string name="delivery_address">Delivery Address</string>
+    <string name="add_delivery_address">Add Delivery Address</string>
+    <string name="save">Save</string>
+    <string name="customer_address2">Address 2</string>
+    <string name="customer_address1">Address 1</string>
+    <string name="city">City</string>
+    <string name="customer_postal_code">Postal Code</string>
+    <string name="country">Country</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>
