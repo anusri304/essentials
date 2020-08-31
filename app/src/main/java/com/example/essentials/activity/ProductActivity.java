@@ -99,7 +99,7 @@ public class ProductActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_app_bar, menu);
 
-        observeWishlistChanges();
+       // observeWishlistChanges();
         BottomNavigationView navBar = findViewById(R.id.navigationView);
         MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
             @Override

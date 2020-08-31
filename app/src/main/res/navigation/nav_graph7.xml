@@ -50,7 +50,11 @@
         android:id="@+id/nav_bottom_cart"
         android:name="com.example.essentials.fragment.CartFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_nav" />
+        tools:layout="@layout/fragment_nav" >
+        <action
+            android:id="@+id/action_nav_bottom_cart_to_nav_bottom_wishlist"
+            app:destination="@id/nav_bottom_wishlist" />
+    </fragment>
     <fragment
         android:id="@+id/nav_bottom_wishlist"
         android:name="com.example.essentials.fragment.WishlistFragment"

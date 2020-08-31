@@ -64,8 +64,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     Wishlist wishlist;
     List<Wishlist> wishlists = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
-    List<Wishlist> wishLists = new ArrayList<>();
-    List<Product> products = new ArrayList<>();
+    static List<Product> products = new ArrayList<>();
     WishlistRecyclerViewAdapter wishlistRecyclerViewAdapter;
     View rootView;
     private static Retrofit retrofit = null;
@@ -84,6 +83,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         observeCartChanges();
+
+        getWishlistProducts();
 
       //  observeWishlistChanges();
 
@@ -126,14 +127,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         return rootView;
     }
 
-    private void observeWishlistChanges() {
-        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
-            wishlists= objWishlist;
-
-            drawBadgeForWishlist(wishlists.size());
-        });
-    }
-
     private void observeCartChanges() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
             cartItems = objCart;
@@ -171,25 +164,19 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlists = objWishlist;
             Log.d("wishlist", String.valueOf(wishlists.size()));
-            if (!wishlists.isEmpty()) {
-                setData(wishlists);
-            }
-            else {
+            if (wishlists.isEmpty()) {
                 EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
-                setData(wishlists);
-//                // To refresh the wishlist when an item is moved from wishlist to cart
-//                drawBadgeForCart(0);
-
             }
+            setData(wishlists);
+            drawBadgeForWishlist(wishlists.size());
         });
-        drawBadgeForWishlist(wishlists.size());
+
     }
 
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
             Log.d("products", String.valueOf(products.size()));
-                getWishlistProducts();
 
         });
     }

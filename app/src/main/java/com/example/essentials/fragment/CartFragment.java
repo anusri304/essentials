@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -316,7 +317,13 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
     private void showSnackBar() {
         Snackbar snackbar = Snackbar
-                .make(view, ApplicationConstants.WISHLIST_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG);
+                .make(view, ApplicationConstants.WISHLIST_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.view), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(CartFragmentDirections.actionNavBottomCartToNavBottomWishlist());
+                    }
+                });
         snackbar.setActionTextColor(Color.RED);
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);

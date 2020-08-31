@@ -109,6 +109,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         actionBar.setDisplayShowTitleEnabled(true);
         observeChanges();
         observeCartChanges();
+        observeWishlistChanges();
         return rootView;
     }
 
@@ -207,6 +208,25 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         });
     }
 
+    private void observeWishlistChanges() {
+        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+            wishListItems = objWishlist;
+            drawBadgeForWishlist(wishListItems.size());
+        });
+
+    }
+
+
+    private void drawBadgeForWishlist(int number) {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.nav_bottom_wishlist);
+        if (number > 0) {
+            badgeDrawable.setVisible(true);
+            badgeDrawable.setNumber(number);
+        } else {
+            badgeDrawable.setVisible(false);
+        }
+    }
     private void observeChanges() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
