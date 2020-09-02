@@ -144,62 +144,64 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void loginCustomer() {
-        LoginCustomerService loginCustomerService = APIUtils.getRetrofit().create(LoginCustomerService.class);
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("username", ApplicationConstants.API_USER)
-                .addFormDataPart("key", ApplicationConstants.API_KEY)
-                .addFormDataPart("loginUser", activityLoginBinding.editTextEmailAddress.getText().toString())
-                .addFormDataPart("password", activityLoginBinding.editTextPassword.getText().toString())
-                .build();
-        Call<LoginTransportBean> call = loginCustomerService.loginCustomer(requestBody);
-        activityLoginBinding.progressBar.setVisibility(View.VISIBLE);
+        if(validateFields()) {
+            LoginCustomerService loginCustomerService = APIUtils.getRetrofit().create(LoginCustomerService.class);
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("username", ApplicationConstants.API_USER)
+                    .addFormDataPart("key", ApplicationConstants.API_KEY)
+                    .addFormDataPart("loginUser", activityLoginBinding.editTextEmailAddress.getText().toString())
+                    .addFormDataPart("password", activityLoginBinding.editTextPassword.getText().toString())
+                    .build();
+            Call<LoginTransportBean> call = loginCustomerService.loginCustomer(requestBody);
+            activityLoginBinding.progressBar.setVisibility(View.VISIBLE);
 
-        call.enqueue(new Callback<LoginTransportBean>() {
-            @Override
-            public void onResponse(Call<LoginTransportBean> call, Response<LoginTransportBean> response) {
-                LoginTransportBean loginTransportBean = response.body();
-                activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
-                Log.i(TAG, "onResponse: " + loginTransportBean.getMessage());
-                if (loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
-                    EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
-                    User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
-                    // if the user has registered in website the user will  be in null
-                    if (user != null) {
-                        user.setApiToken(loginTransportBean.getApiToken());
-                        userViewModel.updateUser(user);
+            call.enqueue(new Callback<LoginTransportBean>() {
+                @Override
+                public void onResponse(Call<LoginTransportBean> call, Response<LoginTransportBean> response) {
+                    LoginTransportBean loginTransportBean = response.body();
+                    activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
+                    Log.i(TAG, "onResponse: " + loginTransportBean.getMessage());
+                    if (loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
+                        EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
+                        User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
+                        // if the user has registered in website the user will  be in null
+                        if (user != null) {
+                            user.setApiToken(loginTransportBean.getApiToken());
+                            userViewModel.updateUser(user);
+                        } else {
+                            user = new User();
+                            user.setId(Integer.valueOf(loginTransportBean.getCustomerId()));
+                            user.setApiToken(loginTransportBean.getApiToken());
+                            user.setEmailAddress(loginTransportBean.getEmail());
+                            user.setFirstName(loginTransportBean.getFirstname());
+                            user.setLastName(loginTransportBean.getLastname());
+                            user.setMobileNumber(loginTransportBean.getTelephone());
+                            user.setPassword(activityLoginBinding.editTextPassword.getText().toString());
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putInt(ApplicationConstants.USER_ID, user.getId());
+                            editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
+                            editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
+                            editor.commit();
+                            userViewModel.insertUser(user);
+                        }
+                        Intent intent = new Intent(LoginActivity.this, ProductActivity.class);
+                        startActivity(intent);
+
                     } else {
-                        user = new User();
-                        user.setId(Integer.valueOf(loginTransportBean.getCustomerId()));
-                        user.setApiToken(loginTransportBean.getApiToken());
-                        user.setEmailAddress(loginTransportBean.getEmail());
-                        user.setFirstName(loginTransportBean.getFirstname());
-                        user.setLastName(loginTransportBean.getLastname());
-                        user.setMobileNumber(loginTransportBean.getTelephone());
-                        user.setPassword(activityLoginBinding.editTextPassword.getText().toString());
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putInt(ApplicationConstants.USER_ID, user.getId());
-                        editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
-                        editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName()," ",user.getLastName()));
-                        editor.commit();
-                        userViewModel.insertUser(user);
+                        EssentialsUtils.hideKeyboard(getApplicationContext());
+                        EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
                     }
-                    Intent intent = new Intent(LoginActivity.this, ProductActivity.class);
-                    startActivity(intent);
-
-                } else {
-                    EssentialsUtils.hideKeyboard(getApplicationContext());
-                    EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
-                activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
-                EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
+                @Override
+                public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
+                    activityLoginBinding.progressBar.setVisibility(View.INVISIBLE);
+                    EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
 //                    Log.e(this.getClass().getName(), throwable.toString());
-            }
-        });
+                }
+            });
+        }
     }
 
 

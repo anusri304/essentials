@@ -312,7 +312,7 @@ public class ProductActivity extends AppCompatActivity {
             navUsername.setVisibility(View.INVISIBLE);
         }
         else {
-            navUsername.setText(TextUtils.concat(ApplicationConstants.HELLO, " ", APIUtils.getLoggedInUser(getApplicationContext())));
+            navUsername.setText(TextUtils.concat(ApplicationConstants.HELLO, " ", APIUtils.getLoggedInUserName(getApplicationContext())));
         }
     }
 

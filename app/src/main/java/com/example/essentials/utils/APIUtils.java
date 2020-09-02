@@ -153,9 +153,14 @@ public class APIUtils {
 
     }
 
-    public static String getLoggedInUser(Context context){
+    public static String getLoggedInUserName(Context context){
         SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         return pref.getString(ApplicationConstants.USERNAME, "");
+    }
+
+    public static int getLoggedInUserId(Context context){
+        SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        return pref.getInt(ApplicationConstants.USER_ID, 0);
     }
 
 }
