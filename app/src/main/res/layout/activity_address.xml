@@ -1,33 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/addressCardView"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:paddingTop="150dp"
-    android:elevation="24dp"
-    app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="#E4DFDF"
-    app:cardCornerRadius="4dp">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout"
+    android:layout_width = "match_parent" android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/addressCardView"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:paddingTop="150dp"
+        android:elevation="24dp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="#E4DFDF"
+        app:cardCornerRadius="4dp">
 
-    <TextView
-        android:id="@+id/capture_txtView"
-        android:text="@string/capture_delivery_adddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:paddingTop="25dp"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/capture_txtView"
+            android:text="@string/capture_delivery_adddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingTop="25dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/add_delivery"
-        android:src="@drawable/ic_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="25dp"
-        android:layout_toRightOf="@+id/capture_txtView"
-        android:paddingLeft="320dp" />
+        <ImageView
+            android:id="@+id/add_delivery"
+            android:src="@drawable/ic_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="25dp"
+            android:layout_toRightOf="@+id/capture_txtView"
+            android:paddingLeft="320dp" />
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/addressCardView1"-->
+<!--        android:layout_below="@+id/addressCardView"-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:paddingTop="150dp"-->
+<!--        android:elevation="24dp"-->
+<!--        app:cardUseCompatPadding="true"-->
+<!--        app:cardBackgroundColor="#E4DFDF"-->
+<!--        app:cardCornerRadius="4dp">-->
+<!--    </androidx.cardview.widget.CardView>-->
+</RelativeLayout>
+
+
