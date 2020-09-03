@@ -7,6 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_margin="16dp"
         android:paddingTop="150dp"
         android:elevation="24dp"
         app:cardUseCompatPadding="true"
@@ -35,18 +36,12 @@
 
     </androidx.cardview.widget.CardView>
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:id="@+id/addressCardView1"-->
-<!--        android:layout_below="@+id/addressCardView"-->
-<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:paddingTop="150dp"-->
-<!--        android:elevation="24dp"-->
-<!--        app:cardUseCompatPadding="true"-->
-<!--        app:cardBackgroundColor="#E4DFDF"-->
-<!--        app:cardCornerRadius="4dp">-->
-<!--    </androidx.cardview.widget.CardView>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_address"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/addressCardView" />
 </RelativeLayout>
 
 

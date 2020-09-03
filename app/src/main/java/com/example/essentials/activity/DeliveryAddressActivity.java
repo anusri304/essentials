@@ -18,9 +18,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.adapter.AddressRecyclerViewAdapter;
+import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Product;
 import com.example.essentials.utils.ApplicationConstants;
@@ -33,13 +38,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DeliveryAddressActivity extends AppCompatActivity {
+public class DeliveryAddressActivity extends AppCompatActivity implements AddressRecyclerViewAdapter.ListItemClickListener {
     String TAG = "DeliveryAddressFragment";
     View rootView;
     ImageView addImage;
-    List<Address> address = new ArrayList<>();
+    static List<Address> address = new ArrayList<>();
     AddressViewModel addressViewModel;
     RelativeLayout relativeLayout;
+    static CardView cardview;
+    AddressRecyclerViewAdapter addressRecyclerViewAdapter;
 
 
     @Override
@@ -70,45 +77,15 @@ public class DeliveryAddressActivity extends AppCompatActivity {
         addressViewModel.getAllAddress().observe(this, objAddress -> {
             address = objAddress;
 
-            if (!address.isEmpty()) {
-                address.stream().forEach(address1 -> createCardView(relativeLayout,address1));
-                ;
-            }
+
+            addressRecyclerViewAdapter = new AddressRecyclerViewAdapter(getApplicationContext(), EssentialsUtils.getAddressPresentationBeans(address), this);
+            RecyclerView recyclerView = findViewById(R.id.rv_address);
+            recyclerView.setAdapter(addressRecyclerViewAdapter);
+
+            GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), EssentialsUtils.getSpan(getApplicationContext()));
+            recyclerView.setLayoutManager(manager);
+
         });
-    }
-
-    private void createCardView(RelativeLayout relativeLayout,Address address) {
-        CardView cardview = new CardView(getApplicationContext());
-        RelativeLayout.LayoutParams layoutparams = new RelativeLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutparams.addRule(RelativeLayout.BELOW, R.id.addressCardView);
-        cardview.setLayoutParams(layoutparams);
-        cardview.setRadius(15);
-
-        cardview.setPadding(25, 25, 25, 25);
-
-        cardview.setCardBackgroundColor(getResources().getColor(R.color.gray));
-
-        cardview.setMaxCardElevation(30);
-
-        cardview.setMaxCardElevation(6);
-
-        TextView textview = new TextView(getApplicationContext());
-
-        textview.setLayoutParams(layoutparams);
-
-        textview.setText(TextUtils.concat(address.getFirstName(),"\n",address.getLastName(),"\n",address.getAddressLine1(),"\n",address.getAddressLine2()));
-
-        textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-
-        textview.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-        textview.setPadding(25,25,25,25);
-
-        textview.setGravity(Gravity.LEFT);
-
-        cardview.addView(textview);
-
-        relativeLayout.addView(cardview);
     }
 
     @Override
@@ -119,5 +96,13 @@ public class DeliveryAddressActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListItemClick(AddressPresentationBean addressPresentationBean) {
+        Address address = addressViewModel.getAddressForId(addressPresentationBean.getId());
+        if (address != null) {
+            addressViewModel.deleteAddress(address);
+        }
     }
 }

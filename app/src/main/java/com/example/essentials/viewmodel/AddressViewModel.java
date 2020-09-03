@@ -34,10 +34,10 @@ public class AddressViewModel extends AndroidViewModel {
         return quantity;
     }
 
-    public AddressViewModel(@NonNull Application application, int userId, int productId) {
+    public AddressViewModel(@NonNull Application application, int addressId) {
         super(application);
         addressRepository = new AddressRepository(application);
-        address = addressRepository.getAddressForUser(userId);
+        address = addressRepository.getAddressForId(addressId);
         addressList = addressRepository.getAllAddress();
     }
 
@@ -55,8 +55,8 @@ public class AddressViewModel extends AndroidViewModel {
 
 
 
-    public Address getAddressForUser(int userId, int productId){
-        return addressRepository.getAddressForUser(userId);
+    public Address getAddressForId(int addressId){
+        return addressRepository.getAddressForId(addressId);
     }
 
     public LiveData<List<Address>> getAllAddress() {

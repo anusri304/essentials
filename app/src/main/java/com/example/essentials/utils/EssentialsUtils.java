@@ -13,9 +13,11 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.CategoryPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
+import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Product;
@@ -37,8 +39,8 @@ public class EssentialsUtils {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    public static void showNetworkAlertDialog(Context context){
-        AlertDialog.Builder builder = new  AlertDialog.Builder(context, R.style.AlertDialogTheme);
+    public static void showNetworkAlertDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         builder.setTitle(ApplicationConstants.NO_INTERNET_TITLE);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
@@ -51,19 +53,19 @@ public class EssentialsUtils {
     }
 
 
-    public static void showMessageAlertDialog(Context context, String title, String message ){
-        if (  context instanceof Activity) {
+    public static void showMessageAlertDialog(Context context, String title, String message) {
+        if (context instanceof Activity) {
             Activity activity = ((Activity) context);
             AlertDialog alert = new AlertDialog.Builder(context).create();
             if (!activity.isFinishing()) {
-               MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme);
-               builder.setTitle(title)
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme);
+                builder.setTitle(title)
                         .setMessage(message)
                         .setPositiveButton("Ok", null);
 
-               boolean isShowing= isAlertDialogShowing(alertDialog);
+                boolean isShowing = isAlertDialogShowing(alertDialog);
 
-                if(!isShowing){
+                if (!isShowing) {
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -75,8 +77,7 @@ public class EssentialsUtils {
     public static boolean isAlertDialogShowing(androidx.appcompat.app.AlertDialog thisAlertDialog) {
         if (thisAlertDialog != null) {
             return thisAlertDialog.isShowing();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -129,7 +130,7 @@ public class EssentialsUtils {
 
     public static List<CategoryPresentationBean> getCategoryPresentationBean(List<Category> categories) {
         List<CategoryPresentationBean> categoryPresentationBeans = new ArrayList<CategoryPresentationBean>();
-        for(Category category: categories){
+        for (Category category : categories) {
             CategoryPresentationBean categoryPresentationBean = new CategoryPresentationBean();
             categoryPresentationBean.setId(category.getId());
             categoryPresentationBean.setName(category.getName());
@@ -140,14 +141,25 @@ public class EssentialsUtils {
     }
 
 
-    public static List<CartPresentationBean> getCartPresentationBeans(List<Cart> cartItems,  List<ProductPresentationBean> filteredProductPresentationBeans) {
+    public static List<AddressPresentationBean> getAddressPresentationBeans(List<Address> addressList) {
+        List<AddressPresentationBean> addressPresentationBeans = new ArrayList<AddressPresentationBean>();
+        for (Address address : addressList) {
+            AddressPresentationBean addressPresentationBean = new AddressPresentationBean();
+            addressPresentationBean.setId(address.getId());
+            addressPresentationBean.setName(address.getFirstName() + "\n" + address.getLastName() + "\n"+ address.getAddressLine1() + "\n"+address.getAddressLine2()+ "\n"+ address.getCity()+ "\n"+address.getPostalCode()+ "\n"+address.getCountry());
+            addressPresentationBeans.add(addressPresentationBean);
+        }
+        return addressPresentationBeans;
+    }
+
+    public static List<CartPresentationBean> getCartPresentationBeans(List<Cart> cartItems, List<ProductPresentationBean> filteredProductPresentationBeans) {
         List<CartPresentationBean> cartPresentationBeans = new ArrayList<CartPresentationBean>();
         for (Cart cart : cartItems) {
             CartPresentationBean cartPresentationBean = new CartPresentationBean();
             cartPresentationBean.setId(cart.getId());
             cartPresentationBean.setQuantity(cart.getQuantity());
 
-            ProductPresentationBean matchingProductPresentationBean=  filteredProductPresentationBeans.stream().filter(productPresentationBean -> productPresentationBean.getId() == cart.getProductId()).findAny().get();
+            ProductPresentationBean matchingProductPresentationBean = filteredProductPresentationBeans.stream().filter(productPresentationBean -> productPresentationBean.getId() == cart.getProductId()).findAny().get();
             cartPresentationBean.setName(matchingProductPresentationBean.getName());
             cartPresentationBean.setPrice(matchingProductPresentationBean.getPrice());
             cartPresentationBean.setProductId(matchingProductPresentationBean.getId());

@@ -23,9 +23,11 @@ public interface AddressDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     void updateAddress(Address address);
 
-    @Query("SELECT * from Address where userId=:userId" )
-    Address getAddressForUser(int userId);
+    @Query("SELECT * from Address where id=:addressId" )
+    Address getAddressForId(int addressId);
 
     @Query("SELECT * from Address" )
     LiveData<List<Address>> getAllAddress();
+
+
 }

@@ -22,6 +22,7 @@ public class AddressRepository {
         EssentialsRoomDatabase db = EssentialsRoomDatabase.getDatabase(application);
         addressDao = db.addressDao();
     }
+
     public void insertAddress(Address address) {
         AppExecutors.getInstance().diskIO().execute(() -> addressDao.insertAddress(address));
     }
@@ -37,11 +38,11 @@ public class AddressRepository {
     }
 
 
-    public Address getAddressForUser(int userId) {
+    public Address getAddressForId(int addressId) {
         Address address = null;
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            final Future<Address> future = executorService.submit(new AddressRepository.MyInfoCallable(userId, addressDao));
+            final Future<Address> future = executorService.submit(new AddressRepository.MyInfoCallable(addressId, addressDao));
             address = future.get();
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,18 +56,17 @@ public class AddressRepository {
 
     private static class MyInfoCallable implements Callable<Address> {
 
-        int userId;
-        int productId;
-       AddressDao addressDao;
+        int addressId;
+        AddressDao addressDao;
 
-        public MyInfoCallable(int userId, AddressDao addressDao) {
-            this.userId = userId;
+        public MyInfoCallable(int addressId, AddressDao addressDao) {
+            this.addressId = addressId;
             this.addressDao = addressDao;
         }
 
         @Override
         public Address call() throws Exception {
-            return addressDao.getAddressForUser(userId);
+            return addressDao.getAddressForId(addressId);
         }
     }
 }
