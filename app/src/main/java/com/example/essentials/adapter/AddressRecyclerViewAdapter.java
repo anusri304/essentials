@@ -2,10 +2,12 @@ package com.example.essentials.adapter;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,18 +49,29 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
 
         TextView addressTxtView;
        Button deleteButton;
+       ImageView arrowForward;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
             addressTxtView = (TextView)  itemView.findViewById(R.id.address_name);
             deleteButton = (Button)  itemView.findViewById(R.id.delete_button);
+            arrowForward = (ImageView) itemView.findViewById(R.id.arrowForward);
             deleteButton.setOnClickListener(this);
+
+            arrowForward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("Anandhi123","Anandhi");
+                }
+            });
         }
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick( mValues.get(clickedPosition));
         }
+
+
     }
 
     @NonNull
