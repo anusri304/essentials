@@ -408,8 +408,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-        ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
+    public void onListItemClick(ProductPresentationBean productPresentationBean) {
+       //ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
         //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 //
 //       Navigation.findNavController(rootView).navigate(action);

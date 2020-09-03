@@ -35,7 +35,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     public interface ListItemClickListener {
 
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(ProductPresentationBean productPresentationBean);
 
     }
 
@@ -65,7 +65,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
+            mOnClickListener.onListItemClick(mValues.get(clickedPosition));
         }
     }
 
