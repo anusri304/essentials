@@ -5,6 +5,14 @@ ext {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\work\\android\\study\\projects\\essentials\\upload-keystore.jks')
+            storePassword '!TDyn@m1c\\$'
+            keyAlias 'release'
+            keyPassword '!TDyn@m1c\\$'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "30.0.0"
 

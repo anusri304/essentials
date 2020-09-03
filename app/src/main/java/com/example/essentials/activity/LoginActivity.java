@@ -178,13 +178,13 @@ public class LoginActivity extends AppCompatActivity {
                             user.setLastName(loginTransportBean.getLastname());
                             user.setMobileNumber(loginTransportBean.getTelephone());
                             user.setPassword(activityLoginBinding.editTextPassword.getText().toString());
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.putInt(ApplicationConstants.USER_ID, user.getId());
-                            editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
-                            editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
-                            editor.commit();
                             userViewModel.insertUser(user);
                         }
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putInt(ApplicationConstants.USER_ID, user.getId());
+                        editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
+                        editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
+                        editor.commit();
                         Intent intent = new Intent(LoginActivity.this, ProductActivity.class);
                         startActivity(intent);
 
