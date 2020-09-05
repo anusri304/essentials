@@ -53,7 +53,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.delivery_items));
         setContentView(R.layout.activity_delivery);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
@@ -69,38 +69,25 @@ public class DeliveryItemActivity extends AppCompatActivity {
         confirmOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showOrderAlertDialog(DeliveryItemActivity.this,ApplicationConstants.TITLE_ORDER,ApplicationConstants.ORDER_SUCESS_MESSAGE);
+                showOrderAlertDialog(DeliveryItemActivity.this);
             }
         });
     }
 
-    public void showOrderAlertDialog(Context context, String title, String message) {
-        if (context instanceof Activity) {
-            Activity activity = ((Activity) context);
-            AlertDialog alert = new AlertDialog.Builder(context).create();
-            if (!activity.isFinishing()) {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme);
-                builder.setTitle(title)
-                        .setMessage(message)
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(DeliveryItemActivity.this,ProductActivity.class);
-                                startActivity(intent);
-                            }
-                        });
 
-                boolean isShowing = EssentialsUtils.isAlertDialogShowing(alertDialog);
-
-                if (!isShowing) {
-                    alertDialog = builder.create();
-                    alertDialog.show();
-                }
-
+    public  void showOrderAlertDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        builder.setTitle(ApplicationConstants.TITLE_ORDER);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                  Intent intent = new Intent(DeliveryItemActivity.this,ProductActivity.class);
+                  startActivity(intent);
             }
-        }
+        });
+        builder.setMessage(ApplicationConstants.ORDER_SUCESS_MESSAGE);
+        builder.create().show();
     }
-
 
     private void getCartItems() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
