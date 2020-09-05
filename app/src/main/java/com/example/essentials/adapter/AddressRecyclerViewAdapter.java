@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -52,15 +53,18 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
         TextView addressTxtView;
        Button deleteButton;
        ImageView arrowForward;
+       CardView cardView;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
             addressTxtView = (TextView)  itemView.findViewById(R.id.address_name);
             deleteButton = (Button)  itemView.findViewById(R.id.delete_button);
-            arrowForward = (ImageView) itemView.findViewById(R.id.arrowForward);
+            arrowForward = (ImageView)  itemView.findViewById(R.id.arrowForward);
+            cardView = (CardView) itemView.findViewById(R.id.cardView);
+
             deleteButton.setOnClickListener(this);
 
-            arrowForward.setOnClickListener(new View.OnClickListener() {
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent (mContext, DeliveryItemActivity.class);

@@ -45,7 +45,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
     static List<Address> address = new ArrayList<>();
     AddressViewModel addressViewModel;
     RelativeLayout relativeLayout;
-    static CardView cardview;
+    CardView addressCardView;
     AddressRecyclerViewAdapter addressRecyclerViewAdapter;
 
 
@@ -58,13 +58,14 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
         relativeLayout = findViewById(R.id.relativeLayout);
+        addressCardView = findViewById(R.id.addressCardView);
         initImageView();
         observeChanges();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initImageView() {
-        addImage.setOnClickListener(new View.OnClickListener() {
+        addressCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DeliveryAddressActivity.this, AddDeliveryAddressActivity.class);
