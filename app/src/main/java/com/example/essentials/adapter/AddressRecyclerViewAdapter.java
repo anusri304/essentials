@@ -1,6 +1,7 @@
 package com.example.essentials.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
+import com.example.essentials.activity.DeliveryItemActivity;
 import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
@@ -61,7 +63,9 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
             arrowForward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("Anandhi123","Anandhi");
+                    Intent intent = new Intent (mContext, DeliveryItemActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
                 }
             });
         }

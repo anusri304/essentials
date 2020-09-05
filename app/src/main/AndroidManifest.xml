@@ -32,6 +32,9 @@
         <activity android:name=".activity.DeliveryAddressActivity">
         </activity>
         <activity android:name=".activity.AddDeliveryAddressActivity"></activity>
+
+        <activity android:name=".activity.DeliveryItemActivity"></activity>
+
     </application>
 
 </manifest>
