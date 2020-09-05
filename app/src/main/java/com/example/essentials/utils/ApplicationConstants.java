@@ -66,8 +66,10 @@ public class ApplicationConstants {
     public static final String NO_PRODUCTS = "No products" ;
     public static final String NO_PRODUCT_FOR_CATEGORY = "There are no products for the selected category" ;
     public static final String NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY =  "There are no products on special for the selected category" ;
+    public static final String TITLE_ORDER = "Order Confirmation" ;
+    public static final String ORDER_SUCESS_MESSAGE =  "Your order has been placed successfully";
 
-    public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
 }

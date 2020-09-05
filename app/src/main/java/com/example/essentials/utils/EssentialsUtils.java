@@ -24,8 +24,11 @@ import com.example.essentials.domain.Product;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class EssentialsUtils {
 
@@ -170,4 +173,16 @@ public class EssentialsUtils {
         return cartPresentationBeans;
     }
 
+
+    public static double getTotal(List<CartPresentationBean> cartPresentationBeans){
+        return cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
+    }
+
+    public static String formatTotal(double total){
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        otherSymbols.setDecimalSeparator(',');
+        DecimalFormat df = new DecimalFormat("##.##");
+        df.setDecimalFormatSymbols(otherSymbols);
+        return ApplicationConstants.CURRENCY_SYMBOL.concat(df.format(total));
+    }
 }

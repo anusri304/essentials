@@ -47,8 +47,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -233,8 +236,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         cartRecyclerViewAdapter = new CartRecyclerViewAdapter(getActivity(), cartPresentationBeans, cartViewModel, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_cart);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
-        double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
-        totalTxtView.setText(ApplicationConstants.CURRENCY_SYMBOL.concat(ApplicationConstants.decimalFormat.format(totalPrice)));
+     //   double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
+
+        totalTxtView.setText(EssentialsUtils.formatTotal(EssentialsUtils.getTotal(cartPresentationBeans)));
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);

@@ -101,7 +101,7 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
         int quantity = mValues.get(position).getQuantity();
         holder.productNameTxtView.setText(mValues.get(position).getName());
         double price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
-        holder.productPriceTxtView.setText(String.valueOf(price));
+        holder.productPriceTxtView.setText(mValues.get(position).getPrice());
         holder.productQtyTxtView.setText( String.valueOf(mValues.get(position).getQuantity()));
         Log.d("Anandhi","Anandhi");
 

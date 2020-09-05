@@ -126,7 +126,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         int quantity = mValues.get(position).getQuantity();
         int productId = mValues.get(position).getProductId();
         double price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
-        holder.productPriceTxtView.setText(String.valueOf(price));
+        holder.productPriceTxtView.setText(mValues.get(position).getPrice());
 
 //       if(!itemSelected) {
 //           holder.spinner.setSelection(quantity - 1, true);

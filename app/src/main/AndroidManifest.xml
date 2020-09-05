@@ -33,7 +33,9 @@
         </activity>
         <activity android:name=".activity.AddDeliveryAddressActivity"></activity>
 
-        <activity android:name=".activity.DeliveryItemActivity"></activity>
+        <activity android:name=".activity.DeliveryItemActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
     </application>
 

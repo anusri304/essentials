@@ -1,8 +1,11 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_delivery_items"
@@ -10,12 +13,48 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"/>
 
+
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/totalCardView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:elevation="24dp"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/total_txtvw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:text="@string/total"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/totalValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="5dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/deliveryDateCardView"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:elevation="24dp"
-        app:cardBackgroundColor="#E4DFDF"
         app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true">
 
@@ -51,7 +90,6 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:elevation="24dp"
-        app:cardBackgroundColor="#E4DFDF"
         app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true">
 
@@ -106,4 +144,5 @@
         android:layout_gravity="center"
         android:textAllCaps="false" />
 </LinearLayout>
+</ScrollView>
 

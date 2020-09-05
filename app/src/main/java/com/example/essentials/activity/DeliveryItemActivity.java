@@ -1,9 +1,16 @@
 package com.example.essentials.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,10 +24,12 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.DeliveryRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
+import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,18 +45,62 @@ public class DeliveryItemActivity extends AppCompatActivity {
     ProductViewModel productViewModel;
     List<Product> products = new ArrayList<>();
     TextView deliveryDateValueView;
+    TextView totalValueTextView;
+    Button confirmOrder;
+    static androidx.appcompat.app.AlertDialog alertDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getString(R.string.delivery_items));
         setContentView(R.layout.activity_delivery);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+
+        confirmOrder = findViewById(R.id.order_button);
+
+        initOrder();
         getAllProducts();
     }
+
+    private void initOrder() {
+        confirmOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showOrderAlertDialog(DeliveryItemActivity.this,ApplicationConstants.TITLE_ORDER,ApplicationConstants.ORDER_SUCESS_MESSAGE);
+            }
+        });
+    }
+
+    public void showOrderAlertDialog(Context context, String title, String message) {
+        if (context instanceof Activity) {
+            Activity activity = ((Activity) context);
+            AlertDialog alert = new AlertDialog.Builder(context).create();
+            if (!activity.isFinishing()) {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme);
+                builder.setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(DeliveryItemActivity.this,ProductActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                boolean isShowing = EssentialsUtils.isAlertDialogShowing(alertDialog);
+
+                if (!isShowing) {
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+            }
+        }
+    }
+
 
     private void getCartItems() {
         cartViewModel.getAllCartItems().observe(this, objCart -> {
@@ -88,6 +141,10 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
         deliveryDateValueView = (TextView) findViewById(R.id.deliveryDateValueView);
 
+        totalValueTextView = (TextView) findViewById(R.id.totalValue);
+
+
+      totalValueTextView.setText(EssentialsUtils.formatTotal(EssentialsUtils.getTotal(cartPresentationBeans)));
         LocalDate today = LocalDate.now().plusDays(2);
 
       //  LocalDate.parse(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(today)).plusDays(2);
