@@ -50,6 +50,11 @@
     <string name="delete">Delete</string>
     <string name="delivery_items">Delivery Items</string>
     <string name="delivery_date">Delivery Date:</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="radio_COD">Cash on Delivery</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="quantity">Qty:</string>
+
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

@@ -92,7 +92,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
       //  LocalDate.parse(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(today)).plusDays(2);
 
-        deliveryDateValueView.setText( DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(today));
+        deliveryDateValueView.setText( DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(today));
     }
 
     @Override

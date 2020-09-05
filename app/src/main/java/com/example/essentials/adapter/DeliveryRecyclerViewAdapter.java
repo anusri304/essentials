@@ -50,7 +50,6 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
         mValues = cartItems;
         mContext = context;
         this.cartViewModel = cartViewModel;
-        MaterialButton moveToWishListButton;
     }
 
     public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -58,13 +57,14 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
         private final DynamicHeightNetworkImageView imageView;
         TextView productNameTxtView;
         TextView productPriceTxtView;
+        TextView productQtyTxtView;
 
         public CartViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
             productNameTxtView = (TextView) itemView.findViewById(R.id.product_name);
             productPriceTxtView = (TextView) itemView.findViewById(R.id.product_price);
-
+            productQtyTxtView = (TextView) itemView.findViewById(R.id.product_Qty);
             // spinner.setOnItemSelectedListener( this);
         }
         @Override
@@ -102,6 +102,9 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
         holder.productNameTxtView.setText(mValues.get(position).getName());
         double price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
         holder.productPriceTxtView.setText(String.valueOf(price));
+        holder.productQtyTxtView.setText( String.valueOf(mValues.get(position).getQuantity()));
+        Log.d("Anandhi","Anandhi");
+
     }
 
 

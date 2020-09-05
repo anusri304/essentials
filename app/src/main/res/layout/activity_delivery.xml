@@ -27,7 +27,7 @@
             android:id="@+id/delivery_date_txtvw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
+            android:paddingLeft="5dp"
             android:text="@string/delivery_date"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
@@ -38,12 +38,72 @@
             android:id="@+id/deliveryDateValueView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
+            android:paddingLeft="15dp"
             android:paddingTop="25dp"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/paymentCardView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:elevation="24dp"
+        app:cardBackgroundColor="#E4DFDF"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/payment_txtvw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="@string/payment_method"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+            <RadioGroup
+                android:id="@+id/radioPayment"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content" >
+
+                <RadioButton
+                    android:id="@+id/radioCOD"
+                    android:paddingLeft="5dp"
+                    android:buttonTint="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_COD"
+                    android:textSize="15sp"
+                    android:checked="true"
+                    android:textStyle="bold" />
+
+            </RadioGroup>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/order_button"
+        android:layout_margin="20dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_order"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:textAllCaps="false" />
 </LinearLayout>
 
