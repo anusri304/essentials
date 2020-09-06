@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -26,6 +27,8 @@ import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.domain.Product;
+import com.example.essentials.service.CartService;
+import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
@@ -45,6 +48,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DeliveryItemActivity extends AppCompatActivity {
     CartViewModel cartViewModel;
@@ -87,7 +96,6 @@ public class DeliveryItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveOrdersInDB();
-                //showOrderAlertDialog(DeliveryItemActivity.this);
             }
         });
     }
@@ -101,8 +109,38 @@ public class DeliveryItemActivity extends AppCompatActivity {
         orderCustomer.setStatus(ApplicationConstants.STATUS_PENDING);
         orderCustomer.setDateAdded(new Date());
         orderCustomerViewModel.insertOrderCustomer(orderCustomer);
-
         saveOrderProducts(orderCustomer.getId());
+    }
+
+    private void callCartEndPoint(CartPresentationBean cartPresentationBean) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Log.d("Anandhi userId", String.valueOf(userId));
+        Log.d("Anandhi apiToken", apiToken);
+        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
+                .addFormDataPart("customerId", String.valueOf(userId))
+                .build();
+        Call<CartTransportBean> call = cartService.removeFromCart(apiToken, requestBody);
+
+        call.enqueue(new Callback<CartTransportBean>() {
+            @Override
+            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
+                CartTransportBean cartTransportBean = response.body();
+                if(response.isSuccessful()) {
+                    deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
+
+            }
+        });
     }
 
     private void saveOrderProducts(int orderId) {
@@ -120,7 +158,19 @@ public class DeliveryItemActivity extends AppCompatActivity {
         orderProduct.setProductId(cartPresentationBean.getProductId());
         orderProduct.setProductName(cartPresentationBean.getName());
         orderProductViewModel.insertOrderProduct(orderProduct);
+
+        callCartEndPoint(cartPresentationBean);
     }
+
+    private void deleteCartItemsFromDB(int userId, int productId) {
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+        if (cart != null) {
+            cartViewModel.deleteCartItems(cart);
+        }
+        showOrderAlertDialog(DeliveryItemActivity.this);
+
+    }
+
 
 
     public void showOrderAlertDialog(Context context) {
