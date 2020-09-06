@@ -9,17 +9,21 @@ import androidx.room.RoomDatabase;
 import com.example.essentials.dao.AddressDao;
 import com.example.essentials.dao.CartDao;
 import com.example.essentials.dao.CategoryDao;
+import com.example.essentials.dao.OrderCustomerDao;
+import com.example.essentials.dao.OrderProductDao;
 import com.example.essentials.dao.ProductDao;
 import com.example.essentials.dao.UserDao;
 import com.example.essentials.dao.WishlistDao;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
+import com.example.essentials.domain.OrderCustomer;
+import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.User;
 import com.example.essentials.domain.Wishlist;
 
-@Database(entities = {User.class, Product.class, Wishlist.class, Cart.class, Category.class, Address.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Product.class, Wishlist.class, Cart.class, Category.class, Address.class, OrderCustomer.class, OrderProduct.class}, version = 1, exportSchema = false)
 public abstract class EssentialsRoomDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -28,6 +32,8 @@ public abstract class EssentialsRoomDatabase extends RoomDatabase {
     public abstract CartDao cartDao();
     public abstract CategoryDao categoryDao();
     public abstract AddressDao addressDao();
+    public abstract OrderCustomerDao orderCustomerDao();
+    public abstract OrderProductDao orderProductDao();
     private static final Object LOCK = new Object();
 
     private static volatile EssentialsRoomDatabase essentialsRoomDatabase;

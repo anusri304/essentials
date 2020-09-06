@@ -23,6 +23,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
        if(modelClass.getName().contains("UserViewModel")) {
            return (T) new UserViewModel(application);
        }
+       else if(modelClass.getName().contains("OrderProductViewModel")) {
+           return (T) new OrderProductViewModel(application);
+       }
        else if(modelClass.getName().contains("ProductViewModel")) {
            return (T) new ProductViewModel(application);
        }
@@ -37,6 +40,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
        }
        else if(modelClass.getName().contains("AddressViewModel")) {
            return (T) new AddressViewModel(application);
+       }
+       else if(modelClass.getName().contains("OrderCustomerViewModel")) {
+           return (T) new OrderCustomerViewModel(application);
        }
        else return null;
     }
