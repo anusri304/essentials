@@ -29,6 +29,7 @@ public class ApplicationConstants {
     public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
     public static final String SUCCESS = "Success";
+    public static final String SUCCESSFULLY = "successfully";
     public static final String LOGIN = "LOGIN";
 
     public static final String DISPLAY_TOAST ="displayToast" ;
@@ -69,8 +70,12 @@ public class ApplicationConstants {
     public static final String TITLE_ORDER = "Order Confirmation" ;
     public static final String ORDER_SUCESS_MESSAGE =  "Your order has been placed successfully";
     public static final String STATUS_PENDING = "Pending" ;
+    public static final String NO_LOGIN_MESSAGE_CUSTOMER_DETAILS = "Please login to see customer details" ;
+    public static final String EDIT_USER = "editUser" ;
+    public static final String EDIT_CUSTOMER_TITLE = "Edit Customer";
 
     public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
+    public static final String EDIT_CUSTOMER_SUCCESS_MESSAGE = "Customer details updated successfully";
 }

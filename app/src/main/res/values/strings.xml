@@ -7,7 +7,6 @@
     <string name="customer_confirm_password">Confirm Password</string>
     <string name="register">REGISTER</string>
     <string name="register_title">Register</string>
-    <string name="customer_firstName">First Name</string>
     <string name="login">LOGIN</string>
     <string name="login_title">Login</string>
     <string name="register_here">Register Here</string>
@@ -54,6 +53,11 @@
     <string name="radio_COD">Cash on Delivery</string>
     <string name="confirm_order">Confirm Order</string>
     <string name="quantity">Qty:</string>
+    <string name="username">Username</string>
+    <string name="emailaddress">Email Address</string>
+    <string name="mobilenumber">Mobile number</string>
+    <string name="edit">Edit</string>
+    <string name="edit_user">Edit Customer Details</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

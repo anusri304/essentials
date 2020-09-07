@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(mypreference, Context.MODE_PRIVATE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (!NetworkUtils.isNetworkConnected(this)) {
-            EssentialsUtils.showNetworkAlertDialog(LoginActivity.this);
+            EssentialsUtils.showAlertDialog(LoginActivity.this,ApplicationConstants.NO_INTERNET_TITLE,ApplicationConstants.NO_INTERNET_MESSAGE);
         } else {
             activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
             initLayout();

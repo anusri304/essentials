@@ -350,6 +350,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
                             //TODO: get inStock
                             productPresentationBean.setInStock(productTransportBean.getInStock());
+                            //TODO: use include in layout
+                            //TODO: use dimensions in dimens.xml
                             productPresentationBeans.add(productPresentationBean);
                         }
                         saveorUpdateProduct(productPresentationBeans);

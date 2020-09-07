@@ -42,16 +42,16 @@ public class EssentialsUtils {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    public static void showNetworkAlertDialog(Context context) {
+    public static void showAlertDialog(Context context, String title, String message ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        builder.setTitle(ApplicationConstants.NO_INTERNET_TITLE);
+        builder.setTitle(title);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ((Activity) context).finish();
             }
         });
-        builder.setMessage(ApplicationConstants.NO_INTERNET_MESSAGE);
+        builder.setMessage(message);
         builder.create().show();
     }
 

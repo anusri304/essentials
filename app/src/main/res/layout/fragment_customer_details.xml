@@ -1,0 +1,124 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:elevation="24dp"
+    app:cardUseCompatPadding="true"
+    android:background="@drawable/shadow"
+    android:focusable="true"
+    app:pressedTranslationZ="8dp">
+
+ <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content">
+        <TextView
+            android:id="@+id/firstname_txtVw"
+            android:paddingTop="20dp"
+            android:textSize="15sp"
+            android:paddingLeft="10dp"
+            android:text="@string/customer_first_name"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/firstname_value_txtVw"
+            android:paddingTop="20dp"
+            android:layout_marginLeft="90dp"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content"  />
+
+ </LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content">
+        <TextView
+            android:id="@+id/lastname_txtVw"
+            android:paddingTop="50dp"
+            android:textSize="15sp"
+            android:paddingLeft="10dp"
+            android:text="@string/customer_last_name"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/lastname_value_txtVw"
+            android:paddingTop="50dp"
+            android:layout_marginLeft="90dp"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content"  />
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content">
+        <TextView
+            android:id="@+id/emailadds_txtVw"
+            android:paddingTop="80dp"
+            android:textSize="15sp"
+            android:paddingLeft="10dp"
+            android:text="@string/emailaddress"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/emailadds_value_txtVw"
+            android:paddingTop="80dp"
+            android:layout_marginLeft="87dp"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content"  />
+
+    </LinearLayout>
+
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content">
+        <TextView
+            android:id="@+id/mobilenumber_txtVw"
+            android:paddingTop="110dp"
+            android:textSize="15sp"
+            android:paddingLeft="10dp"
+            android:text="@string/mobilenumber"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/mobilenumber_value_txtVw"
+            android:paddingTop="110dp"
+            android:layout_marginLeft="80dp"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content"  />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:text="@string/edit"/>
+
+</androidx.cardview.widget.CardView>

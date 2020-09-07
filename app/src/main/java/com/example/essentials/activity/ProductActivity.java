@@ -75,7 +75,7 @@ public class ProductActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_customer_details,R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -296,9 +296,20 @@ public class ProductActivity extends AppCompatActivity {
                     Log.d("Product Activity", "Inside login");
                     Intent intent = new Intent(ProductActivity.this, LoginActivity.class);
                     startActivity(intent);
+                    return true;
                 }
                 else if (itemId == R.id.nav_top_logout){
                     showLogoutMessageAlertDialog(ProductActivity.this,ApplicationConstants.LOG_OUT_TITLE,ApplicationConstants.LOG_OUT_MESSAGE);
+                    return true;
+                }
+                else if (itemId == R.id.nav_top_customer_details) {
+                    Log.d("Product Activity", "Inside customer details");
+                    if (APIUtils.isUserLogged(ProductActivity.this)) {
+                        Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_customer_details);
+                        return true;
+                    } else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_CUSTOMER_DETAILS);
+                    }
                 }
                 return false;
             }
