@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.RegisterActivity;
 import com.example.essentials.domain.User;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
@@ -42,9 +41,9 @@ public class CustomerDetailsFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),RegisterActivity.class);
-                intent.putExtra(ApplicationConstants.EDIT_USER,true);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(),RegisterActivity.class);
+//                intent.putExtra(ApplicationConstants.EDIT_USER,true);
+//                startActivity(intent);
             }
         });
     }

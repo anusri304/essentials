@@ -236,6 +236,7 @@ public class ProductActivity extends AppCompatActivity {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            bottomNavigationView.setVisibility(View.VISIBLE);
             super.onBackPressed();
         }
     }
@@ -292,8 +293,17 @@ public class ProductActivity extends AppCompatActivity {
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     return true;
-                } else if (itemId == R.id.nav_top_login) {
+                } else  if (itemId == R.id.nav_top_register) {
+                    Log.d("Product Activity", "Inside home");
+
+                    bottomNavigationView.setVisibility(View.INVISIBLE);
+
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_register);
+                    return true;
+                }
+                else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity", "Inside login");
+                    bottomNavigationView.setVisibility(View.INVISIBLE);
                     Intent intent = new Intent(ProductActivity.this, LoginActivity.class);
                     startActivity(intent);
                     return true;

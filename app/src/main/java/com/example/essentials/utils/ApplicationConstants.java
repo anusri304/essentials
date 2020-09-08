@@ -73,6 +73,7 @@ public class ApplicationConstants {
     public static final String NO_LOGIN_MESSAGE_CUSTOMER_DETAILS = "Please login to see customer details" ;
     public static final String EDIT_USER = "editUser" ;
     public static final String EDIT_CUSTOMER_TITLE = "Edit Customer";
+    public static final String SERVER_ERROR = "Server Error";
 
     public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";

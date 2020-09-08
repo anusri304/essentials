@@ -2,31 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.RegisterActivity"
-        tools:ignore="Overdraw">
+        android:isScrollContainer="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutFirstName"
-                android:layout_width="0dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
-                app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:theme="@style/textLayoutStyle">
+                app:hintTextAppearance="@style/hintText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextFirstName"
@@ -37,19 +35,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
                 android:id="@+id/textInputLayoutLastName"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
-                app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutFirstName"
-                android:theme="@style/textLayoutStyle">
+                app:hintTextAppearance="@style/hintText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextLastName"
@@ -61,18 +58,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutEmailAdds"
-                android:layout_width="0dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
-                app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutLastName"
-                android:theme="@style/textLayoutStyle">
+                app:hintTextAppearance="@style/hintText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextEmailAddress"
@@ -84,18 +80,17 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutMobileNo"
-                android:layout_width="0dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
-                app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailAdds"
-                android:theme="@style/textLayoutStyle">
+                app:hintTextAppearance="@style/hintText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextMobileNo"
@@ -107,19 +102,18 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutPassword"
-                android:layout_width="0dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
                 app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutMobileNo"
-                app:passwordToggleEnabled="true"
-                android:theme="@style/textLayoutStyle">
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPassword"
@@ -131,19 +125,18 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutConfirmPwd"
-                android:layout_width="0dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_start"
                 android:layout_marginTop="@dimen/margin_top"
                 android:layout_marginEnd="1dp"
+                android:theme="@style/textLayoutStyle"
                 app:errorEnabled="true"
                 app:errorTextAppearance="@style/ErrorText"
                 app:hintTextAppearance="@style/hintText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
-                app:passwordToggleEnabled="true"
-                android:theme="@style/textLayoutStyle">
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextConfirmPassword"
@@ -153,37 +146,24 @@
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/registerButton"
-                android:layout_width="133dp"
-                android:layout_height="@dimen/button_height"
-                android:layout_marginStart="130dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="130dp"
-                android:background="@drawable/register_button_bg"
-                android:text="@string/register"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toEndOf="@+id/progressBar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="50dp"
+                android:layout_height="47dp"
+                android:layout_marginLeft="150dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/colorPrimary"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/registerButton"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="194dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="38dp"
-                android:indeterminateTint="@color/colorPrimary"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toStartOf="@+id/registerButton"
-                app:layout_constraintHorizontal_bias="0.992"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutConfirmPwd" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                android:layout_marginLeft="150dp"
+                android:layout_marginBottom="175dp"
+                android:text="@string/register"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </ScrollView>
 </layout>

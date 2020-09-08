@@ -82,8 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         activityLoginBinding.registerHereTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//                startActivity(intent);
 
             }
         });
