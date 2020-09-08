@@ -304,8 +304,7 @@ public class ProductActivity extends AppCompatActivity {
                 else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity", "Inside login");
                     bottomNavigationView.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(ProductActivity.this, LoginActivity.class);
-                    startActivity(intent);
+                    Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_login);
                     return true;
                 }
                 else if (itemId == R.id.nav_top_logout){

@@ -23,10 +23,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
 import com.example.essentials.databinding.FragmentRegisterBinding;
 import com.example.essentials.domain.User;
+import com.example.essentials.fragment.CategoryFragmentDirections;
 import com.example.essentials.service.RegisterCustomerService;
 import com.example.essentials.transport.RegisterTransportBean;
 import com.example.essentials.utils.APIUtils;
@@ -59,6 +61,44 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             initLayout();
             ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
             userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
+
+
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.register_title));
+
+            if (actionBar != null) {
+                // enable the customized view and disable title
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(actionBarView);
+                //  actionBar.setTitle(getResources().getString(R.string.categories));
+                actionBar.setDisplayShowTitleEnabled(false);
+
+
+                // remove Burger Icon
+                toolbar.setNavigationIcon(null);
+            }
+            actionBarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            getActivity(), drawer, toolbar, R.string.drawer_open,
+                            R.string.drawer_close);
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                    getActivity().onBackPressed();
+                }
+            });
+
         }
 
 
@@ -73,41 +113,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 //
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
-
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.register_title));
-
-        if (actionBar != null) {
-            // enable the customized view and disable title
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(actionBarView);
-            //  actionBar.setTitle(getResources().getString(R.string.categories));
-            actionBar.setDisplayShowTitleEnabled(false);
-
-
-            // remove Burger Icon
-            toolbar.setNavigationIcon(null);
-        }
-        actionBarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionBar.setDisplayShowCustomEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(true);
-                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        getActivity(), drawer, toolbar, R.string.drawer_open,
-                        R.string.drawer_close);
-                // All that to re-synchronize the Drawer State
-                toggle.syncState();
-                getActivity().onBackPressed();
-            }
-        });
 
         //TODO: network connection and rotation
 
@@ -297,10 +302,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         user.setId(registerTransportBean.getCustomerId());
                         saveUser(user);
 
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        intent.putExtra(ApplicationConstants.DISPLAY_TOAST, ApplicationConstants.REGISTER_SUCCESS);
-                        startActivity(intent);
+//                        Intent intent = new Intent(getActivity(), LoginFragment.class);
+//                        intent.putExtra(ApplicationConstants.DISPLAY_TOAST, ApplicationConstants.REGISTER_SUCCESS);
+//                        startActivity(intent);
 
+                        RegisterFragmentDirections.ActionNavTopRegisterToNavTopLogin action = RegisterFragmentDirections.actionNavTopRegisterToNavTopLogin();
+                        action.setDisplayToast(true);
+                        // Navigation.findNavController(rootView).navigate(action);
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
                     } else {
                         //EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, registerTransportBean.getMessage());
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, registerTransportBean.getMessage());
