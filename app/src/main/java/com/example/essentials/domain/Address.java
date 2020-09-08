@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public int id;
     @ColumnInfo(index = true)
     public int userId;

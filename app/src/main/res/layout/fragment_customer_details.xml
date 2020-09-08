@@ -3,154 +3,91 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/userCardView"
+    <TableLayout
+        android:id="@+id/tableLayoutItemDetail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/shadow"
-        android:clickable="true"
-        android:elevation="24dp"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardUseCompatPadding="true"
-        app:pressedTranslationZ="8dp">
+        android:background="@color/lightGray"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <TableRow>
 
             <TextView
-                android:id="@+id/firstname_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="20dp"
-                android:text="@string/customer_first_name"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1"
+                android:text="@string/customer_first_name" />
 
             <TextView
                 android:id="@+id/firstname_value_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="90dp"
-                android:paddingTop="20dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1" />
 
-        </LinearLayout>
+        </TableRow>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <TableRow>
 
             <TextView
-                android:id="@+id/lastname_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="50dp"
-                android:text="@string/customer_last_name"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1"
+                android:text="@string/customer_last_name" />
 
             <TextView
                 android:id="@+id/lastname_value_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="90dp"
-                android:paddingTop="50dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1" />
+        </TableRow>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <TableRow>
 
             <TextView
-                android:id="@+id/emailadds_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="80dp"
-                android:text="@string/emailaddress"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1"
+                android:text="@string/emailaddress" />
 
             <TextView
                 android:id="@+id/emailadds_value_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="87dp"
-                android:paddingTop="80dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1" />
+        </TableRow>
 
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <TableRow>
 
             <TextView
-                android:id="@+id/mobilenumber_txtVw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="110dp"
-                android:text="@string/mobilenumber"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                style="@style/textView"
+                android:layout_weight="1"
+                android:text="@string/mobilenumber" />
 
             <TextView
                 android:id="@+id/mobilenumber_value_txtVw"
+                style="@style/textView"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
-                android:paddingTop="110dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_marginLeft="10dp"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:text="@string/edit"
+                android:textColor="@color/white" />
+        </TableRow>
 
-        </LinearLayout>
-
-
-        <Button
-            android:id="@+id/edit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="140dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="@string/edit"
-            android:textColor="@color/white" />
-
-    </androidx.cardview.widget.CardView>
-
+    </TableLayout>
 
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/deliveryAddsCardView"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_below="@+id/userCardView"
-        app:cardUseCompatPadding="true"
-        app:cardBackgroundColor="#E4DFDF"
+        android:layout_below="@+id/tableLayoutItemDetail"
+        android:elevation="24dp"
+        app:cardBackgroundColor="@color/lightGray"
         app:cardCornerRadius="4dp"
-        android:elevation="24dp">
+        app:cardUseCompatPadding="true">
 
 
         <TextView

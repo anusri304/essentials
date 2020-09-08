@@ -2,9 +2,11 @@ package com.example.essentials.activity;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -28,6 +30,9 @@ import com.example.essentials.adapter.AddressRecyclerViewAdapter;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Product;
+import com.example.essentials.service.AddressService;
+import com.example.essentials.transport.AddressTransportBean;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
@@ -37,6 +42,12 @@ import com.example.essentials.viewmodel.WishlistViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DeliveryAddressActivity extends AppCompatActivity implements AddressRecyclerViewAdapter.ListItemClickListener {
     String TAG = "DeliveryAddressFragment";
@@ -101,9 +112,40 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
 
     @Override
     public void onListItemClick(AddressPresentationBean addressPresentationBean) {
-        Address address = addressViewModel.getAddressForId(addressPresentationBean.getId());
-        if (address != null) {
-            addressViewModel.deleteAddress(address);
-        }
+        callDeleteEndpoint(addressPresentationBean.getId());
+
+    }
+
+    private void callDeleteEndpoint(int addressId) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))
+                .addFormDataPart("addressId",  String.valueOf(addressId))
+                .build();
+        Call<AddressTransportBean> call = addressService.deleteAddress(apiToken, requestBody);
+
+        call.enqueue(new Callback<AddressTransportBean>() {
+            @Override
+            public void onResponse(Call<AddressTransportBean> call, Response<AddressTransportBean> response) {
+                AddressTransportBean addressTransportBean = response.body();
+                if (response.isSuccessful() && addressTransportBean.getMessage() != null && addressTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
+                    //   EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
+                    Address address = addressViewModel.getAddressForId(addressId);
+                    if (address != null) {
+                        addressViewModel.deleteAddress(address);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressTransportBean> call, Throwable throwable) {
+                Log.e(this.getClass().getName(), throwable.toString());
+            }
+        });
     }
 }

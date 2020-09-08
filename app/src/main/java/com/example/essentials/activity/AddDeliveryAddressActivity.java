@@ -62,8 +62,9 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
         });
     }
 
-    private void saveAddress() {
+    private void saveAddress(int id) {
             Address address = new Address();
+            address.setId(id);
             address.setUserId(APIUtils.getLoggedInUserId(AddDeliveryAddressActivity.this));
             address.setFirstName(activityAddAddressBinding.editTextFirstname.getText().toString());
             address.setLastName(activityAddAddressBinding.editTextLastname.getText().toString());
@@ -163,7 +164,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
                 AddressTransportBean addressTransportBean = response.body();
                 if (response.isSuccessful() && addressTransportBean.getMessage() != null && addressTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
                  //   EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
-                    saveAddress();
+                    saveAddress(addressTransportBean.getId());
                     Intent intent = new Intent(AddDeliveryAddressActivity.this, DeliveryAddressActivity.class);
                     startActivity(intent);
 

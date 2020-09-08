@@ -12,4 +12,7 @@ import retrofit2.http.Query;
 public interface AddressService {
     @POST("index.php?route=api/address/addAddress")
     Call<AddressTransportBean> addAddress(@Query("api_token") String apiToken,@Body RequestBody addressBean);
+
+    @POST("index.php?route=api/address/deleteAddress")
+    Call<AddressTransportBean> deleteAddress(@Query("api_token") String apiToken,@Body RequestBody addressBean);
 }
