@@ -130,10 +130,7 @@ public class LoginFragment extends Fragment {
         fragmentLoginBinding.registerHereTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-//                startActivity(intent);
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionNavTopLoginToNavTopRegister());
-
             }
         });
 

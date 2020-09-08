@@ -1,5 +1,6 @@
 package com.example.essentials.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -71,7 +73,19 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
 
             TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-            titleView.setText(getResources().getString(R.string.register_title));
+
+            if (getArguments() != null) {
+                if (RegisterFragmentArgs.fromBundle(getArguments()).getEditUser()) {
+                    editUser = true;
+                    hideFields();
+                    initFields();
+                    titleView.setText(getResources().getString(R.string.edit_user));
+                }
+                else {
+                    titleView.setText(getResources().getString(R.string.register_title));
+                }
+            }
+
 
             if (actionBar != null) {
                 // enable the customized view and disable title
@@ -98,20 +112,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     getActivity().onBackPressed();
                 }
             });
-
         }
-
-
-//        if (getActivity().getIntent() != null && getIntent().getBooleanExtra(ApplicationConstants.EDIT_USER, false)) {
-//            editUser = true;
-//            hideFields();
-//            initFields();
-//            setTitle(getString(R.string.edit_user));
-//        } else {
-//            setTitle(getString(R.string.register_title));
-//        }
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         //TODO: network connection and rotation
@@ -302,10 +303,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         user.setId(registerTransportBean.getCustomerId());
                         saveUser(user);
 
-//                        Intent intent = new Intent(getActivity(), LoginFragment.class);
-//                        intent.putExtra(ApplicationConstants.DISPLAY_TOAST, ApplicationConstants.REGISTER_SUCCESS);
-//                        startActivity(intent);
-
                         RegisterFragmentDirections.ActionNavTopRegisterToNavTopLogin action = RegisterFragmentDirections.actionNavTopRegisterToNavTopLogin();
                         action.setDisplayToast(true);
                         // Navigation.findNavController(rootView).navigate(action);
@@ -438,17 +435,28 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+
     public void showAlertDialog(Context context, String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        builder.setTitle(title);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                getActivity().finish();
+        androidx.appcompat.app.AlertDialog alertDialog;
+        if (context instanceof Activity) {
+            Activity activity = ((Activity) context);
+            AlertDialog alert = new AlertDialog.Builder(context).create();
+            if (!activity.isFinishing()) {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme);
+                builder.setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(RegisterFragmentDirections.actionNavTopRegisterToNavTopCustomerDetails());
+                            }
+                        });
+                    alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
             }
-        });
-        builder.setMessage(message);
-        builder.create().show();
-    }
+        }
 
 }

@@ -313,6 +313,7 @@ public class ProductActivity extends AppCompatActivity {
                 }
                 else if (itemId == R.id.nav_top_customer_details) {
                     Log.d("Product Activity", "Inside customer details");
+                    bottomNavigationView.setVisibility(View.INVISIBLE);
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_customer_details);
                         return true;
