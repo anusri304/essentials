@@ -15,16 +15,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.RegisterFragmentDirections;
+import com.example.essentials.activity.DeliveryAddressActivity;
 import com.example.essentials.domain.User;
 import com.example.essentials.utils.APIUtils;
-import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
@@ -76,7 +76,21 @@ public class CustomerDetailsFragment extends Fragment {
         });
         initEditButton();
         getUserDetails();
+        initCardView();
         return rootView;
+    }
+
+    private void initCardView() {
+        CardView cardView = (CardView) rootView.findViewById(R.id.deliveryAddsCardView);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void initEditButton() {
