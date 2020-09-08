@@ -1,4 +1,4 @@
-package com.example.essentials.activity;
+package com.example.essentials.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,6 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.RegisterFragmentArgs;
+import com.example.essentials.activity.RegisterFragmentDirections;
 import com.example.essentials.databinding.FragmentRegisterBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.fragment.CategoryFragmentDirections;

@@ -1,4 +1,4 @@
-package com.example.essentials.activity;
+package com.example.essentials.fragment;
 
 import android.app.Application;
 import android.content.Context;
@@ -26,6 +26,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.LoginFragmentArgs;
+import com.example.essentials.activity.LoginFragmentDirections;
+import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.databinding.FragmentLoginBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.fragment.ProductFragmentArgs;
