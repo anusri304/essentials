@@ -39,17 +39,15 @@ import retrofit2.Response;
 public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRecyclerViewAdapter.CartViewHolder> {
     List<CartPresentationBean> mValues;
     final Context mContext;
-    CartViewModel cartViewModel;
     DeliveryRecyclerViewAdapter.CartViewHolder holder;
     int check = 0;
     static int selectedPosition = 0;
 
 
 
-    public DeliveryRecyclerViewAdapter(Context context, List<CartPresentationBean> cartItems, CartViewModel cartViewModel) {
+    public DeliveryRecyclerViewAdapter(Context context, List<CartPresentationBean> cartItems) {
         mValues = cartItems;
         mContext = context;
-        this.cartViewModel = cartViewModel;
     }
 
     public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

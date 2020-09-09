@@ -20,7 +20,11 @@
         android:id="@+id/nav_top_order"
         android:name="com.example.essentials.fragment.OrderFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_top_drawer_nav" />
+        tools:layout="@layout/fragment_top_drawer_nav" >
+        <action
+            android:id="@+id/action_nav_top_order_to_nav_top_order_detail"
+            app:destination="@id/nav_top_order_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_top_register"
@@ -112,5 +116,15 @@
         <argument
             android:name="productPresentationBean"
             app:argType="com.example.essentials.activity.bean.ProductPresentationBean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_top_order_detail"
+        android:name="com.example.essentials.fragment.OrderDetailFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_top_drawer_nav" >
+        <argument
+            android:name="orderCustomerPresentationBean"
+            app:argType="com.example.essentials.activity.bean.OrderCustomerPresentationBean" />
     </fragment>
 </navigation>

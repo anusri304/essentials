@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,7 +100,8 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
     }
 
     @Override
-    public void onListItemClick(OrderCustomerPresentationBean cartPresentationBean) {
-
+    public void onListItemClick(OrderCustomerPresentationBean orderCustomerPresentationBean) {
+        OrderFragmentDirections.ActionNavTopOrderToNavTopOrderDetail action = OrderFragmentDirections.actionNavTopOrderToNavTopOrderDetail(orderCustomerPresentationBean);
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
     }
 }

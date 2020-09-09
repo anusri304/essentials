@@ -178,6 +178,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
         orderProduct.setTotal(total);
         orderProduct.setProductId(cartPresentationBean.getProductId());
         orderProduct.setProductName(cartPresentationBean.getName());
+        orderProduct.setProductImage(cartPresentationBean.getImage());
         orderProductViewModel.insertOrderProduct(orderProduct);
 
         callCartEndPoint(cartPresentationBean);
@@ -239,7 +240,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
     private void setProductData(List<CartPresentationBean> cartPresentationBeans) {
         this.cartPresentationBeans = cartPresentationBeans;
-        deliveryRecyclerViewAdapter = new DeliveryRecyclerViewAdapter(DeliveryItemActivity.this, cartPresentationBeans, cartViewModel);
+        deliveryRecyclerViewAdapter = new DeliveryRecyclerViewAdapter(DeliveryItemActivity.this, cartPresentationBeans);
         RecyclerView recyclerView = findViewById(R.id.rv_delivery_items);
         recyclerView.setAdapter(deliveryRecyclerViewAdapter);
 

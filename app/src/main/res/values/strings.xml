@@ -61,6 +61,12 @@
     <string name="forward_button">Forward Button</string>
     <string name="order_history">Order History</string>
     <string name="your_orders">Your Orders</string>
+    <string name="order_id">Order ID</string>
+    <string name="order_status">Order Status</string>
+    <string name="order_total">Order Total</string>
+    <string name="order_detail">Order Detail</string>
+    <string name="order_number">Order Number</string>
+    <string name="your_order_items">Your order Items</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
