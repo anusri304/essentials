@@ -58,6 +58,9 @@
     <string name="mobilenumber">Mobile number</string>
     <string name="edit">Edit</string>
     <string name="edit_user">Edit Customer Details</string>
+    <string name="forward_button">Forward Button</string>
+    <string name="order_history">Order History</string>
+    <string name="your_orders">Your Orders</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

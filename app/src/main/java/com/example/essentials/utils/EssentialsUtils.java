@@ -16,10 +16,12 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.CategoryPresentationBean;
+import com.example.essentials.activity.bean.OrderCustomerPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
+import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.Product;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -153,6 +155,20 @@ public class EssentialsUtils {
             addressPresentationBeans.add(addressPresentationBean);
         }
         return addressPresentationBeans;
+    }
+
+    public static List<OrderCustomerPresentationBean> getOrderCustomerPresentationBeans(List<OrderCustomer> orderCustomerList) {
+        List<OrderCustomerPresentationBean> orderCustomerPresentationBeans = new ArrayList<OrderCustomerPresentationBean>();
+        for(OrderCustomer orderCustomer:orderCustomerList){
+            OrderCustomerPresentationBean orderCustomerPresentationBean = new OrderCustomerPresentationBean();
+            orderCustomerPresentationBean.setId(orderCustomer.getId());
+            orderCustomerPresentationBean.setTotal(orderCustomer.getTotal());
+            orderCustomerPresentationBean.setDateAdded(orderCustomer.getDateAdded().toString().substring(0, 11).concat(orderCustomer.getDateAdded().toString().substring(30, 34)));
+            orderCustomerPresentationBean.setStatus(orderCustomer.getStatus());
+            orderCustomerPresentationBeans.add(orderCustomerPresentationBean);
+        }
+        return orderCustomerPresentationBeans;
+
     }
 
     public static List<CartPresentationBean> getCartPresentationBeans(List<Cart> cartItems, List<ProductPresentationBean> filteredProductPresentationBeans) {

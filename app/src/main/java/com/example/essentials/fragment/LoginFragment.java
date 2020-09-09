@@ -26,13 +26,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.LoginFragmentArgs;
-import com.example.essentials.activity.LoginFragmentDirections;
 import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.databinding.FragmentLoginBinding;
 import com.example.essentials.domain.User;
-import com.example.essentials.fragment.ProductFragmentArgs;
-import com.example.essentials.fragment.WishlistFragmentDirections;
 import com.example.essentials.service.LoginCustomerService;
 import com.example.essentials.transport.LoginTransportBean;
 import com.example.essentials.utils.APIUtils;

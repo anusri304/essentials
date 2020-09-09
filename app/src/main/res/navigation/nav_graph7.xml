@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_top_order"
-        android:name="com.example.essentials.fragment.NavTopDrawerFragment"
+        android:name="com.example.essentials.fragment.OrderFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_top_drawer_nav" />
 

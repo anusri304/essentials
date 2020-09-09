@@ -23,7 +23,7 @@ public interface OrderCustomerDao {
     @Update (onConflict = OnConflictStrategy.IGNORE)
     void updateOrderCustomer(OrderCustomer order);
 
-    @Query("SELECT * from OrderCustomer" )
+    @Query("SELECT * from OrderCustomer ORDER BY  dateAdded DESC" )
     LiveData<List<OrderCustomer>> getAllOrderCustomer();
 
 }

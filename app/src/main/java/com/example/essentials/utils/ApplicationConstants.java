@@ -60,6 +60,8 @@ public class ApplicationConstants {
     public static final String NO_ITEMS_WISH_LIST = "There are no items in Wishlist";
     public static final String NO_LOGIN = "Login Required" ;
     public static final String NO_LOGIN_MESSAGE_CART = "Please login to add products to the Cart" ;
+    public static final String NO_LOGIN_MESSAGE_ORDERS = "Please login to view your orders" ;
+
     public static final String LOG_OUT_TITLE = "Logout";
     public static final String LOG_OUT_MESSAGE = "You have been logged out sucessfully";
     public static final String USERNAME = "username";

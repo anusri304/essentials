@@ -75,7 +75,7 @@ public class ProductActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
         configureToolbar();
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_customer_details,R.id.nav_top_logout,R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
+                new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_customer_details, R.id.nav_top_logout, R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
         //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -99,7 +99,7 @@ public class ProductActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_app_bar, menu);
 
-       // observeWishlistChanges();
+        // observeWishlistChanges();
         BottomNavigationView navBar = findViewById(R.id.navigationView);
         MenuItem.OnActionExpandListener onActionExpandListener = new MenuItem.OnActionExpandListener() {
             @Override
@@ -247,7 +247,6 @@ public class ProductActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
 
 
-
         // actionbar.setDisplayHomeAsUpEnabled(true);
 
     }
@@ -263,14 +262,12 @@ public class ProductActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-
-         configureHeaderView();
-        if(!APIUtils.isUserLogged(ProductActivity.this)){
+        configureHeaderView();
+        if (!APIUtils.isUserLogged(ProductActivity.this)) {
             navView.getMenu().findItem(R.id.nav_top_logout).setVisible(false);
             navView.getMenu().findItem(R.id.nav_top_login).setVisible(true);
             navView.getMenu().findItem(R.id.nav_top_register).setVisible(true);
-        }
-        else{
+        } else {
             navView.getMenu().findItem(R.id.nav_top_login).setVisible(false);
             navView.getMenu().findItem(R.id.nav_top_register).setVisible(false);
             navView.getMenu().findItem(R.id.nav_top_logout).setVisible(true);
@@ -293,25 +290,32 @@ public class ProductActivity extends AppCompatActivity {
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     return true;
-                } else  if (itemId == R.id.nav_top_register) {
+                } else if (itemId == R.id.nav_top_register) {
                     Log.d("Product Activity", "Inside home");
 
                     bottomNavigationView.setVisibility(View.INVISIBLE);
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_register);
                     return true;
-                }
-                else if (itemId == R.id.nav_top_login) {
+                } else if (itemId == R.id.nav_top_order) {
+                    Log.d("Product Activity", "Inside order");
+
+                    if (APIUtils.isUserLogged(ProductActivity.this)) {
+                        Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_order);
+                        return true;
+                    } else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_ORDERS);
+                    }
+                    return true;
+                } else if (itemId == R.id.nav_top_login) {
                     Log.d("Product Activity", "Inside login");
                     bottomNavigationView.setVisibility(View.INVISIBLE);
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_login);
                     return true;
-                }
-                else if (itemId == R.id.nav_top_logout){
-                    showLogoutMessageAlertDialog(ProductActivity.this,ApplicationConstants.LOG_OUT_TITLE,ApplicationConstants.LOG_OUT_MESSAGE);
+                } else if (itemId == R.id.nav_top_logout) {
+                    showLogoutMessageAlertDialog(ProductActivity.this, ApplicationConstants.LOG_OUT_TITLE, ApplicationConstants.LOG_OUT_MESSAGE);
                     return true;
-                }
-                else if (itemId == R.id.nav_top_customer_details) {
+                } else if (itemId == R.id.nav_top_customer_details) {
                     Log.d("Product Activity", "Inside customer details");
                     bottomNavigationView.setVisibility(View.INVISIBLE);
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
@@ -329,19 +333,18 @@ public class ProductActivity extends AppCompatActivity {
     private void configureHeaderView() {
         View headerView = navView.getHeaderView(0);
         AppCompatTextView navUsername = (AppCompatTextView) headerView.findViewById(R.id.username);
-        if(!APIUtils.isUserLogged(ProductActivity.this)) {
+        if (!APIUtils.isUserLogged(ProductActivity.this)) {
             navUsername.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             navUsername.setText(TextUtils.concat(ApplicationConstants.HELLO, " ", APIUtils.getLoggedInUserName(getApplicationContext())));
         }
     }
 
-    public void showLogoutMessageAlertDialog(Context context, String title, String message ){
-        if (  context instanceof Activity) {
+    public void showLogoutMessageAlertDialog(Context context, String title, String message) {
+        if (context instanceof Activity) {
             Activity activity = ((Activity) context);
             if (!activity.isFinishing()) {
-                new MaterialAlertDialogBuilder(context,R.style.RoundShapeTheme).setTitle(title)
+                new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme).setTitle(title)
                         .setMessage(message)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
