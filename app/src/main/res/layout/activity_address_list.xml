@@ -9,7 +9,6 @@
     android:elevation="24dp"
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="#E4DFDF"
-    android:background="@drawable/shadow"
     android:focusable="true"
     app:pressedTranslationZ="8dp">
     <RelativeLayout android:layout_width="match_parent"
@@ -28,10 +27,10 @@
             android:id="@+id/arrowForward"
             android:src="@drawable/arrow_forward"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="60dp"
-            android:layout_toEndOf="@+id/address_name"
-            android:paddingLeft="280dp"/>
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="200dp" />
 
     <Button
         android:id="@+id/delete_button"

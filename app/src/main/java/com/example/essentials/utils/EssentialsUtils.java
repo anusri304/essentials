@@ -180,7 +180,7 @@ public class EssentialsUtils {
 
             ProductPresentationBean matchingProductPresentationBean = filteredProductPresentationBeans.stream().filter(productPresentationBean -> productPresentationBean.getId() == cart.getProductId()).findAny().get();
             cartPresentationBean.setName(matchingProductPresentationBean.getName());
-            cartPresentationBean.setPrice(matchingProductPresentationBean.getPrice());
+            cartPresentationBean.setPrice(matchingProductPresentationBean.getSpecial().equalsIgnoreCase("")?matchingProductPresentationBean.getPrice():matchingProductPresentationBean.getSpecial());
             cartPresentationBean.setProductId(matchingProductPresentationBean.getId());
             cartPresentationBean.setImage(matchingProductPresentationBean.getImage());
             cartPresentationBeans.add(cartPresentationBean);
