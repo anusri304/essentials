@@ -76,6 +76,7 @@ public class ApplicationConstants {
     public static final String EDIT_USER = "editUser" ;
     public static final String EDIT_CUSTOMER_TITLE = "Edit Customer";
     public static final String SERVER_ERROR = "Server Error";
+    public static final String ADDRESS_ID ="addressId" ;
 
     public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";

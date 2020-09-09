@@ -19,7 +19,10 @@ import lombok.NoArgsConstructor;
 @Entity(foreignKeys = {
         @ForeignKey(entity = User.class,
                 parentColumns = "id",
-                childColumns = "userId")
+                childColumns = "userId"),
+        @ForeignKey(entity = Address.class,
+                parentColumns = "id",
+                childColumns = "addressId")
 })
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +31,8 @@ public class OrderCustomer {
     public int id;
     @ColumnInfo(index = true)
     public int userId;
+    @ColumnInfo(index = true)
+    public int addressId;
     private String paymentCustomerName;
     private String status;
     private double total;

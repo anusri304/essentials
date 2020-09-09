@@ -23,6 +23,7 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.DeliveryRecyclerViewAdapter;
+import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
@@ -32,6 +33,7 @@ import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.OrderProductViewModel;
@@ -69,6 +71,9 @@ public class DeliveryItemActivity extends AppCompatActivity {
     static androidx.appcompat.app.AlertDialog alertDialog;
     double total;
     List<CartPresentationBean> cartPresentationBeans;
+    int addressId;
+    TextView addsTxtView;
+    AddressViewModel addressViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,18 +82,33 @@ public class DeliveryItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_delivery);
         //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        if (getIntent() != null) {
+            addressId = getIntent().getIntExtra(ApplicationConstants.ADDRESS_ID, 0);
+        }
+
         ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+        addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
 
         orderCustomerViewModel = new ViewModelProvider(this, factory).get(OrderCustomerViewModel.class);
 
-        orderProductViewModel =  new ViewModelProvider(this, factory).get(OrderProductViewModel.class);
+        orderProductViewModel = new ViewModelProvider(this, factory).get(OrderProductViewModel.class);
 
         confirmOrder = findViewById(R.id.order_button);
+        initAddress();
 
         initOrder();
         getAllProducts();
+    }
+
+
+    private void initAddress() {
+        Address address=  addressViewModel.getAddressForId(addressId);
+        addsTxtView = findViewById(R.id.deliveryAddsView);
+
+        addsTxtView.setText(address.getFirstName() + "\n" + address.getLastName() + "\n"+ address.getAddressLine1() + "\n"+address.getAddressLine2()+ "\n"+ address.getCity()+ "\n"+address.getPostalCode()+ "\n"+address.getCountry());
     }
 
     private void initOrder() {
@@ -102,6 +122,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
     private void saveOrdersInDB() {
         OrderCustomer orderCustomer = new OrderCustomer();
+        orderCustomer.setAddressId(addressId);
         orderCustomer.setId(new Random().nextInt());
         orderCustomer.setUserId(APIUtils.getLoggedInUserId(DeliveryItemActivity.this));
         orderCustomer.setPaymentCustomerName(APIUtils.getLoggedInUserName(DeliveryItemActivity.this));
@@ -131,7 +152,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
                 }
             }
@@ -170,7 +191,6 @@ public class DeliveryItemActivity extends AppCompatActivity {
         showOrderAlertDialog(DeliveryItemActivity.this);
 
     }
-
 
 
     public void showOrderAlertDialog(Context context) {

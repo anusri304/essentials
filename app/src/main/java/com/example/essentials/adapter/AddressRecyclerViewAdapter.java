@@ -68,6 +68,7 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent (mContext, DeliveryItemActivity.class);
+                    intent.putExtra(ApplicationConstants.ADDRESS_ID,mValues.get(getAdapterPosition()).getId());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
