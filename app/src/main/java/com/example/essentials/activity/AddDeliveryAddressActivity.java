@@ -4,11 +4,9 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -17,16 +15,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.essentials.R;
 import com.example.essentials.databinding.ActivityAddAddressBinding;
 import com.example.essentials.domain.Address;
-import com.example.essentials.domain.User;
 import com.example.essentials.service.AddressService;
-import com.example.essentials.service.LoginCustomerService;
-import com.example.essentials.transport.AddressTransportBean;
-import com.example.essentials.transport.LoginTransportBean;
+import com.example.essentials.transport.AddressListTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
-import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
-import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
 import okhttp3.MultipartBody;
@@ -156,15 +149,15 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
                 .addFormDataPart("zone_id", "2964")
                 .addFormDataPart("country_id", "193")
                 .build();
-        Call<AddressTransportBean> call = addressService.addAddress(apiToken,requestBody);
+        Call<AddressListTransportBean> call = addressService.addAddress(apiToken,requestBody);
 
-        call.enqueue(new Callback<AddressTransportBean>() {
+        call.enqueue(new Callback<AddressListTransportBean>() {
             @Override
-            public void onResponse(Call<AddressTransportBean> call, Response<AddressTransportBean> response) {
-                AddressTransportBean addressTransportBean = response.body();
-                if (response.isSuccessful() && addressTransportBean.getMessage() != null && addressTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
+            public void onResponse(Call<AddressListTransportBean> call, Response<AddressListTransportBean> response) {
+                AddressListTransportBean addressListTransportBean = response.body();
+                if (response.isSuccessful() && addressListTransportBean.getMessage() != null && addressListTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
                  //   EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
-                    saveAddress(addressTransportBean.getId());
+                    saveAddress(addressListTransportBean.getId());
                     Intent intent = new Intent(AddDeliveryAddressActivity.this, DeliveryAddressActivity.class);
                     startActivity(intent);
 
@@ -172,7 +165,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<AddressTransportBean> call, Throwable throwable) {
+            public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
                 Log.e(this.getClass().getName(), throwable.toString());
             }
         });

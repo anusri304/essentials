@@ -21,16 +21,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.AddDeliveryAddressActivity;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
+import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.service.AddressService;
 import com.example.essentials.service.CategoryService;
 import com.example.essentials.service.ProductService;
 import com.example.essentials.service.WishlistService;
+import com.example.essentials.transport.AddressListTransportBean;
+import com.example.essentials.transport.AddressTransportBean;
 import com.example.essentials.transport.CategoryListTransportBean;
 import com.example.essentials.transport.CategoryTransportBean;
 import com.example.essentials.transport.CustomerCartListTransportBean;
@@ -44,6 +49,7 @@ import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
+import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
@@ -71,6 +77,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     ProductViewModel productViewModel;
     CartViewModel cartViewModel;
     WishlistViewModel wishlistViewModel;
+    AddressViewModel addressViewModel;
     CategoryViewModel categoryViewModel;
     List<Product> products = new ArrayList<>();
     List<Cart> cartItems = new ArrayList<>();
@@ -86,6 +93,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
         categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
+        addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
         if (getArguments() != null) {
             categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
             Log.d("Anandhi", "CategoryId" + categoryId);
@@ -110,7 +118,60 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         observeChanges();
         observeCartChanges();
         observeWishlistChanges();
+        getDeliveryAddress();
         return rootView;
+    }
+
+    private void getDeliveryAddress() {
+       AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
+        String userId= String.valueOf(pref.getInt(ApplicationConstants.USER_ID, 0));
+        Call<AddressListTransportBean> call = addressService.getAddressForCustomer(userId,apiToken);
+
+        call.enqueue(new Callback<AddressListTransportBean>() {
+            @Override
+            public void onResponse(Call<AddressListTransportBean> call, Response<AddressListTransportBean> response) {
+                if (response.isSuccessful()) {
+                    AddressListTransportBean addressListTransportBean = response.body();
+                    if (addressListTransportBean != null && addressListTransportBean.getAddress() != null) {
+                        for (AddressTransportBean addressTransportBean : addressListTransportBean.getAddress()) {
+                            Address address = addressViewModel.getAddressForId(Integer.valueOf(addressTransportBean.getAddressId()));
+                            if (address == null) {
+                                address = new Address();
+                                address.setUserId(APIUtils.getLoggedInUserId(getActivity().getApplicationContext()));
+                                address.setId(Integer.parseInt(addressTransportBean.getAddressId()));
+                                address.setFirstName(addressTransportBean.getFirstname());
+                                address.setLastName(addressTransportBean.getLastname());
+                                address.setAddressLine1(addressTransportBean.getAddress1());
+                                address.setAddressLine2(addressTransportBean.getAddress2());
+                                address.setPostalCode(addressTransportBean.getPostcode());
+                                address.setCity(addressTransportBean.getCity());
+                                address.setCountry(addressTransportBean.getCountry());
+                                addressViewModel.insertAddress(address);
+                            } else {
+                                address.setFirstName(addressTransportBean.getFirstname());
+                                address.setLastName(addressTransportBean.getLastname());
+                                address.setAddressLine1(addressTransportBean.getAddress1());
+                                address.setAddressLine2(addressTransportBean.getAddress2());
+                                address.setPostalCode(addressTransportBean.getPostcode());
+                                address.setCity(addressTransportBean.getCity());
+                                address.setCountry(addressTransportBean.getCountry());
+                                addressViewModel.updateAddress(address);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
+                Log.d(TAG,"failed to get address");
+
+            }
+        });
     }
 
     private void initCheckBox() {
@@ -167,7 +228,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 category.setName(categoryTransportBean.getName());
                                 categoryViewModel.insertCategory(category);
                             } else {
-                                category.setId(Integer.parseInt(categoryTransportBean.getCategoryId()));
                                 category.setName(categoryTransportBean.getName());
                                 categoryViewModel.updateCategory(category);
                             }
@@ -227,6 +287,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             badgeDrawable.setVisible(false);
         }
     }
+
     private void observeChanges() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
@@ -411,7 +472,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     @Override
     public void onListItemClick(ProductPresentationBean productPresentationBean) {
-       //ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
+        //ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
         //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
 //
 //       Navigation.findNavController(rootView).navigate(action);

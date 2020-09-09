@@ -11,6 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddressTransportBean {
     @SerializedName("address_id")
-    int id;
-    String message;
+    String addressId;
+    String firstname;
+    String lastname;
+    @SerializedName("address_1")
+    String address1;
+    @SerializedName("address_2")
+    String address2;
+    String postcode;
+    String city;
+    String country;
 }

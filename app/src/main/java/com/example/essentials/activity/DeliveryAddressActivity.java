@@ -3,19 +3,12 @@ package com.example.essentials.activity;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -25,23 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.AddressPresentationBean;
-import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.AddressRecyclerViewAdapter;
-import com.example.essentials.adapter.ProductRecyclerViewAdapter;
 import com.example.essentials.domain.Address;
-import com.example.essentials.domain.Product;
 import com.example.essentials.service.AddressService;
-import com.example.essentials.transport.AddressTransportBean;
+import com.example.essentials.transport.AddressListTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.example.essentials.viewmodel.WishlistViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -126,13 +114,13 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
                 .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))
                 .addFormDataPart("addressId",  String.valueOf(addressId))
                 .build();
-        Call<AddressTransportBean> call = addressService.deleteAddress(apiToken, requestBody);
+        Call<AddressListTransportBean> call = addressService.deleteAddress(apiToken, requestBody);
 
-        call.enqueue(new Callback<AddressTransportBean>() {
+        call.enqueue(new Callback<AddressListTransportBean>() {
             @Override
-            public void onResponse(Call<AddressTransportBean> call, Response<AddressTransportBean> response) {
-                AddressTransportBean addressTransportBean = response.body();
-                if (response.isSuccessful() && addressTransportBean.getMessage() != null && addressTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
+            public void onResponse(Call<AddressListTransportBean> call, Response<AddressListTransportBean> response) {
+                AddressListTransportBean addressListTransportBean = response.body();
+                if (response.isSuccessful() && addressListTransportBean.getMessage() != null && addressListTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
                     //   EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                     Address address = addressViewModel.getAddressForId(addressId);
                     if (address != null) {
@@ -143,7 +131,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
             }
 
             @Override
-            public void onFailure(Call<AddressTransportBean> call, Throwable throwable) {
+            public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
                 Log.e(this.getClass().getName(), throwable.toString());
             }
         });

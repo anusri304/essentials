@@ -1,18 +1,23 @@
 package com.example.essentials.service;
 
-import com.example.essentials.transport.AddressTransportBean;
-import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.transport.AddressListTransportBean;
+import com.example.essentials.transport.CustomerCartListTransportBean;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface AddressService {
     @POST("index.php?route=api/address/addAddress")
-    Call<AddressTransportBean> addAddress(@Query("api_token") String apiToken,@Body RequestBody addressBean);
+    Call<AddressListTransportBean> addAddress(@Query("api_token") String apiToken, @Body RequestBody addressBean);
 
     @POST("index.php?route=api/address/deleteAddress")
-    Call<AddressTransportBean> deleteAddress(@Query("api_token") String apiToken,@Body RequestBody addressBean);
+    Call<AddressListTransportBean> deleteAddress(@Query("api_token") String apiToken, @Body RequestBody addressBean);
+
+    @GET("index.php?route=api/address/getAddressesForCustomer")
+    Call<AddressListTransportBean> getAddressForCustomer(@Query("customerId") String customerId, @Query("api_token") String apiToken);
+
 }
