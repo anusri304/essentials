@@ -16,7 +16,7 @@ import com.example.essentials.service.DisplayPromotionProductService;
 public class EssentialAppWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                String ingredients, String imagePath,String price, int appWidgetId) {
+                                String ingredients, String imagePath, String price, int appWidgetId) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.essentials_app_widget);
         views.setTextViewText(R.id.appwidget_productName, ingredients);
@@ -32,7 +32,7 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
-      //  views.setTextViewText(R.id.appwidget_productPrice, price);
+        views.setTextViewText(R.id.appwidget_productPrice, price);
         Intent intent = new Intent(context, ProductActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_productName, pendingIntent);
@@ -47,7 +47,7 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
         DisplayPromotionProductService.startActionDisplayPromotionProductWidgets(context);
     }
 
-    public static void updateProductWidget(Context context, AppWidgetManager appWidgetManager, String ingredients, String imagePath,String price, int[] appWidgetIds) {
+    public static void updateProductWidget(Context context, AppWidgetManager appWidgetManager, String ingredients, String imagePath, String price, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, ingredients, imagePath, price, appWidgetId);
