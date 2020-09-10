@@ -28,4 +28,7 @@ public interface ProductDao {
 
     @Query("SELECT * from Product where id=:productId")
     Product getProduct(int productId);
+
+    @Query("select * FROM product where special !='' AND inStock = 'yes' LIMIT 1" )
+    Product getPromotionProduct();
 }

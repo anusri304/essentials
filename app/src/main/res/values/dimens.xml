@@ -8,5 +8,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="margin_start">8dp</dimen>
     <dimen name="margin_top">5dp</dimen>
     <dimen name="button_height">40dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 
 </resources>

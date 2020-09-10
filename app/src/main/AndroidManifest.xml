@@ -13,7 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".fragment.LoginFragment"></activity>
+        <receiver android:name=".widget.EssentialAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_app_widget_info"/>
+        </receiver>
+        <service android:name=".service.DisplayPromotionProductService" />
         <activity
             android:name=".activity.ProductDetailActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>

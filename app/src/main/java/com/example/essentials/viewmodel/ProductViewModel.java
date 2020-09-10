@@ -47,4 +47,8 @@ public class ProductViewModel extends AndroidViewModel {
         return products;
     }
 
+    public Product getPromotionProduct(){
+        return productRepository.getPromotionProduct();
+    }
+
 }

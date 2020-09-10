@@ -67,6 +67,7 @@
     <string name="order_detail">Order Detail</string>
     <string name="order_number">Order Number</string>
     <string name="your_order_items">Your order Items</string>
+    <string name="appwidget_text">EXAMPLE</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

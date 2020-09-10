@@ -107,4 +107,8 @@ public class ProductRepository {
     public LiveData<List<Product>> getAllProducts() {
         return productDao.getAllProducts();
     }
+
+    public Product getPromotionProduct(){
+        return productDao.getPromotionProduct();
+    }
 }
