@@ -120,9 +120,7 @@ public class ProductActivity extends AppCompatActivity {
         searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
 
         // TODO: Add code so that search view is visible in only certain fragments
-        if (!navController.getCurrentDestination().getDisplayName().contains("nav_top_home")) {
-            menu.findItem(R.id.search).setVisible(false);
-        } else {
+        if (navController.getCurrentDestination().getDisplayName().contains("nav_top_home") || navController.getCurrentDestination().getDisplayName().contains("nav_bottom_home") ) {
             menu.findItem(R.id.search).setVisible(true);
 
             searchView.setQueryHint(getString(R.string.search_hint));
@@ -159,6 +157,8 @@ public class ProductActivity extends AppCompatActivity {
                     return false;
                 }
             });
+        } else {
+            menu.findItem(R.id.search).setVisible(false);
         }
 
         return true;

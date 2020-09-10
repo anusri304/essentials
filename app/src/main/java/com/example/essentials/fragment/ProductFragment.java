@@ -501,8 +501,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     public void filter(String query) {
-        adapter.performFilter(query);
-        Log.d("TEsting", query);
+        if(adapter!=null) {
+            adapter.performFilter(query);
+            Log.d("TEsting", query);
+        }
 
     }
 

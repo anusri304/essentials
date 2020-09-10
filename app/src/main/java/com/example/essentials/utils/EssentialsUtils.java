@@ -108,10 +108,12 @@ public class EssentialsUtils {
      * @param context context
      */
     public static void hideKeyboard(Context context) {
-        View view = ((Activity) context).getCurrentFocus();
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null && view != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if(context instanceof  Activity) {
+            View view = ((Activity) context).getCurrentFocus();
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null && view != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 

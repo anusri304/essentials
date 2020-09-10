@@ -3,8 +3,8 @@ package com.example.essentials.utils;
 import java.text.DecimalFormat;
 
 public class ApplicationConstants {
-  public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-    //public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+ // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
+   public static final String BASE_URL = "http://10.0.75.1/Opencart/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
