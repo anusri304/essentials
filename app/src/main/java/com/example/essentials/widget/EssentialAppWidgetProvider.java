@@ -25,7 +25,7 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
             Bitmap bitmap = Glide.with(context)
                     .asBitmap()
                     .load(imagePath)
-                    .submit(820, 430)
+                    .submit(820, 300)
                     .get();
 
             views.setImageViewBitmap(R.id.productImageView, bitmap);
@@ -35,7 +35,7 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_productPrice, price);
         Intent intent = new Intent(context, ProductActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        views.setOnClickPendingIntent(R.id.appwidget_productName, pendingIntent);
+        views.setOnClickPendingIntent(R.id.appwidget_RelativeLayout, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
