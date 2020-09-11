@@ -9,7 +9,6 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.essentials.domain.Category;
-import com.example.essentials.domain.Product;
 
 import java.util.List;
 

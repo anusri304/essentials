@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
@@ -15,11 +16,13 @@ import com.example.essentials.service.DisplayPromotionProductService;
 
 public class EssentialAppWidgetProvider extends AppWidgetProvider {
 
+    static String TAG= "EssentialAppWidgetProvider";
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                String ingredients, String imagePath, String price, int appWidgetId) {
+                                String productName, String imagePath, String price,  int appWidgetId) {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.essentials_app_widget);
-        views.setTextViewText(R.id.appwidget_productName, ingredients);
+        views.setTextViewText(R.id.appwidget_productName, productName);
 
         try {
             Bitmap bitmap = Glide.with(context)
@@ -30,9 +33,11 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
 
             views.setImageViewBitmap(R.id.productImageView, bitmap);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG,"Error loading image in EssentialAppWidgetProvider");
         }
         views.setTextViewText(R.id.appwidget_productPrice, price);
+
+        views.setTextViewText(R.id.appwidget_product_Special_Price, "Test Special");
         Intent intent = new Intent(context, ProductActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_RelativeLayout, pendingIntent);
@@ -47,10 +52,10 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
         DisplayPromotionProductService.startActionDisplayPromotionProductWidgets(context);
     }
 
-    public static void updateProductWidget(Context context, AppWidgetManager appWidgetManager, String ingredients, String imagePath, String price, int[] appWidgetIds) {
+    public static void updateProductWidget(Context context, AppWidgetManager appWidgetManager,  String productName, String imagePath, String price, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, ingredients, imagePath, price, appWidgetId);
+            updateAppWidget(context, appWidgetManager, productName, imagePath, price, appWidgetId);
         }
     }
 

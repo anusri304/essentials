@@ -13,27 +13,20 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.CategoryPresentationBean;
 import com.example.essentials.adapter.CategoryRecyclerViewAdapter;
-import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Category;
-import com.example.essentials.domain.Wishlist;
-import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
-import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.example.essentials.viewmodel.WishlistViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

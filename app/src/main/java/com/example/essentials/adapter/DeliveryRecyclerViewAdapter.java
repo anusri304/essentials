@@ -1,14 +1,10 @@
 package com.example.essentials.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,22 +15,9 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
-import com.example.essentials.domain.Cart;
-import com.example.essentials.service.CartService;
-import com.example.essentials.transport.CartTransportBean;
-import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
-import com.example.essentials.viewmodel.CartViewModel;
-import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRecyclerViewAdapter.CartViewHolder> {
     List<CartPresentationBean> mValues;

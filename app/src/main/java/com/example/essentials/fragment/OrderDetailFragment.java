@@ -23,12 +23,9 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.OrderCustomerPresentationBean;
 import com.example.essentials.adapter.DeliveryRecyclerViewAdapter;
-import com.example.essentials.adapter.OrderCustomerRecyclerViewAdapter;
-import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
-import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.OrderProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 

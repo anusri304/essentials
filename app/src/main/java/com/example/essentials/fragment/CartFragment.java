@@ -47,11 +47,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -84,6 +81,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         checkoutButton = (MaterialButton)  rootView.findViewById(R.id.checkout_button);
 
         //tODO: Remove the below code if not used
+        //TODO remove log.d and toast
 //
 //        final Observer<Integer> nameObserver = new Observer<Integer>() {
 //            @Override

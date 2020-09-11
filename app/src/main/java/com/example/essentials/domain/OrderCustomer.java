@@ -8,7 +8,6 @@ import androidx.room.TypeConverters;
 
 import com.example.essentials.utils.LocalDateTimeConverter;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;

@@ -6,9 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
-import com.example.essentials.repository.OrderCustomerRepository;
 import com.example.essentials.repository.OrderProductRepository;
 
 import java.util.List;

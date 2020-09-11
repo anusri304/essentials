@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.example.essentials.dao.CategoryDao;
-import com.example.essentials.dao.UserDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Category;
-import com.example.essentials.domain.User;
 import com.example.essentials.executors.AppExecutors;
 
 import java.util.List;

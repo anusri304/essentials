@@ -2,8 +2,6 @@ package com.example.essentials.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.DeliveryItemActivity;
 import com.example.essentials.activity.bean.AddressPresentationBean;
-import com.example.essentials.activity.bean.ProductPresentationBean;
-import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
-import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.utils.ApplicationConstants;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 

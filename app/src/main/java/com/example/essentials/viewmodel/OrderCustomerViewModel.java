@@ -7,10 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.essentials.domain.OrderCustomer;
-import com.example.essentials.domain.User;
-import com.example.essentials.domain.Wishlist;
 import com.example.essentials.repository.OrderCustomerRepository;
-import com.example.essentials.repository.UserRepository;
 
 import java.util.List;
 

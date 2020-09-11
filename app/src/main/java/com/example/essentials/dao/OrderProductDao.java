@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 
 import java.util.List;

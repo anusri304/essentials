@@ -1,6 +1,5 @@
 package com.example.essentials.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -39,10 +38,8 @@ import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.OrderProductViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;

@@ -8,9 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.essentials.domain.Address;
-import com.example.essentials.domain.Cart;
 import com.example.essentials.repository.AddressRepository;
-import com.example.essentials.repository.CartRepository;
 
 import java.util.List;
 

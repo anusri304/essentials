@@ -1,7 +1,6 @@
 package com.example.essentials.service;
 
 import com.example.essentials.transport.AddressListTransportBean;
-import com.example.essentials.transport.CustomerCartListTransportBean;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
