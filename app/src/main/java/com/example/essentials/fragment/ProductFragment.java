@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.ProductDetailActivity;
@@ -66,7 +67,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener {
+public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener,SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
     String TAG = "ProductFragment";
     List<ProductPresentationBean> productPresentationBeans;
@@ -82,6 +83,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     List<Wishlist> wishListItems = new ArrayList<>();
     int categoryId;
     MaterialCheckBox materialCheckBox;
+    private SwipeRefreshLayout swipeContainer;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -117,6 +119,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         observeCartChanges();
         observeWishlistChanges();
         getDeliveryAddress();
+
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(this);
         return rootView;
     }
 
@@ -496,6 +502,11 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+
+        if(swipeContainer.isRefreshing()){
+            swipeContainer.setRefreshing(false);
+        }
+
     }
 
     public void filter(String query) {
@@ -506,4 +517,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     }
 
+    @Override
+    public void onRefresh() {
+        getAllProducts();
+    }
 }
