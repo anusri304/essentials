@@ -415,7 +415,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getActivity().getApplicationContext(),"Anandhi Called",  Toast.LENGTH_SHORT).show();
         getProductsForCustomer();
     }
 }
