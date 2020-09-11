@@ -37,7 +37,6 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
         }
         views.setTextViewText(R.id.appwidget_productPrice, price);
 
-        views.setTextViewText(R.id.appwidget_product_Special_Price, "Test Special");
         Intent intent = new Intent(context, ProductActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_RelativeLayout, pendingIntent);
