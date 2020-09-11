@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
@@ -32,6 +33,8 @@ import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.transport.CustomerWishListTransportBean;
+import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
@@ -55,7 +58,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class WishlistFragment extends Fragment implements WishlistRecyclerViewAdapter.ListItemClickListener {
+public class WishlistFragment extends Fragment implements WishlistRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     String TAG = "WishlistFragment";
     WishlistViewModel wishlistViewModel;
     CartViewModel cartViewModel;
@@ -68,6 +71,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     View rootView;
     private static Retrofit retrofit = null;
     CoordinatorLayout coordinatorLayout;
+    private SwipeRefreshLayout swipeContainer;
     View view;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,10 +89,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
         getWishlistProducts();
 
-      //  observeWishlistChanges();
+        //  observeWishlistChanges();
 
 
-        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity()
@@ -123,6 +127,11 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                 getActivity().onBackPressed();
             }
         });
+
+
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(this);
         return rootView;
     }
 
@@ -164,12 +173,49 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             wishlists = objWishlist;
             Log.d("wishlist", String.valueOf(wishlists.size()));
             if (wishlists.isEmpty()) {
-                EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_WISH_LIST);
+                EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_ITEMS, ApplicationConstants.NO_ITEMS_WISH_LIST);
             }
             setData(wishlists);
             drawBadgeForWishlist(wishlists.size());
         });
 
+    }
+
+    private void getWishlistProductsForCustomer() {
+        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        Call<CustomerWishListTransportBean> call = wishlistService.getWishListProductsForCustomer(String.valueOf(userId), apiToken);
+        //Save Products to cart
+        call.enqueue(new Callback<CustomerWishListTransportBean>() {
+            @Override
+            public void onResponse(Call<CustomerWishListTransportBean> call, Response<CustomerWishListTransportBean> response) {
+                if (response.isSuccessful()) {
+                    CustomerWishListTransportBean customerWishListTransportBeans = response.body();
+                    if (customerWishListTransportBeans != null && customerWishListTransportBeans.getProducts().size() > 0) {
+                        for (CustomerWishTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
+                            Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, Integer.parseInt(customerWishlistTransportBean.getProductId()));
+                            if (wishlist == null) {
+                                wishlist = new Wishlist();
+                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                wishlist.setUserId(userId);
+                                wishlistViewModel.insertWishlist(wishlist);
+                            } else {
+                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                wishlist.setUserId(userId);
+                                wishlistViewModel.updateWishlist(wishlist);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
+                Log.e(this.getClass().getName(), throwable.toString());
+            }
+        });
     }
 
     private void getAllProducts() {
@@ -187,6 +233,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         Log.d("filteredData", String.valueOf(filteredProductPresentationBeans.size()));
         setProductData(filteredProductPresentationBeans);
 
+        if (swipeContainer.isRefreshing()) {
+            swipeContainer.setRefreshing(false);
+        }
+
     }
 
     private void setProductData(List<ProductPresentationBean> productPresentationBeans) {
@@ -201,8 +251,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     @Override
     public void onListItemClick(ProductPresentationBean productPresentationBean) {
         // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-callRemoveWishListEndpoint(productPresentationBean);
-callCartEndPoint(productPresentationBean);
+        callRemoveWishListEndpoint(productPresentationBean);
+        callCartEndPoint(productPresentationBean);
 
     }
 
@@ -227,7 +277,7 @@ callCartEndPoint(productPresentationBean);
             @Override
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
                 WishlistTransportBean wishlistTransportBean = response.body();
-               removeWishlistFromDB(userId, productPresentationBean.getId());
+                removeWishlistFromDB(userId, productPresentationBean.getId());
 
             }
 
@@ -244,6 +294,7 @@ callCartEndPoint(productPresentationBean);
             wishlistViewModel.deleteWishlistItems(wishlist);
         }
     }
+
     private void callCartEndPoint(ProductPresentationBean productPresentationBean) {
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
@@ -264,7 +315,7 @@ callCartEndPoint(productPresentationBean);
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     saveCartItemsToDB(userId, productPresentationBean.getId());
                 }
             }
@@ -316,5 +367,12 @@ callCartEndPoint(productPresentationBean);
         TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    @Override
+    public void onRefresh() {
+
+        getWishlistProductsForCustomer();
+
     }
 }
