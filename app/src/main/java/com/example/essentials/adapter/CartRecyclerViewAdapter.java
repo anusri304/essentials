@@ -205,6 +205,14 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         });
     }
 
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
 
+    public void addAll(List<CartPresentationBean> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
+    }
 
 }

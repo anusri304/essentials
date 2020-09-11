@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.DeliveryAddressActivity;
@@ -32,8 +34,11 @@ import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.CartService;
+import com.example.essentials.service.ProductService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.transport.CustomerCartListTransportBean;
+import com.example.essentials.transport.CustomerCartTransportBean;
 import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
@@ -58,7 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class CartFragment extends Fragment implements CartRecyclerViewAdapter.ListItemClickListener {
+public class CartFragment extends Fragment implements CartRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     View rootView;
     CartViewModel cartViewModel;
     ProductViewModel productViewModel;
@@ -67,6 +72,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
     CartRecyclerViewAdapter cartRecyclerViewAdapter;
+
+    private SwipeRefreshLayout swipeContainer;
     List<Wishlist> wishLists = new ArrayList<>();
     View view;
     TextView totalTxtView;
@@ -78,7 +85,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         view = getActivity().findViewById(android.R.id.content);
         totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
-        checkoutButton = (MaterialButton)  rootView.findViewById(R.id.checkout_button);
+        checkoutButton = (MaterialButton) rootView.findViewById(R.id.checkout_button);
 
         //tODO: Remove the below code if not used
         //TODO remove log.d and toast
@@ -99,7 +106,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
 
-        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
         LayoutInflater layoutInflater = (LayoutInflater) getActivity()
@@ -108,6 +115,12 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
         TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
         titleView.setText(getResources().getString(R.string.your_cart_items));
+
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(this);
+
+
 
         if (actionBar != null) {
             // enable the customized view and disable title
@@ -135,11 +148,58 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             }
         });
         getAllProducts();
-
-
         initCheckoutButton();
         observeWishlistChanges();
+
+//        swipeContainer.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                swipeContainer.setRefreshing(true);
+//            }
+//        });
         return rootView;
+    }
+
+    private void getProductsForCustomer() {
+        ProductService productService = APIUtils.getRetrofit().create(ProductService.class);
+        SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+        Call<CustomerCartListTransportBean> call = productService.getProductsForCustomer(String.valueOf(userId), apiToken);
+        //Save Products to cart
+        call.enqueue(new Callback<CustomerCartListTransportBean>() {
+            @Override
+            public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
+                if (response.isSuccessful()) {
+                    CustomerCartListTransportBean customerCartListTransportBeans = response.body();
+                    if (customerCartListTransportBeans != null && customerCartListTransportBeans.getProducts() != null && customerCartListTransportBeans.getProducts().size() > 0) {
+                        for (CustomerCartTransportBean customercartTransportBean : customerCartListTransportBeans.getProducts()) {
+                            Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
+                            if (cart == null) {
+                                cart = new Cart();
+                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                cart.setUserId(userId);
+                                cartViewModel.insertCartItems(cart);
+                            } else {
+                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                cart.setUserId(userId);
+                                cartViewModel.updateCartItems(cart);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
+                Log.e(this.getClass().getName(), throwable.toString());
+            }
+        });
+
+
     }
 
     private void initCheckoutButton() {
@@ -165,7 +225,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
     private void observeWishlistChanges() {
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
-            wishLists= objWishlist;
+            wishLists = objWishlist;
 
             drawBadgeForWishlist(wishLists.size());
         });
@@ -189,8 +249,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 setData(cartItems);
                 int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
                 drawBadge(totalQuantity);
-            }
-            else {
+            } else {
                 TextView totalTextView = rootView.findViewById(R.id.total_title_text_view);
                 totalTextView.setVisibility(View.INVISIBLE);
                 TextView totalValueTextView = rootView.findViewById(R.id.total_value_text_view);
@@ -198,7 +257,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
                 MaterialButton checkoutButton = rootView.findViewById(R.id.checkout_button);
                 checkoutButton.setVisibility(View.INVISIBLE);
-                EssentialsUtils.showMessageAlertDialog(getActivity(),ApplicationConstants.NO_ITEMS,ApplicationConstants.NO_ITEMS_CART);
+                EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_ITEMS, ApplicationConstants.NO_ITEMS_CART);
                 setData(cartItems);
                 drawBadge(0);
             }
@@ -222,9 +281,12 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
-        if (filteredProductPresentationBeans != null ) {
+        if (filteredProductPresentationBeans != null) {
 
-            setProductData(EssentialsUtils.getCartPresentationBeans(cartItems,filteredProductPresentationBeans));
+            setProductData(EssentialsUtils.getCartPresentationBeans(cartItems, filteredProductPresentationBeans));
+        }
+        if(swipeContainer.isRefreshing()){
+            swipeContainer.setRefreshing(false);
         }
 
     }
@@ -234,7 +296,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         cartRecyclerViewAdapter = new CartRecyclerViewAdapter(getActivity(), cartPresentationBeans, cartViewModel, this);
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_cart);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
-     //   double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
+        //   double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
 
         totalTxtView.setText(EssentialsUtils.formatTotal(EssentialsUtils.getTotal(cartPresentationBeans)));
 
@@ -269,7 +331,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
                 }
             }
@@ -310,7 +372,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             @Override
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
                 WishlistTransportBean wishlistTransportBean = response.body();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     saveWishListToDB(userId, productId);
                 }
 
@@ -351,4 +413,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
 
+    @Override
+    public void onRefresh() {
+        Toast.makeText(getActivity().getApplicationContext(),"Anandhi Called",  Toast.LENGTH_SHORT).show();
+        getProductsForCustomer();
+    }
 }
