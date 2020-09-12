@@ -34,6 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIUtils {
     private static Retrofit retrofit = null;
 
+    private static FirebaseAnalytics firebaseAnalytics =null;
+
     public static Retrofit getRetrofit() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -232,6 +234,9 @@ public class APIUtils {
 
 
     public static FirebaseAnalytics getFirebaseAnalytics(Context context) {
-        return  FirebaseAnalytics.getInstance(context);
+        if(firebaseAnalytics ==null) {
+            firebaseAnalytics=  FirebaseAnalytics.getInstance(context);
+        }
+        return firebaseAnalytics;
     }
 }

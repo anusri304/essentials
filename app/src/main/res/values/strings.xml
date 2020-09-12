@@ -67,6 +67,9 @@
     <string name="order_detail">Order Detail</string>
     <string name="order_number">Order Number</string>
     <string name="your_order_items">Your order Items</string>
+    <string name="back_button">Back button picture</string>
+    <string name="arrow_forward_image">Arrow forward picture</string>
+    <string name="add_delivery_address_image">Add delivery address picture</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>

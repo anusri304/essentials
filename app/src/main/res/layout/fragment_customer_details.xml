@@ -106,6 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toRightOf="@+id/delivery_addresstxtView"
+            android:contentDescription="@string/arrow_forward_image"
             android:paddingLeft="320dp"
             android:scaleType="fitCenter"
             android:src="@drawable/arrow_forward" />
