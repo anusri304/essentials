@@ -481,9 +481,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
         intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, selectedProductPresentationBean);
         startActivity(intent);
+
         if(productPresentationBeans!=null && productPresentationBeans.size()>0) {
             logAnalyticsEvent(productPresentationBeans, selectedProductPresentationBean);
         }
+
+        throw new RuntimeException("Test Crash");
     }
 
     private void logAnalyticsEvent(List<ProductPresentationBean> productPresentationBeans, ProductPresentationBean selectedProductPresentationBean) {
