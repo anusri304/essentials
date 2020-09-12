@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.DeliveryAddressActivity;
+import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
@@ -51,6 +52,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     View view;
     TextView totalTxtView;
     com.google.android.material.button.MaterialButton checkoutButton;
+    List<CartPresentationBean> cartPresentationBeans;
+    List<ProductPresentationBean> filteredProductPresentationBeans;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_cart, container, false);
@@ -208,7 +212,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
                 startActivity(intent);
-
+                for(CartPresentationBean cartPresentationBean:EssentialsUtils.getCartPresentationBeans(cartViewModel.getAllCartItems().getValue(),filteredProductPresentationBeans)) {
+                    APIUtils.logCheckoutAnalyticsEvent(getActivity().getApplicationContext(), cartPresentationBean);
+                }
             }
         });
     }
@@ -278,7 +284,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     private void setData(List<Cart> cartItems) {
-        List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
+        filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 cartItems.stream().map(cart -> cart.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
         if (filteredProductPresentationBeans != null) {
@@ -289,6 +295,18 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             swipeContainer.setRefreshing(false);
         }
 
+    }
+
+    private void logAnalyticsEvent(List<CartPresentationBean> cartPresentationBeans) {
+        StringBuilder sb = new StringBuilder();
+        for (CartPresentationBean cartPresentationBean : cartPresentationBeans) {
+            sb.append(cartPresentationBean.getName());
+            sb.append(",");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.CART_PRESENTATION_BEAN);
+        bundle.putString(ApplicationConstants.ITEMS, sb.substring(0, sb.lastIndexOf(",")));
+        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 
     private void setProductData(List<CartPresentationBean> cartPresentationBeans) {
@@ -302,6 +320,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+
+        if(cartPresentationBeans!=null && cartPresentationBeans.size()>0) {
+            logAnalyticsEvent(cartPresentationBeans);
+        }
     }
 
 
@@ -333,6 +355,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
+                    APIUtils.logRemoveFromCartAnalyticsEvent(getActivity().getApplicationContext(),cartPresentationBean);
                 }
             }
 
@@ -374,6 +397,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 WishlistTransportBean wishlistTransportBean = response.body();
                 if (response.isSuccessful()) {
                     saveWishListToDB(userId, productId);
+                    Product product = productViewModel.getProduct(productId);
+                    List<Product> analyticsList = new ArrayList<Product>();
+                    analyticsList.add(product);
+                    APIUtils.logAddToWishlistAnalyticsEvent(getActivity().getApplicationContext(),EssentialsUtils.getProductPresentationBeans(new ArrayList<>(analyticsList)).get(0));
                 }
 
             }

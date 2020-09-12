@@ -2,8 +2,10 @@ package com.example.essentials.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.service.ProductService;
 import com.example.essentials.service.WishlistService;
@@ -13,6 +15,7 @@ import com.example.essentials.transport.CustomerWishListTransportBean;
 import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -75,6 +78,9 @@ public class APIUtils {
                         //TODO: get disc perc
                         productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
                         //TODO: get inStock
+
+                        //TODO: REMOVE hardcoded tag in all activity.
+                        //TODO check for hardcoded strings
                         productPresentationBean.setInStock(productTransportBean.getInStock());
                         productPresentationBeans.add(productPresentationBean);
                     }
@@ -168,4 +174,64 @@ public class APIUtils {
         return pref.getString(ApplicationConstants.API_TOKEN, "");
     }
 
+
+    public static void logViewItemsAnalyticsEvent(Context context, List<ProductPresentationBean> productPresentationBeans) {
+        StringBuilder sb = new StringBuilder();
+        for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
+            sb.append(productPresentationBean.getName());
+            sb.append(",");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, sb.substring(0, sb.lastIndexOf(",")));
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
+    }
+
+    public static void logAddToCartAnalyticsEvent(Context context,ProductPresentationBean productPresentationBean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, productPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, productPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.ADD_TO_CART, bundle);
+    }
+
+    public static void logCheckoutAnalyticsEvent(Context context,CartPresentationBean cartPresentationBean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, cartPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, cartPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.ADD_TO_CART, bundle);
+    }
+
+    public static void logRemoveFromCartAnalyticsEvent(Context context,CartPresentationBean cartPresentationBean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, cartPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, cartPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART, bundle);
+    }
+
+    public static void logAddToWishlistAnalyticsEvent(Context context,ProductPresentationBean productPresentationBean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, productPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, productPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, bundle);
+    }
+
+
+    public static void logViewCartAnalyticsEvent(Context context,ProductPresentationBean productPresentationBean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, productPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, productPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.VIEW_CART, bundle);
+    }
+
+
+
+
+    public static FirebaseAnalytics getFirebaseAnalytics(Context context) {
+        return  FirebaseAnalytics.getInstance(context);
+    }
 }

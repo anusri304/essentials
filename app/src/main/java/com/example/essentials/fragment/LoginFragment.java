@@ -37,6 +37,7 @@ import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -206,7 +207,14 @@ public class LoginFragment extends Fragment {
                     LoginTransportBean loginTransportBean = response.body();
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     Log.i(TAG, "onResponse: " + loginTransportBean.getMessage());
-                    if (loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
+                    if (response.isSuccessful() && loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
+                        // lOG successful event to google
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ApplicationConstants.USERNAME, APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
+                        bundle.putString(FirebaseAnalytics.Param.METHOD,ApplicationConstants.EMAIL);
+                        bundle.putLong(FirebaseAnalytics.Param.SUCCESS, 1);
+                        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
+
                         EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                         User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
                         // if the user has registered in website the user will  be in null
@@ -242,7 +250,7 @@ public class LoginFragment extends Fragment {
                 public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
-//                    Log.e(this.getClass().getName(), throwable.toString());
+                    // lOG failure event to google
                 }
             });
         }

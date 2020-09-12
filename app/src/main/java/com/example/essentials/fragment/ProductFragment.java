@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener,SwipeRefreshLayout.OnRefreshListener {
+public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
     String TAG = "ProductFragment";
     List<ProductPresentationBean> productPresentationBeans;
@@ -127,11 +129,11 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getDeliveryAddress() {
-       AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
+        AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
-        String userId= String.valueOf(pref.getInt(ApplicationConstants.USER_ID, 0));
-        Call<AddressListTransportBean> call = addressService.getAddressForCustomer(userId,apiToken);
+        String userId = String.valueOf(pref.getInt(ApplicationConstants.USER_ID, 0));
+        Call<AddressListTransportBean> call = addressService.getAddressForCustomer(userId, apiToken);
 
         call.enqueue(new Callback<AddressListTransportBean>() {
             @Override
@@ -172,7 +174,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                Log.d(TAG,"failed to get address");
+                Log.d(TAG, "failed to get address");
 
             }
         });
@@ -475,19 +477,33 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
 
     @Override
-    public void onListItemClick(ProductPresentationBean productPresentationBean) {
-        //ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-        //ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
-//
-//       Navigation.findNavController(rootView).navigate(action);
+    public void onListItemClick(ProductPresentationBean selectedProductPresentationBean) {
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
-        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, productPresentationBean);
+        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, selectedProductPresentationBean);
         startActivity(intent);
+        if(productPresentationBeans!=null && productPresentationBeans.size()>0) {
+            logAnalyticsEvent(productPresentationBeans, selectedProductPresentationBean);
+        }
+    }
 
-//https://www.youtube.com/watch?v=vx1-V3HH0IU
+    private void logAnalyticsEvent(List<ProductPresentationBean> productPresentationBeans, ProductPresentationBean selectedProductPresentationBean) {
+        Category category = categoryViewModel.getCategory(Integer.valueOf(selectedProductPresentationBean.getCategoryId()));
+
+        StringBuilder sb = new StringBuilder();
+        for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
+            sb.append(productPresentationBean.getName());
+            sb.append(",");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(ApplicationConstants.ITEMS, sb.toString());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedProductPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(selectedProductPresentationBean.getId()));
+        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
+        this.productPresentationBeans = productPresentationBeans;
         if (categoryId != 0) {
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
@@ -502,16 +518,21 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+        if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
+            APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
+        }
 
-        if(swipeContainer.isRefreshing()){
+        if (swipeContainer.isRefreshing()) {
             swipeContainer.setRefreshing(false);
         }
 
     }
 
+
     public void filter(String query) {
-        if(adapter!=null) {
+        if (adapter != null) {
             adapter.performFilter(query);
+            logAnalyticsEvent(query);
             Log.d("TEsting", query);
         }
 
@@ -520,5 +541,12 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     @Override
     public void onRefresh() {
         getAllProducts();
+    }
+
+
+    private void logAnalyticsEvent(String query) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.SEARCH, bundle);
     }
 }

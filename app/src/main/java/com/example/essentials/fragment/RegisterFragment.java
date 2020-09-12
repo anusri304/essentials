@@ -37,6 +37,7 @@ import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -78,8 +79,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     hideFields();
                     initFields();
                     titleView.setText(getResources().getString(R.string.edit_user));
-                }
-                else {
+                } else {
                     titleView.setText(getResources().getString(R.string.register_title));
                 }
             }
@@ -309,6 +309,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         //EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, registerTransportBean.getMessage());
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, registerTransportBean.getMessage());
                     }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.METHOD, ApplicationConstants.EMAIL);
+                    bundle.putLong(FirebaseAnalytics.Param.SUCCESS, 1);
+                    APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.SIGN_UP, bundle);
                 }
 
                 @Override
@@ -434,7 +439,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
     public void showAlertDialog(Context context, String title, String message) {
         androidx.appcompat.app.AlertDialog alertDialog;
         if (context instanceof Activity) {
@@ -450,11 +454,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(RegisterFragmentDirections.actionNavTopRegisterToNavTopCustomerDetails());
                             }
                         });
-                    alertDialog = builder.create();
-                    alertDialog.show();
-                }
-
+                alertDialog = builder.create();
+                alertDialog.show();
             }
+
         }
+    }
 
 }

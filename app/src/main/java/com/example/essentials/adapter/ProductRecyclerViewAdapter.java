@@ -2,6 +2,7 @@ package com.example.essentials.adapter;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,6 +148,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mValues = (ArrayList<ProductPresentationBean>) results.values;
                 notifyDataSetChanged();
+                logAnalyticsEvent(constraint.toString());
                 EssentialsUtils.hideKeyboard(mContext);
             }
         };
@@ -157,5 +161,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
            return;
         }
         getFilter().filter(query);
+    }
+
+
+    private void logAnalyticsEvent(String query){
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+        APIUtils.getFirebaseAnalytics(mContext).logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
     }
 }

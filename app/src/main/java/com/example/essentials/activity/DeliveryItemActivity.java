@@ -38,6 +38,7 @@ import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.OrderProductViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -151,6 +152,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
+                    APIUtils.logRemoveFromCartAnalyticsEvent(DeliveryItemActivity.this,cartPresentationBean);
                 }
             }
 
@@ -255,6 +257,21 @@ public class DeliveryItemActivity extends AppCompatActivity {
         //  LocalDate.parse(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(today)).plusDays(2);
 
         deliveryDateValueView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(today));
+        if(cartPresentationBeans !=null && cartPresentationBeans.size()>0) {
+            logAnalyticsEvent(cartPresentationBeans);
+        }
+    }
+
+    private void logAnalyticsEvent(List<CartPresentationBean> cartPresentationBeans) {
+        StringBuilder sb = new StringBuilder();
+        for (CartPresentationBean cartPresentationBean : cartPresentationBeans) {
+            sb.append(cartPresentationBean.getName());
+            sb.append(",");
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.CART_PRESENTATION_BEAN);
+        bundle.putString(ApplicationConstants.ITEMS, sb.substring(0, sb.lastIndexOf(",")));
+        APIUtils.getFirebaseAnalytics(DeliveryItemActivity.this).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 
     @Override

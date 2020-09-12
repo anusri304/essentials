@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
@@ -46,6 +47,7 @@ import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -246,6 +248,9 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+        if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
+            APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
+        }
     }
 
     @Override
@@ -316,7 +321,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
-                    saveCartItemsToDB(userId, productPresentationBean.getId());
+                    APIUtils.logAddToCartAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBean);
+                    saveCartItemsToDB(userId, productPresentationBean);
                 }
             }
 
@@ -327,12 +333,13 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         });
     }
 
-    private void saveCartItemsToDB(int userId, int productId) {
-        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productId);
+
+    private void saveCartItemsToDB(int userId, ProductPresentationBean productPresentationBean) {
+        Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, productPresentationBean.getId());
         if (cart == null) {
             cart = new Cart();
             cart.setUserId(userId);
-            cart.setProductId(productId);
+            cart.setProductId(productPresentationBean.getId());
             cart.setQuantity(cart.getQuantity() + 1);
             cartViewModel.insertCartItems(cart);
         } else {
@@ -340,16 +347,17 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
             cartViewModel.updateCartItems(cart);
         }
         //  EssentialsUtils.showMessage(coordinatorLayout,ApplicationConstants.CART_SUCCESS_MESSAGE);
-        showSuccessSnackBar();
+        showSuccessSnackBar(productPresentationBean);
     }
 
-    private void showSuccessSnackBar() {
+    private void showSuccessSnackBar(ProductPresentationBean productPresentationBean) {
         Snackbar snackbar = Snackbar
                 .make(view, ApplicationConstants.CART_SUCCESS_MOVE_MESSAGE, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.view), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(WishlistFragmentDirections.actionNavBottomWishlistToNavBottomCart());
+                        APIUtils.logViewCartAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBean);
                     }
                 });
         snackbar.setActionTextColor(Color.RED);
@@ -358,6 +366,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
     }
+
 
     private void showSnackBar() {
         Snackbar snackbar = Snackbar

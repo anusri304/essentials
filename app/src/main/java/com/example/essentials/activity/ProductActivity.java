@@ -61,6 +61,7 @@ public class ProductActivity extends AppCompatActivity {
 
     Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -376,4 +377,6 @@ public class ProductActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
 }

@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Cart;
+import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
@@ -30,11 +31,13 @@ import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CartViewModel;
+import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -51,6 +54,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
     CartViewModel cartViewModel;
+    CategoryViewModel categoryViewModel;
 
 
     @Override
@@ -74,9 +78,22 @@ public class ProductDetailActivity extends AppCompatActivity {
             ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
             wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
             cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+            categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
         } else {
             closeOnError();
         }
+
+        logViewItemAnalyticsEvent();
+
+    }
+
+    private void logViewItemAnalyticsEvent() {
+        Category category = categoryViewModel.getCategory(Integer.valueOf(productPresentationBean.getCategoryId()));
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, ApplicationConstants.CURRENCY_SYMBOL);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, productPresentationBean.getName());
+        bundle.putString(FirebaseAnalytics.Param.VALUE, productPresentationBean.getPrice());
+        APIUtils.getFirebaseAnalytics(ProductDetailActivity.this).logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
     }
 
     private void closeOnError() {
@@ -108,8 +125,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Log.d("Anandhi", "clicked");
                 if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
                     callCartEndPoint();
-                }
-                else {
+                } else {
                     EssentialsUtils.showMessageAlertDialog(ProductDetailActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_CART);
                 }
             }
@@ -135,9 +151,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         call.enqueue(new Callback<CartTransportBean>() {
             @Override
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
-                CartTransportBean cartTransportBean = response.body();
-                Log.d("Anandhi cart", cartTransportBean.getMessage());
-                saveCartItemsToDB(userId, productPresentationBean.getId());
+                if (response.isSuccessful()) {
+                    CartTransportBean cartTransportBean = response.body();
+                    Log.d("Anandhi cart", cartTransportBean.getMessage());
+                    saveCartItemsToDB(userId, productPresentationBean.getId());
+                    APIUtils.logAddToCartAnalyticsEvent(ProductDetailActivity.this, productPresentationBean);
+                }
             }
 
             @Override
@@ -171,8 +190,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Log.d("Anandhi", "clicked");
                 if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
                     callWishListEndpoint();
-                }
-                else {
+                } else {
                     EssentialsUtils.showMessageAlertDialog(ProductDetailActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_WISHLIST);
                 }
 
@@ -202,7 +220,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 WishlistTransportBean wishlistTransportBean = response.body();
                 Log.d("Anandhi total", wishlistTransportBean.getTotal());
                 saveWishListToDB(userId, productPresentationBean.getId());
-
+                APIUtils.logAddToWishlistAnalyticsEvent(ProductDetailActivity.this,productPresentationBean);
             }
 
             @Override
