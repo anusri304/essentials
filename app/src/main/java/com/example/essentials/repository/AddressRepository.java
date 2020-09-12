@@ -8,6 +8,7 @@ import com.example.essentials.dao.AddressDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Address;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -45,7 +46,7 @@ public class AddressRepository {
             final Future<Address> future = executorService.submit(new AddressRepository.MyInfoCallable(addressId, addressDao));
             address = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return address;
     }

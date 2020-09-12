@@ -166,7 +166,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_DELIVERY_ADDRESS);
             }
         });
     }

@@ -8,6 +8,7 @@ import com.example.essentials.dao.WishlistDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Wishlist;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -42,7 +43,7 @@ public class WishlistRepository {
             final Future<Wishlist> future = executorService.submit(new WishlistRepository.MyInfoCallable(userId,productId, wishlistDao));
             wishlist = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+           APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return wishlist;
     }

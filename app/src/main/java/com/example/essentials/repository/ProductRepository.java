@@ -10,6 +10,7 @@ import com.example.essentials.dao.ProductDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Product;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 
 import java.io.File;
@@ -67,7 +68,7 @@ public class ProductRepository {
             }
             output.close();
         } catch (Exception e) {
-            Log.d("Anandhi 12345", ApplicationConstants.ERROR_SAVE_FILE);
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return filePath;
     }
@@ -83,7 +84,7 @@ public class ProductRepository {
             final Future<Product> future = executorService.submit(new MyInfoCallable(productId, productDao));
             product = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return product;
     }

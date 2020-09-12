@@ -8,6 +8,7 @@ import com.example.essentials.dao.CartDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,7 +45,7 @@ public class CartRepository {
             final Future<Cart> future = executorService.submit(new CartRepository.MyInfoCallable(userId,productId, cartDao));
             cart = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return cart;
     }

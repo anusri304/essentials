@@ -123,6 +123,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
                 if (response.isSuccessful() && addressListTransportBean.getMessage() != null && addressListTransportBean.getMessage().contains(ApplicationConstants.SUCCESS)) {
                     //   EssentialsUtils.showMessage(activityLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                     Address address = addressViewModel.getAddressForId(addressId);
+                    APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.ADDRESS_ID,addressId);
                     if (address != null) {
                         addressViewModel.deleteAddress(address);
                     }
@@ -132,7 +133,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_DELIVERY_ADDRESS);
             }
         });
     }

@@ -6,6 +6,7 @@ import com.example.essentials.dao.UserDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.User;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -41,7 +42,7 @@ public class UserRepository {
             final Future<User> future = executorService.submit(new MyInfoCallable(customerId, userDao));
             user = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return user;
     }

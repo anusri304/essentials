@@ -320,7 +320,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 public void onFailure(Call<RegisterTransportBean> call, Throwable throwable) {
                     fragmentRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     // EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
-
+                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_REGISTER);
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.SERVER_ERROR, ApplicationConstants.SOCKET_ERROR);
                     Log.e(this.getClass().getName(), throwable.toString());
                 }
@@ -432,6 +432,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     //    fragmentRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     //  EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.SOCKET_ERROR);
+                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_EDIT_CUTOMER_DETAILS);
                     Log.e(this.getClass().getName(), throwable.toString());
                 }
             });

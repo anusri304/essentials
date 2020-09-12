@@ -199,7 +199,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER);
             }
         });
 
@@ -361,7 +361,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_CART_ITEMS);
             }
         });
     }
@@ -407,7 +407,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_WISHLIST_ITEMS);
             }
         });
     }

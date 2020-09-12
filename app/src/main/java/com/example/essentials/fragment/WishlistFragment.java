@@ -215,7 +215,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_WISHLIST_PRODUCTS);
             }
         });
     }
@@ -288,7 +288,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_WISHLIST_ITEMS);
             }
         });
     }
@@ -328,7 +328,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_CART_ITEMS);
             }
         });
     }

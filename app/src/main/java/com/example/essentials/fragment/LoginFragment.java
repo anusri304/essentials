@@ -215,6 +215,8 @@ public class LoginFragment extends Fragment {
                         bundle.putLong(FirebaseAnalytics.Param.SUCCESS, 1);
                         APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
 
+                        APIUtils.getFirebaseCrashlytics().setUserId(APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
+
                         EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                         User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
                         // if the user has registered in website the user will  be in null
@@ -250,6 +252,7 @@ public class LoginFragment extends Fragment {
                 public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
+                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.LOGIN_FAILED);
                     // lOG failure event to google
                 }
             });

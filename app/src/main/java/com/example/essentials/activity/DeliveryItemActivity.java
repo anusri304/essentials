@@ -158,7 +158,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_CART_ITEMS);
             }
         });
     }

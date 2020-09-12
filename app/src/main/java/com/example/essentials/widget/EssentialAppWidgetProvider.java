@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.example.essentials.R;
 import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.service.DisplayPromotionProductService;
+import com.example.essentials.utils.APIUtils;
 
 public class EssentialAppWidgetProvider extends AppWidgetProvider {
 
@@ -33,7 +34,7 @@ public class EssentialAppWidgetProvider extends AppWidgetProvider {
 
             views.setImageViewBitmap(R.id.productImageView, bitmap);
         } catch (Exception e) {
-            Log.d(TAG,"Error loading image in EssentialAppWidgetProvider");
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         views.setTextViewText(R.id.appwidget_productPrice, price);
 

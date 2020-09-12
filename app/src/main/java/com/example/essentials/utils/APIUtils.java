@@ -16,6 +16,7 @@ import com.example.essentials.transport.CustomerWishTransportBean;
 import com.example.essentials.transport.ProductListTransportBean;
 import com.example.essentials.transport.ProductTransportBean;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,6 +36,7 @@ public class APIUtils {
     private static Retrofit retrofit = null;
 
     private static FirebaseAnalytics firebaseAnalytics =null;
+    private static FirebaseCrashlytics firebaseCrashlytics =null;
 
     public static Retrofit getRetrofit() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -83,6 +85,7 @@ public class APIUtils {
 
                         //TODO: REMOVE hardcoded tag in all activity.
                         //TODO check for hardcoded strings
+                        //Todo remove log.d and toast and echo in open cart
                         productPresentationBean.setInStock(productTransportBean.getInStock());
                         productPresentationBeans.add(productPresentationBean);
                     }
@@ -93,6 +96,7 @@ public class APIUtils {
             @Override
             public void onFailure(Call<ProductListTransportBean> call, Throwable throwable) {
                 Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_ALL_PRODUCTS);
             }
         });
         return productPresentationBeans;
@@ -119,7 +123,7 @@ public class APIUtils {
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER);
             }
         });
         return customerCartTransportBeanList;
@@ -146,7 +150,7 @@ public class APIUtils {
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_WISHLIST_PRODUCTS);
             }
         });
         return customerWishListTransportBeanList;
@@ -238,5 +242,12 @@ public class APIUtils {
             firebaseAnalytics=  FirebaseAnalytics.getInstance(context);
         }
         return firebaseAnalytics;
+    }
+
+    public static FirebaseCrashlytics getFirebaseCrashlytics() {
+        if(firebaseCrashlytics ==null) {
+            firebaseCrashlytics=  FirebaseCrashlytics.getInstance();
+        }
+        return firebaseCrashlytics;
     }
 }

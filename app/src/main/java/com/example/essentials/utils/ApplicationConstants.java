@@ -85,6 +85,22 @@ public class ApplicationConstants {
     public static final String ORDERS = "orders";
     public static final String VIEW_ORDERS = "viewOrders";
     public static final String ITEMS = "items" ;
+    public static final String LOGIN_FAILED = "Login Failed";
+    public static final String FAILED_TO_GET_ALL_PRODUCTS = "Failed to retrieve all products" ;
+    public static final String FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER = "Failed to get products for Customer" ;
+    public static final String FAILED_TO_DELETE_DELIVERY_ADDRESS = "Failed to delete delivery address";
+    public static final String FAILED_TO_GET_WISHLIST_PRODUCTS = "Failed to get wishlist products";
+    public static final String FAILED_TO_ADD_DELIVERY_ADDRESS = "Failed to add delivery address";
+    public static final String FAILED_TO_DELETE_CART_ITEMS = "Failed to delete products from cart" ;
+    public static final String FAILED_TO_ADD_CART_ITEMS =   "Failed to add products to cart"
+    ;
+    public static final String FAILED_TO_ADD_WISHLIST_ITEMS =  "Failed to add products to Wishlist" ;
+    public static final String FAILED_TO_DELETE_WISHLIST_ITEMS = "Failed to delete products from Wishlist" ;
+    public static final String FAILED_TO_EDIT_CART_ITEMS = "Failed to edit products in cart" ;
+    public static final String FAILED_TO_GET_DELIVERY_ADDRESS = "Failed to get delivery address" ;
+    public static final String FAILED_TO_GET_ALL_CATEGORIES = "Failed to get all categories" ;
+    public static final String FAILED_TO_REGISTER = "Failed to register" ;
+    public static final String FAILED_TO_EDIT_CUTOMER_DETAILS = "Failed to edit customer details" ;
 
     public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";

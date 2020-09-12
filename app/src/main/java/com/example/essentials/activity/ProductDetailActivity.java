@@ -161,7 +161,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_CART_ITEMS);
             }
         });
     }
@@ -225,7 +225,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_WISHLIST_ITEMS);
             }
         });
     }

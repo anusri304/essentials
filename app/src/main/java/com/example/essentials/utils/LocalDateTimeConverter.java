@@ -16,7 +16,7 @@ public class LocalDateTimeConverter {
             formatedDate = simpleDateFormat.parse(value);
         }
         catch(Exception e){
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return formatedDate;
     }

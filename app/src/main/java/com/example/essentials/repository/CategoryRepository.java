@@ -8,6 +8,7 @@ import com.example.essentials.dao.CategoryDao;
 import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Category;
 import com.example.essentials.executors.AppExecutors;
+import com.example.essentials.utils.APIUtils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,7 +45,7 @@ public class CategoryRepository {
             final Future<Category> future = executorService.submit(new MyInfoCallable(categoryId, categoryDao));
             category = future.get();
         } catch (Exception e) {
-            e.printStackTrace();
+            APIUtils.getFirebaseCrashlytics().recordException(e);
         }
         return category;
     }

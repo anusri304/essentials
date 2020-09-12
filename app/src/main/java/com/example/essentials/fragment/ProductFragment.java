@@ -174,7 +174,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                Log.d(TAG, "failed to get address");
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_DELIVERY_ADDRESS);
 
             }
         });
@@ -247,7 +247,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<CategoryListTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_ALL_CATEGORIES);
             }
         });
     }
@@ -346,7 +346,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER);
             }
         });
     }
@@ -383,7 +383,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_WISHLIST_PRODUCTS);
             }
         });
     }

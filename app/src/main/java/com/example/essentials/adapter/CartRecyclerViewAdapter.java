@@ -200,7 +200,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-
+                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_EDIT_CART_ITEMS);
             }
         });
     }
