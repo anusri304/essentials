@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -451,11 +450,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             Product product = productViewModel.getProduct(productPresentationBean.getId());
             if (product != null) {
                 product.setId(Integer.valueOf(productPresentationBean.getId()));
-                product.setName(productPresentationBean.getName());
-                //  product.setImagePath(imagePath);
+                product.setName(EssentialsUtils.replaceSpecialCharacter(productPresentationBean.getName()));
                 product.setPrice(productPresentationBean.getPrice());
                 product.setCategoryId(Integer.valueOf(productPresentationBean.getCategoryId()));
-                product.setDescription(productPresentationBean.getDescription());
+                product.setDescription(EssentialsUtils.replaceSpecialCharacter(productPresentationBean.getDescription()));
                 product.setSpecial(productPresentationBean.getSpecial());
                 product.setDiscPerc(productPresentationBean.getDiscPerc());
                 product.setInStock(productPresentationBean.getInStock());
@@ -463,9 +461,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             } else {
                 product = new Product();
                 product.setId(Integer.valueOf(productPresentationBean.getId()));
-                product.setName(productPresentationBean.getName());
+                product.setName(EssentialsUtils.replaceSpecialCharacter(productPresentationBean.getName()));
                 product.setPrice(productPresentationBean.getPrice());
-                product.setDescription(productPresentationBean.getDescription());
+                product.setDescription(EssentialsUtils.replaceSpecialCharacter(productPresentationBean.getDescription()));
                 product.setSpecial(productPresentationBean.getSpecial());
                 product.setCategoryId(Integer.valueOf(productPresentationBean.getCategoryId()));
                 product.setDiscPerc(productPresentationBean.getDiscPerc());

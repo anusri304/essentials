@@ -203,4 +203,8 @@ public class EssentialsUtils {
         df.setDecimalFormatSymbols(otherSymbols);
         return ApplicationConstants.CURRENCY_SYMBOL.concat(df.format(total));
     }
+
+    public static String replaceSpecialCharacter(String text){
+        return text.replaceAll("&quot;","\"").replaceAll("&amp;","&").replaceAll("&rsquo;","’");
+    }
 }

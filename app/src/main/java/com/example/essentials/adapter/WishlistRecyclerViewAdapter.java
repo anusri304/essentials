@@ -90,6 +90,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
                 .error(R.drawable.error)
                 .into(holder.imageView);
         //todo Special
+        //todo remove unused code
         if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
             holder.productSpecialPriceTxtView.setVisibility(View.GONE);
         }
