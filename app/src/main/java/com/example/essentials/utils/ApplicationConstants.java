@@ -1,7 +1,5 @@
 package com.example.essentials.utils;
 
-import java.text.DecimalFormat;
-
 public class ApplicationConstants {
     // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
     public static final String BASE_URL = "http://10.0.75.1/Opencart/";
@@ -30,9 +28,7 @@ public class ApplicationConstants {
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
     public static final String SUCCESS = "Success";
     public static final String SUCCESSFULLY = "successfully";
-    public static final String LOGIN = "LOGIN";
 
-    public static final String DISPLAY_TOAST = "displayToast";
     public static final float ASPECT_RATIO = 1.5f;
     public static final String FALSE = "false";
     public static final String PRODUCT_PRESENTATION_BEAN = "productPresentationBean";
@@ -41,7 +37,6 @@ public class ApplicationConstants {
     public static final String OUT_OF_STOCK = "Out of Stock";
     public static final String PRODUCT_DESC = "productDescription";
     public static final String PRODUCT_NAME = "productName";
-    public static final String ERROR_SAVE_FILE = "Error while saving file to local directory";
     public static final String DATA_ERROR = "Data Error";
     public static final String ERROR_RETRIEVE_MESSAGE = "Error retrieving data. Please try later";
     public static final String SHARED_PREF_NAME = "mypref";
@@ -73,17 +68,14 @@ public class ApplicationConstants {
     public static final String ORDER_SUCESS_MESSAGE = "Your order has been placed successfully";
     public static final String STATUS_PENDING = "Pending";
     public static final String NO_LOGIN_MESSAGE_CUSTOMER_DETAILS = "Please login to see customer details";
-    public static final String EDIT_USER = "editUser";
     public static final String EDIT_CUSTOMER_TITLE = "Edit Customer";
     public static final String SERVER_ERROR = "Server Error";
     public static final String ADDRESS_ID = "addressId";
     public static final String EMAIL = "email";
-    public static final String SIGN_UP_METHOD = "sign_up_method";
-    public static final String IMAGE = "image";
     public static final String CART_PRESENTATION_BEAN = "cartPresentationBean";
     public static final String CATEGORY_PRESENTATION_BEAN = "categoryPresentationBean" ;
     public static final String ORDERS = "orders";
-    public static final String VIEW_ORDERS = "viewOrders";
+    public static final String VIEW_ORDER = "view_order";
     public static final String ITEMS = "items" ;
     public static final String LOGIN_FAILED = "Login Failed";
     public static final String FAILED_TO_GET_ALL_PRODUCTS = "Failed to retrieve all products" ;
@@ -112,8 +104,11 @@ public class ApplicationConstants {
     public static final String PRODUCT_NAME_REMOVED_FROM_WISHLIST ="Product name removed from Wishlist" ;
     public static final String CHECKOUT = "Checkout" ;
 
-    public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
-    public static final String API_SUCCESS = "Success";
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
     public static final String EDIT_CUSTOMER_SUCCESS_MESSAGE = "Customer details updated successfully";
+    public static final String ORDER_ID = "orderId";
+    public static final String ORDER_DATE = "orderDate" ;
+    public static final String SELECT_ORDER = "select_order";
+    public static final String PRODUCT_ID_LIST = "productIdList";
+    public static final String ITEM_ID_LIST = "itemIdList";
 }

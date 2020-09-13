@@ -2,7 +2,6 @@ package com.example.essentials.repository;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,7 +10,6 @@ import com.example.essentials.database.EssentialsRoomDatabase;
 import com.example.essentials.domain.Product;
 import com.example.essentials.executors.AppExecutors;
 import com.example.essentials.utils.APIUtils;
-import com.example.essentials.utils.ApplicationConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;

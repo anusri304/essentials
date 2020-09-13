@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.OrderCustomerPresentationBean;
 import com.example.essentials.adapter.OrderCustomerRecyclerViewAdapter;
 import com.example.essentials.domain.OrderCustomer;
@@ -29,7 +28,6 @@ import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,26 +99,23 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
-        if(orderCustomers!=null && orderCustomers.size()>0) {
-            logAnalyticsEvent(EssentialsUtils.getOrderCustomerPresentationBeans(orderCustomers));
-        }
+
     }
 
-    private void logAnalyticsEvent(List<OrderCustomerPresentationBean> orderCustomerPresentationBeans) {
-        StringBuilder sb = new StringBuilder();
-        for (OrderCustomerPresentationBean orderCustomerPresentationBean : orderCustomerPresentationBeans) {
-            sb.append(String.valueOf(orderCustomerPresentationBean.getId()));
-            sb.append(",");
-        }
+    private void logAnalyticsEvent(OrderCustomerPresentationBean orderCustomerPresentationBeans) {
         Bundle bundle = new Bundle();
-        bundle.putString(ApplicationConstants.ORDERS, sb.toString());
-        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(ApplicationConstants.VIEW_ORDERS, bundle);
-        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.ORDERS, sb.toString());
+        bundle.putString(ApplicationConstants.ORDER_ID, String.valueOf(orderCustomerPresentationBeans.getId()));
+        bundle.putString(ApplicationConstants.ORDER_DATE, orderCustomerPresentationBeans.getDateAdded());
+        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(ApplicationConstants.SELECT_ORDER, bundle);
+        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.ORDER_DATE, orderCustomerPresentationBeans.getDateAdded());
     }
 
     @Override
     public void onListItemClick(OrderCustomerPresentationBean orderCustomerPresentationBean) {
         OrderFragmentDirections.ActionNavTopOrderToNavTopOrderDetail action = OrderFragmentDirections.actionNavTopOrderToNavTopOrderDetail(orderCustomerPresentationBean);
         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
+        if(orderCustomerPresentationBean!=null) {
+            logAnalyticsEvent(orderCustomerPresentationBean);
+        }
     }
 }

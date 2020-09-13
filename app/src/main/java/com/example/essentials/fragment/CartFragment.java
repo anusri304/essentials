@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,7 +27,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.DeliveryAddressActivity;
-import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
@@ -94,6 +92,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
         //tODO: Remove the below code if not used
         //TODO remove log.d and toast
+        //TODO logo and color
 //
 //        final Observer<Integer> nameObserver = new Observer<Integer>() {
 //            @Override
@@ -219,6 +218,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                     APIUtils.logCheckoutAnalyticsEvent(getActivity().getApplicationContext(), cartPresentationBean);
                 }
                 APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CHECKOUT, checkoutItems);
+
+                throw new RuntimeException("Test Crash");
             }
         });
     }
@@ -304,12 +305,12 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private void logAnalyticsEvent(List<CartPresentationBean> cartPresentationBeans) {
         StringBuilder sb = new StringBuilder();
         for (CartPresentationBean cartPresentationBean : cartPresentationBeans) {
-            sb.append(cartPresentationBean.getName());
+            sb.append(cartPresentationBean.getProductId());
             sb.append(",");
         }
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.CART_PRESENTATION_BEAN);
-        bundle.putString(ApplicationConstants.ITEMS, sb.substring(0, sb.lastIndexOf(",")));
+        bundle.putString(ApplicationConstants.PRODUCT_ID_LIST, sb.substring(0, sb.lastIndexOf(",")));
         APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 

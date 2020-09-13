@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -203,6 +202,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
                             setData(productPresentationBeans);
                         } else {
+                            APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
                             setData(productPresentationBeans);
                         }
                     }
@@ -444,6 +444,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
 
     private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
+
+        // Initially log for special items as they are shown.
+        APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans.stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList()));
         for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
             Product product = productViewModel.getProduct(productPresentationBean.getId());
             if (product != null) {
@@ -488,15 +491,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void logAnalyticsEvent(List<ProductPresentationBean> productPresentationBeans, ProductPresentationBean selectedProductPresentationBean) {
-        Category category = categoryViewModel.getCategory(Integer.valueOf(selectedProductPresentationBean.getCategoryId()));
-
-        StringBuilder sb = new StringBuilder();
-        for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
-            sb.append(productPresentationBean.getName());
-            sb.append(",");
-        }
         Bundle bundle = new Bundle();
-        bundle.putString(ApplicationConstants.ITEMS, sb.toString());
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedProductPresentationBean.getName());
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(selectedProductPresentationBean.getId()));
@@ -504,7 +499,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
-        this.productPresentationBeans = productPresentationBeans;
+     //   this.productPresentationBeans = productPresentationBeans;
         if (categoryId != 0) {
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
@@ -519,9 +514,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
-        if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
-            APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
-        }
 
         if (swipeContainer.isRefreshing()) {
             swipeContainer.setRefreshing(false);

@@ -265,12 +265,12 @@ public class DeliveryItemActivity extends AppCompatActivity {
     private void logAnalyticsEvent(List<CartPresentationBean> cartPresentationBeans) {
         StringBuilder sb = new StringBuilder();
         for (CartPresentationBean cartPresentationBean : cartPresentationBeans) {
-            sb.append(cartPresentationBean.getName());
+            sb.append(cartPresentationBean.getProductId());
             sb.append(",");
         }
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.CART_PRESENTATION_BEAN);
-        bundle.putString(ApplicationConstants.ITEMS, sb.substring(0, sb.lastIndexOf(",")));
+        bundle.putString(ApplicationConstants.PRODUCT_ID_LIST, sb.substring(0, sb.lastIndexOf(",")));
         APIUtils.getFirebaseAnalytics(DeliveryItemActivity.this).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 

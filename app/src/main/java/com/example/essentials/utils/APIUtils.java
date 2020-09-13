@@ -184,12 +184,12 @@ public class APIUtils {
     public static void logViewItemsAnalyticsEvent(Context context, List<ProductPresentationBean> productPresentationBeans) {
         StringBuilder sb = new StringBuilder();
         for (ProductPresentationBean productPresentationBean : productPresentationBeans) {
-            sb.append(productPresentationBean.getName());
+            sb.append(productPresentationBean.getId());
             sb.append(",");
         }
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, sb.substring(0, sb.lastIndexOf(",")));
+        bundle.putString(ApplicationConstants.ITEM_ID_LIST, sb.substring(0, sb.lastIndexOf(",")));
         APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 

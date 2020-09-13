@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.CategoryPresentationBean;
-import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CategoryRecyclerViewAdapter;
 import com.example.essentials.domain.Category;
 import com.example.essentials.utils.APIUtils;
@@ -106,21 +105,7 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
-          if(categories !=null && categories.size()>0) {
-              logAnalyticsEvent(getActivity().getApplicationContext(), EssentialsUtils.getCategoryPresentationBean(categories));
-          }
-    }
 
-    public static void logAnalyticsEvent(Context context, List<CategoryPresentationBean> categoryPresentationBeans) {
-        StringBuilder sb = new StringBuilder();
-        for (CategoryPresentationBean productPresentationBean : categoryPresentationBeans) {
-            sb.append(productPresentationBean.getName());
-            sb.append(",");
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.CATEGORY_PRESENTATION_BEAN);
-        bundle.putString(ApplicationConstants.ITEMS, sb.substring(0, sb.lastIndexOf(",")));
-        APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
     }
 
     @Override
