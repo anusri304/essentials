@@ -93,17 +93,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         //tODO: Remove the below code if not used
         //TODO remove log.d and toast
         //TODO logo and color
-//
-//        final Observer<Integer> nameObserver = new Observer<Integer>() {
-//            @Override
-//            public void onChanged(@Nullable final Integer newQuantity) {
-//                // Update the UI, in this case, a TextView.
-//                cartViewModel = new ViewModelProvider(CartFragment.this, factory).get(CartViewModel.class);
-//                int totalQuantity = cartViewModel.getAllCartItems().getValue().stream().mapToInt(cartItem -> cartItem.getQuantity()).sum();
-//                Log.d("Anandhi..",String.valueOf(totalQuantity));
-//       //drawBadge(totalQuantity);
-//            }
-//        };
+
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         //cartViewModel.getQuantity().observe(this,nameObserver);
@@ -228,7 +218,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
-            Log.d("products", String.valueOf(products.size()));
             getCartItems();
 
         });
@@ -344,8 +333,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -387,9 +374,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productId));
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

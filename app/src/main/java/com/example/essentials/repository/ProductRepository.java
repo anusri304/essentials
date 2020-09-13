@@ -43,7 +43,6 @@ public class ProductRepository {
     public void updateProduct(Product product, Context context, String imageURL) {
         AppExecutors.getInstance().diskIO().execute(() -> {
             String imagePath = saveImagetoLocal(context, imageURL);
-            //  Log.d("Anandhi update",imagePath);
             product.setImagePath(imagePath);
             productDao.updateProduct(product);
         });

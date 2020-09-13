@@ -125,8 +125,6 @@ public class ProductActivity extends AppCompatActivity {
             searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String s) {
-                    Log.d("Anandhi ", navController.getCurrentDestination().getDisplayName());
-                    //com.example.essentials:id/nav_top_home
                     Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
                     Fragment fragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
                     ((ProductFragment) fragment).filter(s);
@@ -184,9 +182,6 @@ public class ProductActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-//        Log.d("onSupportNavigateUp()", "pressed");
-//        finish();
-//        return super.onSupportNavigateUp();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return navController.navigateUp() || super.onSupportNavigateUp();
     }
@@ -200,15 +195,12 @@ public class ProductActivity extends AppCompatActivity {
             invalidateOptionsMenu();
             switch (item.getItemId()) {
                 case R.id.nav_bottom_home:
-                    Log.d("Product Activity", "Inside home");
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_home);
                     return true;
                 case R.id.nav_bottom_category:
-                    Log.d("Product Activity", "Inside category ");
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_category);
                     return true;
                 case R.id.nav_bottom_cart:
-                    Log.d("Product Activity", "Inside cart ");
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_cart);
                     } else {
@@ -216,7 +208,6 @@ public class ProductActivity extends AppCompatActivity {
                     }
                     return true;
                 case R.id.nav_bottom_wishlist:
-                    Log.d("Product Activity", "Inside cart ");
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_bottom_wishlist);
                     } else {
@@ -283,20 +274,15 @@ public class ProductActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
                 if (itemId == R.id.nav_top_home) {
-                    Log.d("Product Activity", "Inside home");
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_home);
                     return true;
                 } else if (itemId == R.id.nav_top_register) {
-                    Log.d("Product Activity", "Inside home");
-
                     bottomNavigationView.setVisibility(View.INVISIBLE);
 
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_register);
                     return true;
                 } else if (itemId == R.id.nav_top_order) {
-                    Log.d("Product Activity", "Inside order");
-
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_order);
                         return true;
@@ -305,7 +291,6 @@ public class ProductActivity extends AppCompatActivity {
                     }
                     return true;
                 } else if (itemId == R.id.nav_top_login) {
-                    Log.d("Product Activity", "Inside login");
                     bottomNavigationView.setVisibility(View.INVISIBLE);
                     Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_login);
                     return true;
@@ -313,7 +298,6 @@ public class ProductActivity extends AppCompatActivity {
                     showLogoutMessageAlertDialog(ProductActivity.this, ApplicationConstants.LOG_OUT_TITLE, ApplicationConstants.LOG_OUT_MESSAGE);
                     return true;
                 } else if (itemId == R.id.nav_top_customer_details) {
-                    Log.d("Product Activity", "Inside customer details");
                     bottomNavigationView.setVisibility(View.INVISIBLE);
                     if (APIUtils.isUserLogged(ProductActivity.this)) {
                         Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_customer_details);

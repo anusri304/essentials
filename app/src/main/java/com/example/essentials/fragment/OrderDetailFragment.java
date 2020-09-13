@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderDetailFragment extends Fragment {
-    String TAG = "OrderDetailFragment";
     View rootView;
     OrderProductViewModel orderProductViewModel;
     List<OrderProduct> orderProducts = new ArrayList<>();
@@ -49,7 +48,6 @@ public class OrderDetailFragment extends Fragment {
 
         if (getArguments() != null) {
             orderCustomerPresentationBean = OrderDetailFragmentArgs.fromBundle(getArguments()).getOrderCustomerPresentationBean();
-            Log.d("Anandhi", "orderCustomerPresentationBean" + orderCustomerPresentationBean);
         }
         observeOrderDetailChanges();
 

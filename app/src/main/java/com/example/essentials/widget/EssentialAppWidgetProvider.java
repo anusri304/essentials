@@ -15,9 +15,6 @@ import com.example.essentials.service.DisplayPromotionProductService;
 import com.example.essentials.utils.APIUtils;
 
 public class EssentialAppWidgetProvider extends AppWidgetProvider {
-
-    static String TAG= "EssentialAppWidgetProvider";
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 String productName, String imagePath, String price,  int appWidgetId) {
         // Construct the RemoteViews object

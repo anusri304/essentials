@@ -140,7 +140,6 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
                 if (++check >= 1) {
                     itemSelected = true;
-                    Log.d("Spinner ", parentView.getItemAtPosition(position).toString());
                     //selectedPosition = position;
                   //  holder.spinner.setSelection(selectedPosition, true);
                     callEditCartEndPoint(Integer.valueOf(parentView.getItemAtPosition(position).toString()),productId);
@@ -178,8 +177,6 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

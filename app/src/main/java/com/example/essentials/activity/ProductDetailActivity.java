@@ -122,7 +122,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         addToCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Anandhi", "clicked");
                 if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
                     callCartEndPoint();
                 } else {
@@ -137,9 +136,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -153,7 +149,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
                 if (response.isSuccessful()) {
                     CartTransportBean cartTransportBean = response.body();
-                    Log.d("Anandhi cart", cartTransportBean.getMessage());
                     saveCartItemsToDB(userId, productPresentationBean.getId());
                     APIUtils.logAddToCartAnalyticsEvent(ProductDetailActivity.this, productPresentationBean);
                     APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_CART, productPresentationBean.getName());
@@ -188,7 +183,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         addToWishList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Anandhi", "clicked");
                 if (APIUtils.isUserLogged(ProductDetailActivity.this)) {
                     callWishListEndpoint();
                 } else {
@@ -204,9 +198,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -219,7 +210,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
                 WishlistTransportBean wishlistTransportBean = response.body();
-                Log.d("Anandhi total", wishlistTransportBean.getTotal());
                 saveWishListToDB(userId, productPresentationBean.getId());
 
                 APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_WISHLIST, productPresentationBean.getName());

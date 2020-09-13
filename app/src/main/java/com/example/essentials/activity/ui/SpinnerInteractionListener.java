@@ -20,7 +20,6 @@ public class SpinnerInteractionListener implements AdapterView.OnItemSelectedLis
         if (userSelect) {
             // Your selection handling code here
             userSelect = false;
-            Log.d("Anu","Anu");
         }
     }
 

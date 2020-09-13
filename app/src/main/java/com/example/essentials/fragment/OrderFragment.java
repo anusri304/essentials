@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderFragment  extends Fragment implements OrderCustomerRecyclerViewAdapter.ListItemClickListener{
-    String TAG = "OrderFragment";
     View rootView;
     OrderCustomerViewModel orderCustomerViewModel;
     List<OrderCustomer> orderCustomers = new ArrayList<>();

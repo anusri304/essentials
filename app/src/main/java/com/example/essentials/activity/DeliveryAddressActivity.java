@@ -37,7 +37,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DeliveryAddressActivity extends AppCompatActivity implements AddressRecyclerViewAdapter.ListItemClickListener {
-    String TAG = "DeliveryAddressFragment";
     View rootView;
     ImageView addImage;
     static List<Address> address = new ArrayList<>();

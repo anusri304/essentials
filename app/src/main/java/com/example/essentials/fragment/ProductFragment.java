@@ -70,7 +70,6 @@ import retrofit2.Retrofit;
 
 public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
-    String TAG = "ProductFragment";
     List<ProductPresentationBean> productPresentationBeans;
     View rootView;
     ProductRecyclerViewAdapter adapter;
@@ -97,7 +96,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
         if (getArguments() != null) {
             categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
-            Log.d("Anandhi", "CategoryId" + categoryId);
         }
 
         final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -183,35 +181,38 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         materialCheckBox.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                Log.d("Anandhi", "Check changed");
-                if (productPresentationBeans != null) {
-                    if (categoryId != 0) {
-                        productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
-                                String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
-                    }
-                    if (checked) {
-                        List<ProductPresentationBean> onSpecialProductPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
-                        if (onSpecialProductPresentationBeans.size() == 0) {
-                            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
-                            setData(onSpecialProductPresentationBeans);
-                        } else {
-                            setData(onSpecialProductPresentationBeans);
-                        }
-                    } else {
-                        if (productPresentationBeans.size() == 0) {
-                            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
-                            setData(productPresentationBeans);
-                        } else {
-                            APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
-                            setData(productPresentationBeans);
-                        }
-                    }
-                }
+                  setDataForCheckChange(checked);
             }
 
 
         });
 
+    }
+
+    private void setDataForCheckChange(boolean checked) {
+        if (productPresentationBeans != null) {
+            if (categoryId != 0) {
+                productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
+                        String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
+            }
+            if (checked) {
+                List<ProductPresentationBean> onSpecialProductPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
+                if (onSpecialProductPresentationBeans.size() == 0) {
+                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                    setData(onSpecialProductPresentationBeans);
+                } else {
+                    setData(onSpecialProductPresentationBeans);
+                }
+            } else {
+                if (productPresentationBeans.size() == 0) {
+                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+                    setData(productPresentationBeans);
+                } else {
+                    APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
+                    setData(productPresentationBeans);
+                }
+            }
+        }
     }
 
     private void getAllCategories() {
@@ -428,7 +429,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<ProductListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
                 // No data is retrieved. Check if there is no internet
                 if (!NetworkUtils.isNetworkConnected(getActivity())) {
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
@@ -451,7 +451,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             Product product = productViewModel.getProduct(productPresentationBean.getId());
             if (product != null) {
                 product.setId(Integer.valueOf(productPresentationBean.getId()));
-                Log.d("update", String.valueOf(productPresentationBean.getId()));
                 product.setName(productPresentationBean.getName());
                 //  product.setImagePath(imagePath);
                 product.setPrice(productPresentationBean.getPrice());
@@ -463,7 +462,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 productViewModel.updateProduct(product, getActivity().getApplicationContext(), productPresentationBean.getImage());
             } else {
                 product = new Product();
-                Log.d("insert", String.valueOf(productPresentationBean.getId()));
                 product.setId(Integer.valueOf(productPresentationBean.getId()));
                 product.setName(productPresentationBean.getName());
                 product.setPrice(productPresentationBean.getPrice());
@@ -485,7 +483,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, selectedProductPresentationBean);
         startActivity(intent);
 
-        if(productPresentationBeans!=null && productPresentationBeans.size()>0) {
+        if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
             logAnalyticsEvent(productPresentationBeans, selectedProductPresentationBean);
         }
     }
@@ -499,7 +497,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void setData(List<ProductPresentationBean> productPresentationBeans) {
-     //   this.productPresentationBeans = productPresentationBeans;
+        //   this.productPresentationBeans = productPresentationBeans;
         if (categoryId != 0) {
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
@@ -526,14 +524,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         if (adapter != null) {
             adapter.performFilter(query);
             logAnalyticsEvent(query);
-            Log.d("TEsting", query);
         }
 
     }
 
     @Override
     public void onRefresh() {
-        getAllProducts();
+        setDataForCheckChange(materialCheckBox.isChecked());
     }
 
 

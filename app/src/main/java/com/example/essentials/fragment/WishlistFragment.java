@@ -59,7 +59,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WishlistFragment extends Fragment implements WishlistRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
-    String TAG = "WishlistFragment";
     WishlistViewModel wishlistViewModel;
     CartViewModel cartViewModel;
     ProductViewModel productViewModel;
@@ -171,7 +170,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     private void getWishlistProducts() {
         wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
             wishlists = objWishlist;
-            Log.d("wishlist", String.valueOf(wishlists.size()));
             if (wishlists.isEmpty()) {
                 EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_ITEMS, ApplicationConstants.NO_ITEMS_WISH_LIST);
             }
@@ -221,7 +219,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
-            Log.d("products", String.valueOf(products.size()));
 
         });
     }
@@ -230,7 +227,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 wishlists.stream().map(wishList -> wishList.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
-        Log.d("filteredData", String.valueOf(filteredProductPresentationBeans.size()));
         setProductData(filteredProductPresentationBeans);
 
         if (swipeContainer.isRefreshing()) {
@@ -265,9 +261,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callWishListEndpoint product id", String.valueOf(productPresentationBean.getId()));
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -303,9 +296,6 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi callCartEndPoint product id", String.valueOf(productPresentationBean.getId()));
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

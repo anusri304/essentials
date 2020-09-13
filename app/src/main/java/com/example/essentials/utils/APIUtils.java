@@ -95,7 +95,6 @@ public class APIUtils {
 
             @Override
             public void onFailure(Call<ProductListTransportBean> call, Throwable throwable) {
-                Log.e(this.getClass().getName(), throwable.toString());
                 APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_ALL_PRODUCTS);
             }
         });
@@ -114,8 +113,6 @@ public class APIUtils {
             @Override
             public void onResponse(Call<CustomerCartListTransportBean> call, Response<CustomerCartListTransportBean> response) {
                 CustomerCartListTransportBean customerCartListTransportBeans = response.body();
-                //Anandhi add null check
-                // Log.i(TAG, "onResponse: " + customerCartListTransportBeans.getProducts().size());
                 if(customerCartListTransportBeans !=null) {
                     customerCartTransportBeanList.addAll(customerCartListTransportBeans.getProducts());
                 }

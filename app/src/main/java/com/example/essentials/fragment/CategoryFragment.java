@@ -35,8 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragment extends Fragment implements CategoryRecyclerViewAdapter.ListItemClickListener{
-
-    String TAG = "CategoryFragment";
     CategoryViewModel categoryViewModel;
     CategoryRecyclerViewAdapter categoryRecyclerViewAdapter;
     View rootView;
@@ -90,7 +88,6 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
     private void getCategories() {
         categoryViewModel.getAllCategories().observe(this, objCategories -> {
             categories = objCategories;
-            Log.d("categories", String.valueOf(categories.size()));
             if (!categories.isEmpty()) {
                 setData(categories);
             }
@@ -110,7 +107,6 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
 
     @Override
     public void onListItemClick(CategoryPresentationBean categoryPresentationBean) {
-        Log.d(TAG,"ANandhi"+categoryPresentationBean.getId());
        // ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
         CategoryFragmentDirections.ActionNavBottomCategoryToNavBottomHome action = CategoryFragmentDirections.actionNavBottomCategoryToNavBottomHome();
         action.setCategoryId(categoryPresentationBean.getId());

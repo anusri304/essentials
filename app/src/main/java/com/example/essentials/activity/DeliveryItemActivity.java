@@ -136,8 +136,6 @@ public class DeliveryItemActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        Log.d("Anandhi userId", String.valueOf(userId));
-        Log.d("Anandhi apiToken", apiToken);
         CartService cartService = APIUtils.getRetrofit().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -220,7 +218,6 @@ public class DeliveryItemActivity extends AppCompatActivity {
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(this, objProducts -> {
             products = objProducts;
-            Log.d("products", String.valueOf(products.size()));
             getCartItems();
 
         });

@@ -23,7 +23,6 @@ public class LocalImageCache extends LruCache<String, Bitmap> implements ImageLo
     public Bitmap getBitmap(String key) {
         key = key.substring(key.indexOf("/"));
         Bitmap result = get(key);
-        Log.d("TAG", key);
         if (result == null) {
             Bitmap temp =  BitmapFactory.decodeFile(key);
             put(key, temp);

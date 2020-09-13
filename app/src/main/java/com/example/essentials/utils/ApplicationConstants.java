@@ -2,7 +2,8 @@ package com.example.essentials.utils;
 
 public class ApplicationConstants {
     // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-    public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+  //  public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+    public static final String BASE_URL = "http://chozhansales.com/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
@@ -73,10 +74,6 @@ public class ApplicationConstants {
     public static final String ADDRESS_ID = "addressId";
     public static final String EMAIL = "email";
     public static final String CART_PRESENTATION_BEAN = "cartPresentationBean";
-    public static final String CATEGORY_PRESENTATION_BEAN = "categoryPresentationBean" ;
-    public static final String ORDERS = "orders";
-    public static final String VIEW_ORDER = "view_order";
-    public static final String ITEMS = "items" ;
     public static final String LOGIN_FAILED = "Login Failed";
     public static final String FAILED_TO_GET_ALL_PRODUCTS = "Failed to retrieve all products" ;
     public static final String FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER = "Failed to get products for Customer" ;
@@ -97,7 +94,7 @@ public class ApplicationConstants {
     public static final String LAST_NAME = "lastName" ;
     public static final String MOBILE_NUMBER = "mobileNumber" ;
     public static final String PASSWORD = "password" ;
-    public static final String CATEGORY_ID = "categoryId";
+    public static final String CATEGORY_ID = "category_id";
     public static final String PRODUCT_NAME_ADDED_TO_CART = "Product name added to Cart" ;
     public static final String PRODUCT_NAME_REMOVED_IN_CART = "Product name removed from Cart" ;
     public static final String PRODUCT_NAME_ADDED_TO_WISHLIST ="Product name added to Wishlist" ;
@@ -106,9 +103,9 @@ public class ApplicationConstants {
 
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
     public static final String EDIT_CUSTOMER_SUCCESS_MESSAGE = "Customer details updated successfully";
-    public static final String ORDER_ID = "orderId";
-    public static final String ORDER_DATE = "orderDate" ;
+    public static final String ORDER_ID = "order_id";
+    public static final String ORDER_DATE = "order_date" ;
     public static final String SELECT_ORDER = "select_order";
-    public static final String PRODUCT_ID_LIST = "productIdList";
-    public static final String ITEM_ID_LIST = "itemIdList";
+    public static final String PRODUCT_ID_LIST = "product_id_list";
+    public static final String ITEM_ID_LIST = "item_id_list";
 }

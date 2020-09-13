@@ -46,8 +46,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
-
-    private static final String TAG = "Register Fragment";
     FragmentRegisterBinding fragmentRegisterBinding;
     UserViewModel userViewModel;
     boolean editUser = false;
@@ -290,7 +288,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 public void onResponse(Call<RegisterTransportBean> call, Response<RegisterTransportBean> response) {
                     fragmentRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     RegisterTransportBean registerTransportBean = response.body();
-                    Log.i(TAG, "onResponse: " + registerTransportBean.getMessage());
                     if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.REGISTER_SUCCESS)) {
                         User user = new User();
                         user.setFirstName(fragmentRegisterBinding.editTextFirstName.getText().toString());
@@ -328,7 +325,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     // EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
                     APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_REGISTER);
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.SERVER_ERROR, ApplicationConstants.SOCKET_ERROR);
-                    Log.e(this.getClass().getName(), throwable.toString());
                 }
             });
         }
@@ -421,7 +417,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<RegisterTransportBean> call, Response<RegisterTransportBean> response) {
                     RegisterTransportBean registerTransportBean = response.body();
-                    Log.i(TAG, "onResponse: " + registerTransportBean.getMessage());
                     if (registerTransportBean.getMessage() != null && registerTransportBean.getMessage().contains(ApplicationConstants.SUCCESSFULLY)) {
                         User user = userViewModel.getUser(APIUtils.getLoggedInUserId(getActivity()));
                         user.setFirstName(fragmentRegisterBinding.editTextFirstName.getText().toString());

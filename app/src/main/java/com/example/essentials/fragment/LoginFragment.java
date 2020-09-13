@@ -47,7 +47,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginFragment extends Fragment {
-    private static final String TAG = "Login Activity";
     private static Retrofit retrofit = null;
     FragmentLoginBinding fragmentLoginBinding;
     UserViewModel userViewModel;
@@ -206,7 +205,6 @@ public class LoginFragment extends Fragment {
                 public void onResponse(Call<LoginTransportBean> call, Response<LoginTransportBean> response) {
                     LoginTransportBean loginTransportBean = response.body();
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
-                    Log.i(TAG, "onResponse: " + loginTransportBean.getMessage());
                     if (response.isSuccessful() && loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
                         // lOG successful event to google
                         Bundle bundle = new Bundle();

@@ -28,7 +28,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddDeliveryAddressActivity extends AppCompatActivity {
-    String TAG = "DeliveryAddressFragment";
     View rootView;
     ActivityAddAddressBinding activityAddAddressBinding;
    AddressViewModel addressViewModel;
