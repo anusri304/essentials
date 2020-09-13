@@ -115,6 +115,7 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
         Bundle bundle = new Bundle();
         bundle.putString(ApplicationConstants.ORDERS, sb.toString());
         APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(ApplicationConstants.VIEW_ORDERS, bundle);
+        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.ORDERS, sb.toString());
     }
 
     @Override

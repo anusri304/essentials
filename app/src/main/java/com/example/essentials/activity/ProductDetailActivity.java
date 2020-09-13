@@ -156,6 +156,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     Log.d("Anandhi cart", cartTransportBean.getMessage());
                     saveCartItemsToDB(userId, productPresentationBean.getId());
                     APIUtils.logAddToCartAnalyticsEvent(ProductDetailActivity.this, productPresentationBean);
+                    APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_CART, productPresentationBean.getName());
                 }
             }
 
@@ -220,6 +221,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                 WishlistTransportBean wishlistTransportBean = response.body();
                 Log.d("Anandhi total", wishlistTransportBean.getTotal());
                 saveWishListToDB(userId, productPresentationBean.getId());
+
+                APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_WISHLIST, productPresentationBean.getName());
                 APIUtils.logAddToWishlistAnalyticsEvent(ProductDetailActivity.this,productPresentationBean);
             }
 

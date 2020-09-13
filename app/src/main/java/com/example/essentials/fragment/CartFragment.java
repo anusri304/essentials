@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -212,9 +213,12 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
                 startActivity(intent);
+                String checkoutItems="";
                 for(CartPresentationBean cartPresentationBean:EssentialsUtils.getCartPresentationBeans(cartViewModel.getAllCartItems().getValue(),filteredProductPresentationBeans)) {
+                    checkoutItems= TextUtils.concat(",",String.valueOf(cartPresentationBean.getName())).toString();
                     APIUtils.logCheckoutAnalyticsEvent(getActivity().getApplicationContext(), cartPresentationBean);
                 }
+                APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CHECKOUT, checkoutItems);
             }
         });
     }
@@ -355,6 +359,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
+                    Product product = productViewModel.getProduct(cartPresentationBean.getProductId());
+                    APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_REMOVED_FROM_WISHLIST, product.getName());
                     APIUtils.logRemoveFromCartAnalyticsEvent(getActivity().getApplicationContext(),cartPresentationBean);
                 }
             }
@@ -398,6 +404,8 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 if (response.isSuccessful()) {
                     saveWishListToDB(userId, productId);
                     Product product = productViewModel.getProduct(productId);
+                    APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_WISHLIST, product.getName());
+
                     List<Product> analyticsList = new ArrayList<Product>();
                     analyticsList.add(product);
                     APIUtils.logAddToWishlistAnalyticsEvent(getActivity().getApplicationContext(),EssentialsUtils.getProductPresentationBeans(new ArrayList<>(analyticsList)).get(0));

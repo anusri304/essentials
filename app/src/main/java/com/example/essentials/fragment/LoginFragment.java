@@ -216,7 +216,6 @@ public class LoginFragment extends Fragment {
                         APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
 
                         APIUtils.getFirebaseCrashlytics().setUserId(APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
-
                         EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
                         User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
                         // if the user has registered in website the user will  be in null

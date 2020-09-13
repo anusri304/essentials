@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
 import com.example.essentials.domain.Cart;
@@ -47,7 +46,6 @@ import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -281,9 +279,9 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         call.enqueue(new Callback<WishlistTransportBean>() {
             @Override
             public void onResponse(Call<WishlistTransportBean> call, Response<WishlistTransportBean> response) {
+                APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_REMOVED_IN_CART, productPresentationBean.getName());
                 WishlistTransportBean wishlistTransportBean = response.body();
                 removeWishlistFromDB(userId, productPresentationBean.getId());
-
             }
 
             @Override
@@ -322,6 +320,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
                     APIUtils.logAddToCartAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBean);
+                    APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_CART, productPresentationBean.getName());
                     saveCartItemsToDB(userId, productPresentationBean);
                 }
             }

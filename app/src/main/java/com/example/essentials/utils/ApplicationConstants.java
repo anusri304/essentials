@@ -101,6 +101,16 @@ public class ApplicationConstants {
     public static final String FAILED_TO_GET_ALL_CATEGORIES = "Failed to get all categories" ;
     public static final String FAILED_TO_REGISTER = "Failed to register" ;
     public static final String FAILED_TO_EDIT_CUTOMER_DETAILS = "Failed to edit customer details" ;
+    public static final String FIRST_NAME = "firstName" ;
+    public static final String LAST_NAME = "lastName" ;
+    public static final String MOBILE_NUMBER = "mobileNumber" ;
+    public static final String PASSWORD = "password" ;
+    public static final String CATEGORY_ID = "categoryId";
+    public static final String PRODUCT_NAME_ADDED_TO_CART = "Product name added to Cart" ;
+    public static final String PRODUCT_NAME_REMOVED_IN_CART = "Product name removed from Cart" ;
+    public static final String PRODUCT_NAME_ADDED_TO_WISHLIST ="Product name added to Wishlist" ;
+    public static final String PRODUCT_NAME_REMOVED_FROM_WISHLIST ="Product name removed from Wishlist" ;
+    public static final String CHECKOUT = "Checkout" ;
 
     public static DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
     public static final String API_SUCCESS = "Success";

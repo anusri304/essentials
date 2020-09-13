@@ -299,6 +299,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                         user.setEmailAddress(fragmentRegisterBinding.editTextEmailAddress.getText().toString());
                         user.setPassword(fragmentRegisterBinding.editTextPassword.getText().toString());
                         user.setId(registerTransportBean.getCustomerId());
+
+                        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.FIRST_NAME,user.getFirstName());
+                        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.LAST_NAME,user.getFirstName());
+                        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.MOBILE_NUMBER,user.getMobileNumber());
+                        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.EMAIL,user.getEmailAddress());
+                        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PASSWORD,user.getPassword());
                         saveUser(user);
 
                         RegisterFragmentDirections.ActionNavTopRegisterToNavTopLogin action = RegisterFragmentDirections.actionNavTopRegisterToNavTopLogin();

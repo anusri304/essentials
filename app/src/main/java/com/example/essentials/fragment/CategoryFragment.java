@@ -129,6 +129,7 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
        // ProductFragmentDirections.NavigateToProductDetailFragment action = ProductFragmentDirections.navigateToProductDetailFragment(productPresentationBean);
         CategoryFragmentDirections.ActionNavBottomCategoryToNavBottomHome action = CategoryFragmentDirections.actionNavBottomCategoryToNavBottomHome();
         action.setCategoryId(categoryPresentationBean.getId());
+        APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CATEGORY_ID, categoryPresentationBean.getId());
        // Navigation.findNavController(rootView).navigate(action);
         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
     }

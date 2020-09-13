@@ -485,8 +485,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         if(productPresentationBeans!=null && productPresentationBeans.size()>0) {
             logAnalyticsEvent(productPresentationBeans, selectedProductPresentationBean);
         }
-
-        throw new RuntimeException("Test Crash");
     }
 
     private void logAnalyticsEvent(List<ProductPresentationBean> productPresentationBeans, ProductPresentationBean selectedProductPresentationBean) {
