@@ -3,7 +3,6 @@ package com.example.essentials.fragment;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;

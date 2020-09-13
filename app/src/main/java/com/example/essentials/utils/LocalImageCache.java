@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.util.LruCache;

@@ -1,6 +1,5 @@
 package com.example.essentials.activity.ui;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;

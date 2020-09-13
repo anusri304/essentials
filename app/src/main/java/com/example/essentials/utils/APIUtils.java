@@ -3,7 +3,6 @@ package com.example.essentials.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
