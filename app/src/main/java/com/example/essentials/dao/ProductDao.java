@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.essentials.domain.Product;
+import com.example.essentials.utils.ApplicationConstants;
 
 import java.util.List;
 
@@ -29,6 +30,6 @@ public interface ProductDao {
     @Query("SELECT * from Product where id=:productId")
     Product getProduct(int productId);
 
-    @Query("select * FROM product where special !='' AND inStock = 'yes' LIMIT 1" )
+    @Query("select * FROM product where special !='"+ApplicationConstants.EMPTY_STRING+"' AND inStock = '"+ ApplicationConstants.INSTOCK +"' LIMIT 1" )
     Product getPromotionProduct();
 }

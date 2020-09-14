@@ -22,7 +22,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/baking_app_widget_info"/>
+                android:resource="@xml/essential_app_widget_info"/>
         </receiver>
         <service android:name=".service.DisplayPromotionProductService" />
         <activity

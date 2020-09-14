@@ -2,8 +2,8 @@ package com.example.essentials.utils;
 
 public class ApplicationConstants {
     // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-    //public static final String BASE_URL = "http://10.0.75.1/Opencart/";
-    public static final String BASE_URL = "http://chozhansales.com/";
+    public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+    // public static final String BASE_URL = "http://chozhansales.com/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
@@ -12,6 +12,7 @@ public class ApplicationConstants {
     public static final String TELEPHONE_ERROR_MESSAGE = "Please enter your telephone number";
     public static final String PASSWORD_ERROR_MESSAGE = "Please enter your password";
     public static final String CONFIRM_PASSWORD_ERROR_MESSAGE = "Please confirm your password";
+    public static final String PASSWORD_NOT_MATCH_ERROR_MESSAGE = "Passwords do not match";
     public static final String EMAIL_ADDRESS_FORMAT_ERROR_MESSAGE = "Please enter a valid email address";
     public static final String FIRST_NAME_ERROR_MESSAGE = "Please enter your first name";
     public static final String REGISTER_SUCCESS = "You have registered successfully";
@@ -107,4 +108,6 @@ public class ApplicationConstants {
     public static final String SELECT_ORDER = "select_order";
     public static final String PRODUCT_ID_LIST = "product_id_list";
     public static final String ITEM_ID_LIST = "item_id_list";
+    public static final String INSTOCK = "In Stock" ;
+    public static final String EMPTY_STRING = "";
 }

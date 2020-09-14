@@ -45,6 +45,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.essentials.utils.ApplicationConstants.PASSWORD_NOT_MATCH_ERROR_MESSAGE;
+
 public class RegisterFragment extends Fragment implements View.OnClickListener {
     FragmentRegisterBinding fragmentRegisterBinding;
     UserViewModel userViewModel;
@@ -379,7 +381,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             if (!fragmentRegisterBinding.editTextPassword.getText().toString().isEmpty()) {
                 if (!fragmentRegisterBinding.editTextConfirmPassword.getText().toString().equals(fragmentRegisterBinding.editTextPassword.getText().toString())) {
                     isValid = false;
-                    fragmentRegisterBinding.textInputLayoutConfirmPwd.setError("Password Do Not Match");
+                    fragmentRegisterBinding.textInputLayoutConfirmPwd.setError(PASSWORD_NOT_MATCH_ERROR_MESSAGE);
                 } else {
                     fragmentRegisterBinding.textInputLayoutConfirmPwd.setError(null);
                 }

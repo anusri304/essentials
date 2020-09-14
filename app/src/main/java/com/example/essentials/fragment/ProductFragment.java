@@ -25,6 +25,7 @@ import com.example.essentials.R;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
@@ -58,15 +59,21 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
@@ -320,7 +327,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         showSpecialAlertDialog = false;
                         return;
                     } else {
-                        Log.d("Anandhi called", "Anandhi");
                         setData(onSpecialProductPresentationBeans);
                     }
                 }
@@ -332,7 +338,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         showAlertDialog = false;
                         return;
                     } else {
-                        Log.d("Anandhi called", "Anandhi");
                         setData(productPresentationBeans);
                     }
                 }
@@ -420,8 +425,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
 
-    private void getAllProducts() {
-        ProductService productService = APIUtils.getRetrofit().create(ProductService.class);
+    private void getAllProducts(){
+        ProductService productService = getRetrofit().create(ProductService.class);
         Call<ProductListTransportBean> call = productService.getAllProducts();
 
         call.enqueue(new Callback<ProductListTransportBean>() {
@@ -452,6 +457,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         saveorUpdateProduct(productPresentationBeans);
                     }
                 }
+                else {
+                    Log.w("status ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
+                }
             }
 
             @Override
@@ -462,11 +470,37 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     return;
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                    APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                    Log.d("Anandhi","Anandhi");
                     return;
                 }
+
+
             }
         });
 
+    }
+
+    public static Retrofit getRetrofit() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .retryOnConnectionFailure(true)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .build();
+// The App will not crash for malformed JSON.
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(ProductTransportBean.class, new AnnotatedDeserializer<ProductTransportBean>())
+                .setLenient().create();
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(ApplicationConstants.BASE_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofit;
     }
 
 

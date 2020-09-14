@@ -37,7 +37,9 @@ public class DisplayPromotionProductService extends IntentService implements Lif
         Product promotionProduct = productRepository.getPromotionProduct();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, EssentialAppWidgetProvider.class));
-        EssentialAppWidgetProvider.updateProductWidget(this,appWidgetManager,promotionProduct.getName(),promotionProduct.getImagePath(), promotionProduct.getSpecial(),appWidgetIds);
+        if(promotionProduct !=null) {
+            EssentialAppWidgetProvider.updateProductWidget(this, appWidgetManager, promotionProduct.getName(), promotionProduct.getImagePath(), promotionProduct.getSpecial(), appWidgetIds);
+        }
 
     }
 
