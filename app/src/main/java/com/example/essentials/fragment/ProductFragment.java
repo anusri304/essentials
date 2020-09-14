@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -217,7 +216,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
                     showSpecialAlertDialog = false;
                     setData(onSpecialProductPresentationBeans);
-                    return;
                 } else {
                     setData(onSpecialProductPresentationBeans);
                 }
@@ -226,7 +224,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
                     showAlertDialog = false;
                     setData(productPresentationBeans);
-                    return;
                 } else {
                     if(productPresentationBeans != null && productPresentationBeans.size()>0) {
                         APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
@@ -337,7 +334,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
                         setData(onSpecialProductPresentationBeans);
                         showSpecialAlertDialog = false;
-                        return;
                     } else {
                         setData(onSpecialProductPresentationBeans);
                     }
@@ -348,7 +344,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
                         setData(productPresentationBeans);
                         showAlertDialog = false;
-                        return;
                     } else {
                         setData(productPresentationBeans);
                     }
@@ -509,11 +504,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 // No data is retrieved. Check if there is no internet
                 if (!NetworkUtils.isNetworkConnected(getActivity())) {
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
-                    return;
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
                     APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
-                    return;
                 }
 
 

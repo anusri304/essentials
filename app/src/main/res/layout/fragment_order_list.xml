@@ -19,7 +19,7 @@
             android:id="@+id/order_txt_view"
             android:paddingTop="20dp"
             android:textSize="15sp"
-            android:paddingLeft="25dp"
+            android:paddingStart="25dp"
             android:layout_width="wrap_content"
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
@@ -27,7 +27,7 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:paddingLeft="150dp"
+            android:paddingStart="150dp"
             android:paddingTop="20dp"
               android:src="@drawable/arrow_forward"
             android:layout_height="wrap_content" android:contentDescription="@string/forward_button"/>

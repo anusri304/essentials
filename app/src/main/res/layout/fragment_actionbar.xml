@@ -17,7 +17,7 @@
         android:id="@+id/actionbar_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="60dp"
+        android:paddingStart="60dp"
         android:layout_toEndOf="@+id/back"
         android:textColor="@color/white"
         android:textSize="20sp"

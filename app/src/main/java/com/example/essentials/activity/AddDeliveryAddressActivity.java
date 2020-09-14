@@ -17,7 +17,6 @@ import com.example.essentials.databinding.ActivityAddAddressBinding;
 import com.example.essentials.domain.Address;
 import com.example.essentials.service.AddressService;
 import com.example.essentials.transport.AddressListTransportBean;
-import com.example.essentials.transport.AddressTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.RetrofitUtils;

@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/total"
-            android:paddingLeft="75dp"
+            android:paddingStart="75dp"
             android:textSize="15sp"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:paddingLeft="76dp"
+            android:paddingStart="76dp"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="75dp"
-        android:layout_marginLeft="150dp"
+        android:layout_marginStart="150dp"
         android:text="@string/checkout"
         android:textAllCaps="false"/>
     </LinearLayout>

@@ -68,10 +68,10 @@
                 android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:text="@string/edit"
                 android:textColor="@color/white" />
         </TableRow>
@@ -94,7 +94,7 @@
             android:id="@+id/delivery_addresstxtView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
             android:paddingTop="20dp"
             android:text="@string/delivery_address"
             android:textColor="@color/colorPrimary"
@@ -105,9 +105,9 @@
             android:id="@+id/arrowForward"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/delivery_addresstxtView"
+            android:layout_toEndOf="@+id/delivery_addresstxtView"
             android:contentDescription="@string/arrow_forward_image"
-            android:paddingLeft="320dp"
+            android:paddingStart="320dp"
             android:scaleType="fitCenter"
             android:src="@drawable/arrow_forward" />
 

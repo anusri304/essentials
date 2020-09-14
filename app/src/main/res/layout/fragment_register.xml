@@ -150,7 +150,7 @@
                 style="?android:attr/progressBarStyle"
                 android:layout_width="50dp"
                 android:layout_height="47dp"
-                android:layout_marginLeft="150dp"
+                android:layout_marginStart="150dp"
                 android:visibility="gone"
                 android:indeterminateTint="@color/colorPrimary"/>
 
@@ -159,7 +159,7 @@
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
+                android:layout_marginStart="150dp"
                 android:layout_marginBottom="175dp"
                 android:text="@string/register"
                 android:textAllCaps="false" />

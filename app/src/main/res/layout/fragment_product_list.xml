@@ -22,7 +22,7 @@
             android:id="@+id/product_name"
             android:paddingTop="20dp"
             android:textSize="15sp"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:layout_width="wrap_content"
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/product_special_price"
             android:paddingTop="5dp"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:textStyle="bold"
@@ -44,7 +44,7 @@
         <TextView
             android:id="@+id/product_price"
             android:paddingTop="5dp"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:textStyle="bold"
