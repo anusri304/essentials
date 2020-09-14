@@ -34,6 +34,7 @@ import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -188,7 +189,7 @@ public class LoginFragment extends Fragment {
 
     private void loginCustomer() {
         if (validateFields()) {
-            LoginCustomerService loginCustomerService = APIUtils.getRetrofit().create(LoginCustomerService.class);
+            LoginCustomerService loginCustomerService = RetrofitUtils.getRetrofitForLogin().create(LoginCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("username", ApplicationConstants.API_USER)
@@ -248,7 +249,7 @@ public class LoginFragment extends Fragment {
                 public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
-                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.LOGIN_FAILED);
+                    APIUtils.getFirebaseCrashlytics().log(LoginFragment.class.getName().concat( " ").concat(throwable.getMessage()));
                     // lOG failure event to google
                 }
             });

@@ -26,11 +26,13 @@ import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.domain.Product;
+import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.OrderCustomerViewModel;
@@ -135,7 +137,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
@@ -155,7 +157,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_CART_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(DeliveryItemActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

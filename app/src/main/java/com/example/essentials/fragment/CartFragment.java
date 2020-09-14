@@ -42,6 +42,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -154,7 +155,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     private void getProductsForCustomer() {
-        ProductService productService = APIUtils.getRetrofit().create(ProductService.class);
+        ProductService productService = RetrofitUtils.getRetrofitForCustomerCart().create(ProductService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -188,7 +189,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER);
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
 
@@ -332,7 +333,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
@@ -354,7 +355,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_CART_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }
@@ -373,7 +374,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = RetrofitUtils.getRetrofitForWishList().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productId))
@@ -399,7 +400,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_WISHLIST_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

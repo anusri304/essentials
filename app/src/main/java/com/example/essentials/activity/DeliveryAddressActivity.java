@@ -19,11 +19,13 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.adapter.AddressRecyclerViewAdapter;
 import com.example.essentials.domain.Address;
+import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.AddressService;
 import com.example.essentials.transport.AddressListTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
@@ -106,7 +108,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-        AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
+        AddressService addressService = RetrofitUtils.getRetrofitForAddress().create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))
@@ -131,7 +133,7 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_DELIVERY_ADDRESS);
+                APIUtils.getFirebaseCrashlytics().log(DeliveryAddressActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

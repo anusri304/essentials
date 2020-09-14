@@ -1,5 +1,6 @@
 package com.example.essentials.transport;
 
+import com.example.essentials.annotation.JsonRequired;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressListTransportBean {
+    @JsonRequired
     @SerializedName("address_id")
     int id;
     String message;

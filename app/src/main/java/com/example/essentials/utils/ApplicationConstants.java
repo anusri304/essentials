@@ -110,4 +110,6 @@ public class ApplicationConstants {
     public static final String ITEM_ID_LIST = "item_id_list";
     public static final String INSTOCK = "In Stock" ;
     public static final String EMPTY_STRING = "";
+    public static final String ZONE_ID = "2964";
+    public static final String COUNTRY_ID = "193" ;
 }

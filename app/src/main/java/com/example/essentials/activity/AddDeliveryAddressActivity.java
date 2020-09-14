@@ -14,10 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.essentials.R;
 import com.example.essentials.databinding.ActivityAddAddressBinding;
 import com.example.essentials.domain.Address;
+import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.AddressService;
 import com.example.essentials.transport.AddressListTransportBean;
+import com.example.essentials.transport.AddressTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
@@ -134,7 +137,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-        AddressService addressService = APIUtils.getRetrofit().create(AddressService.class);
+        AddressService addressService = RetrofitUtils.getRetrofitForAddress().create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("firstname", activityAddAddressBinding.editTextFirstname.getText().toString())
@@ -144,8 +147,8 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
                 .addFormDataPart("address_2", activityAddAddressBinding.editTextAddress2.getText().toString())
                 .addFormDataPart("postcode", activityAddAddressBinding.editTextPostalCode.getText().toString())
                 .addFormDataPart("city", activityAddAddressBinding.editTextCity.getText().toString())
-                .addFormDataPart("zone_id", "2964")
-                .addFormDataPart("country_id", "193")
+                .addFormDataPart("zone_id", ApplicationConstants.ZONE_ID)
+                .addFormDataPart("country_id", ApplicationConstants.COUNTRY_ID)
                 .build();
         Call<AddressListTransportBean> call = addressService.addAddress(apiToken,requestBody);
 
@@ -164,7 +167,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_DELIVERY_ADDRESS);
+                APIUtils.getFirebaseCrashlytics().log(AddDeliveryAddressActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

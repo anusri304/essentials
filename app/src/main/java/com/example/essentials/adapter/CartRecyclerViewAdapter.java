@@ -19,10 +19,13 @@ import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
 import com.example.essentials.domain.Cart;
+import com.example.essentials.fragment.CartFragment;
+import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
@@ -176,7 +179,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productId))
@@ -196,7 +199,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_EDIT_CART_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

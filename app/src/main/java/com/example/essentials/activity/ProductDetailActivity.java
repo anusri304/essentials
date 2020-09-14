@@ -22,6 +22,7 @@ import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Category;
 import com.example.essentials.domain.Wishlist;
+import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
@@ -29,6 +30,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.CategoryViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -135,7 +137,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
@@ -156,7 +158,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_CART_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }
@@ -197,7 +199,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = RetrofitUtils.getRetrofitForWishList().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
@@ -217,7 +219,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_ADD_WISHLIST_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }

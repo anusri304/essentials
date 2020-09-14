@@ -38,6 +38,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -179,7 +180,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void getWishlistProductsForCustomer() {
-        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = RetrofitUtils.getRetrofitForCustomerWish().create(WishlistService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -210,7 +211,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_GET_WISHLIST_PRODUCTS);
+                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }
@@ -260,7 +261,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        WishlistService wishlistService = APIUtils.getRetrofit().create(WishlistService.class);
+        WishlistService wishlistService = RetrofitUtils.getRetrofitForWishList().create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
@@ -278,7 +279,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_DELETE_WISHLIST_ITEMS);
+                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
     }
@@ -295,7 +296,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = APIUtils.getRetrofit().create(CartService.class);
+        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))

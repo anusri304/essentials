@@ -34,6 +34,7 @@ import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.NetworkUtils;
+import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -279,7 +280,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private void registerCustomer(View view) {
         if (validateFields()) {
-            RegisterCustomerService registerCustomerService = APIUtils.getRetrofit().create(RegisterCustomerService.class);
+            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofitForRegister().create(RegisterCustomerService.class);
             Call<RegisterTransportBean> call = registerCustomerService.registerCustomer(fragmentRegisterBinding.editTextEmailAddress.getText().toString(), fragmentRegisterBinding.editTextFirstName.getText().toString(), fragmentRegisterBinding.editTextLastName.getText().toString(), fragmentRegisterBinding.editTextMobileNo.getText().toString(), fragmentRegisterBinding.editTextPassword.getText().toString());
 
 
@@ -325,7 +326,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 public void onFailure(Call<RegisterTransportBean> call, Throwable throwable) {
                     fragmentRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     // EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
-                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_REGISTER);
+                    APIUtils.getFirebaseCrashlytics().log(RegisterFragment.class.getName().concat( " ").concat(throwable.getMessage()));
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.SERVER_ERROR, ApplicationConstants.SOCKET_ERROR);
                 }
             });
@@ -403,7 +404,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private void editUserDetails() {
         if (validateFields()) {
-            RegisterCustomerService registerCustomerService = APIUtils.getRetrofit().create(RegisterCustomerService.class);
+            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofitForRegister().create(RegisterCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("email", fragmentRegisterBinding.editTextEmailAddress.getText().toString())
@@ -435,7 +436,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     //    fragmentRegisterBinding.progressBar.setVisibility(View.INVISIBLE);
                     //  EssentialsUtils.showMessage(fragmentRegisterBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.SOCKET_ERROR);
-                    APIUtils.getFirebaseCrashlytics().log(ApplicationConstants.FAILED_TO_EDIT_CUTOMER_DETAILS);
+                    APIUtils.getFirebaseCrashlytics().log(RegisterFragment.class.getName().concat( " ").concat(throwable.getMessage()));
                     Log.e(this.getClass().getName(), throwable.toString());
                 }
             });
