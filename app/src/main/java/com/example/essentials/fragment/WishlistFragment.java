@@ -212,11 +212,11 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                                     wishlistViewModel.updateWishlist(wishlist);
                                 }
                             } else {
-                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(new Gson().toJson(response)));
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                             }
                         }
                     } else {
-                        APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat(" ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }

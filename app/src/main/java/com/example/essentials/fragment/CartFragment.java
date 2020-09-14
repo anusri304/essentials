@@ -199,7 +199,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }

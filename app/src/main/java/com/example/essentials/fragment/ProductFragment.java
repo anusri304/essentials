@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
+import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
@@ -124,7 +125,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         observeChanges();
         observeCartChanges();
         observeWishlistChanges();
-        getDeliveryAddress();
+        if (APIUtils.isUserLogged(getActivity().getApplicationContext())) {
+            getDeliveryAddress();
+        }
 
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
@@ -175,7 +178,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         }
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
 
                 }
@@ -266,7 +269,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         }
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                     getAllProducts();
 
@@ -387,7 +390,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                     getWishlistProductsForCustomer();
                 }
@@ -431,7 +434,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         }
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }
@@ -494,7 +497,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         saveorUpdateProduct(productPresentationBeans);
                     }
                     else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }
@@ -543,7 +546,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 productViewModel.insertProduct(product, getActivity().getApplicationContext(), productPresentationBean.getImage());
             }
         }
-        getProductsForCustomer();
+        if (APIUtils.isUserLogged(getActivity().getApplicationContext())) {
+            getProductsForCustomer();
+        }
     }
 
 
