@@ -26,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.WishlistRecyclerViewAdapter;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
@@ -46,6 +47,8 @@ import com.example.essentials.viewmodel.WishlistViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,7 +183,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void getWishlistProductsForCustomer() {
-        WishlistService wishlistService = RetrofitUtils.getRetrofitForCustomerWish().create(WishlistService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CustomerWishTransportBean.class, new AnnotatedDeserializer<CustomerWishTransportBean>())
+                .setLenient().create();
+        WishlistService wishlistService = RetrofitUtils.getRetrofit(gson).create(WishlistService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -261,7 +267,11 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        WishlistService wishlistService = RetrofitUtils.getRetrofitForWishList().create(WishlistService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(WishlistTransportBean.class, new AnnotatedDeserializer<WishlistTransportBean>())
+                .setLenient().create();
+
+        WishlistService wishlistService = RetrofitUtils.getRetrofit(gson).create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
@@ -296,7 +306,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
+                .setLenient().create();
+        CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))

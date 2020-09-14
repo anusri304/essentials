@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.databinding.FragmentRegisterBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.RegisterCustomerService;
@@ -39,6 +40,8 @@ import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -280,7 +283,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private void registerCustomer(View view) {
         if (validateFields()) {
-            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofitForRegister().create(RegisterCustomerService.class);
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(RegisterTransportBean.class, new AnnotatedDeserializer<RegisterTransportBean>())
+                    .setLenient().create();
+            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofit(gson).create(RegisterCustomerService.class);
             Call<RegisterTransportBean> call = registerCustomerService.registerCustomer(fragmentRegisterBinding.editTextEmailAddress.getText().toString(), fragmentRegisterBinding.editTextFirstName.getText().toString(), fragmentRegisterBinding.editTextLastName.getText().toString(), fragmentRegisterBinding.editTextMobileNo.getText().toString(), fragmentRegisterBinding.editTextPassword.getText().toString());
 
 
@@ -404,7 +411,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private void editUserDetails() {
         if (validateFields()) {
-            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofitForRegister().create(RegisterCustomerService.class);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(RegisterTransportBean.class, new AnnotatedDeserializer<RegisterTransportBean>())
+                    .setLenient().create();
+            RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofit(gson).create(RegisterCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("email", fragmentRegisterBinding.editTextEmailAddress.getText().toString())

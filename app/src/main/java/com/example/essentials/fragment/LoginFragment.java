@@ -26,6 +26,7 @@ import androidx.navigation.Navigation;
 
 import com.example.essentials.R;
 import com.example.essentials.activity.ProductActivity;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.databinding.FragmentLoginBinding;
 import com.example.essentials.domain.User;
 import com.example.essentials.service.LoginCustomerService;
@@ -38,6 +39,8 @@ import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -189,7 +192,10 @@ public class LoginFragment extends Fragment {
 
     private void loginCustomer() {
         if (validateFields()) {
-            LoginCustomerService loginCustomerService = RetrofitUtils.getRetrofitForLogin().create(LoginCustomerService.class);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LoginTransportBean.class, new AnnotatedDeserializer<LoginTransportBean>())
+                    .setLenient().create();
+            LoginCustomerService loginCustomerService = RetrofitUtils.getRetrofit(gson).create(LoginCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("username", ApplicationConstants.API_USER)

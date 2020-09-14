@@ -18,9 +18,9 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.fragment.CartFragment;
-import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
@@ -28,6 +28,8 @@ import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +181,10 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
+                .setLenient().create();
+        CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productId))

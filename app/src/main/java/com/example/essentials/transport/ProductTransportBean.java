@@ -26,8 +26,6 @@ public class ProductTransportBean {
     @JsonRequired
     String description;
     @JsonRequired
-    String quantity;
-    @JsonRequired
     String price;
     @JsonRequired
     String discPerc;

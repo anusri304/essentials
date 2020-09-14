@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WishlistTransportBean {
     String message;
-    @JsonRequired
     String total;
 }

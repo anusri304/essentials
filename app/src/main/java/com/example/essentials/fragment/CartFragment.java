@@ -29,6 +29,7 @@ import com.example.essentials.activity.DeliveryAddressActivity;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.CartRecyclerViewAdapter;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.Product;
 import com.example.essentials.domain.Wishlist;
@@ -52,6 +53,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +158,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     private void getProductsForCustomer() {
-        ProductService productService = RetrofitUtils.getRetrofitForCustomerCart().create(ProductService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CustomerCartTransportBean.class, new AnnotatedDeserializer<CustomerCartTransportBean>())
+                .setLenient().create();
+        ProductService productService = RetrofitUtils.getRetrofit(gson).create(ProductService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -209,7 +215,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                 }
                 APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CHECKOUT, checkoutItems);
 
-                throw new RuntimeException("Test Crash");
             }
         });
     }
@@ -333,7 +338,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
+                .setLenient().create();
+        CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
@@ -374,7 +382,10 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
 
-        WishlistService wishlistService = RetrofitUtils.getRetrofitForWishList().create(WishlistService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(WishlistTransportBean.class, new AnnotatedDeserializer<WishlistTransportBean>())
+                .setLenient().create();
+        WishlistService wishlistService = RetrofitUtils.getRetrofit(gson).create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(productId))

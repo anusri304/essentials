@@ -18,16 +18,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.essentials.R;
 import com.example.essentials.activity.bean.AddressPresentationBean;
 import com.example.essentials.adapter.AddressRecyclerViewAdapter;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Address;
-import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.AddressService;
 import com.example.essentials.transport.AddressListTransportBean;
+import com.example.essentials.transport.AddressTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +111,10 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-        AddressService addressService = RetrofitUtils.getRetrofitForAddress().create(AddressService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(AddressTransportBean.class, new AnnotatedDeserializer<AddressTransportBean>())
+                .setLenient().create();
+        AddressService addressService = RetrofitUtils.getRetrofit(gson).create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))

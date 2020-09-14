@@ -21,12 +21,12 @@ import com.example.essentials.R;
 import com.example.essentials.activity.bean.CartPresentationBean;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.DeliveryRecyclerViewAdapter;
+import com.example.essentials.annotation.AnnotatedDeserializer;
 import com.example.essentials.domain.Address;
 import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.domain.Product;
-import com.example.essentials.fragment.ProductFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.transport.CartTransportBean;
 import com.example.essentials.utils.APIUtils;
@@ -40,6 +40,8 @@ import com.example.essentials.viewmodel.OrderProductViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -136,8 +138,10 @@ public class DeliveryItemActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-
-        CartService cartService = RetrofitUtils.getRetrofitForCart().create(CartService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
+                .setLenient().create();
+        CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))

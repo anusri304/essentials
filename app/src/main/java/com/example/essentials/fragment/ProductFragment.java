@@ -65,19 +65,14 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.essentials.utils.RetrofitUtils.getRetrofitForAddress;
-import static com.example.essentials.utils.RetrofitUtils.getRetrofitForProduct;
+import static com.example.essentials.utils.RetrofitUtils.getRetrofit;
 
 public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
@@ -139,7 +134,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getDeliveryAddress() {
-        AddressService addressService = getRetrofitForAddress().create(AddressService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(AddressTransportBean.class, new AnnotatedDeserializer<AddressTransportBean>())
+                .setLenient().create();
+        AddressService addressService = getRetrofit(gson).create(AddressService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
         String userId = String.valueOf(pref.getInt(ApplicationConstants.USER_ID, 0));
@@ -239,7 +237,11 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getAllCategories() {
-        CategoryService categoryService = RetrofitUtils.getRetrofitForCategory().create(CategoryService.class);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CategoryTransportBean.class, new AnnotatedDeserializer<CategoryTransportBean>())
+                .setLenient().create();
+        CategoryService categoryService = RetrofitUtils.getRetrofit(gson).create(CategoryService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
         Call<CategoryListTransportBean> call = categoryService.getAllCategories(apiToken);
@@ -351,7 +353,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getProductsForCustomer() {
-        ProductService productService = RetrofitUtils.getRetrofitForCustomerCart().create(ProductService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CustomerCartTransportBean.class, new AnnotatedDeserializer<CustomerCartTransportBean>())
+                .setLenient().create();
+        ProductService productService = RetrofitUtils.getRetrofit(gson).create(ProductService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -392,7 +397,10 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void getWishlistProductsForCustomer() {
-        WishlistService wishlistService = RetrofitUtils.getRetrofitForCustomerWish().create(WishlistService.class);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CustomerWishTransportBean.class, new AnnotatedDeserializer<CustomerWishTransportBean>())
+                .setLenient().create();
+        WishlistService wishlistService = RetrofitUtils.getRetrofit(gson).create(WishlistService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
@@ -433,7 +441,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(ProductTransportBean.class, new AnnotatedDeserializer<ProductTransportBean>())
                 .setLenient().create();
-        ProductService productService = getRetrofitForProduct().create(ProductService.class);
+        ProductService productService = getRetrofit(gson).create(ProductService.class);
         Call<ProductListTransportBean> call = productService.getAllProducts();
 
         call.enqueue(new Callback<ProductListTransportBean>() {
@@ -475,7 +483,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
                     APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
-                    Log.d("Anandhi","Anandhi");
+                    Log.d("Anandhi","Anandhi"+throwable.getMessage());
                     return;
                 }
 
