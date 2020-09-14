@@ -66,9 +66,9 @@ c
                 android:id="@+id/product_title_txtview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:textAppearance="@style/promotionTextStyle" />
 
             <TextView
@@ -176,7 +176,7 @@ c
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/add_wish_list_button"
-                android:layout_marginLeft="100dp"
+                android:layout_marginStart="100dp"
                 android:text="@string/add_to_cart"
                 android:textAllCaps="false"
                 app:icon="@drawable/shopping_cart" />
