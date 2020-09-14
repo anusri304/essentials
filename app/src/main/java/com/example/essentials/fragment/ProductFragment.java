@@ -175,6 +175,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             }
                         }
                     }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                    }
 
                 }
 
@@ -264,6 +267,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 categoryViewModel.updateCategory(category);
                             }
                         }
+                    }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
                     }
                     getAllProducts();
 
@@ -385,6 +391,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                         }
 
                     }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                    }
                     getWishlistProductsForCustomer();
                 }
             }
@@ -426,6 +435,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             }
                         }
                     }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
+                    }
                 }
             }
 
@@ -453,15 +465,30 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     if (productTransportBeans != null && productTransportBeans.getProducts().size() > 0) {
                         for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
                             ProductPresentationBean productPresentationBean = new ProductPresentationBean();
-                            productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
+                            if(productTransportBean.getProductId()!=null && !productTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
+                            }
+                            else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_PRODUCT_ID));
+                            }
                             //TODO: Replace the path in Opencart
                             productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
                             // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                             productPresentationBean.setName(productTransportBean.getName());
                             productPresentationBean.setPrice(productTransportBean.getPrice());
-                            productPresentationBean.setCategoryId(Integer.valueOf(productTransportBean.getCategoryId()));
+                            if(productTransportBean.getCategoryId()!=null && !productTransportBean.getCategoryId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                productPresentationBean.setCategoryId(Integer.valueOf(productTransportBean.getCategoryId()));
+                            }
+                            else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_CATEGORY_ID));
+                            }
                             productPresentationBean.setDescription(productTransportBean.getDescription());
-                            productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
+                            if(productTransportBean.getSpecial()!=null && !productTransportBean.getSpecial().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
+                            }
+                            else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_SPECIAL));
+                            }
                             //TODO: get disc perc
                             productPresentationBean.setDiscPerc(productTransportBean.getDiscPerc());
                             //TODO: get inStock
@@ -470,6 +497,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             productPresentationBeans.add(productPresentationBean);
                         }
                         saveorUpdateProduct(productPresentationBeans);
+                    }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
                     }
                 }
             }
@@ -483,7 +513,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
                     APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
-                    Log.d("Anandhi","Anandhi"+throwable.getMessage());
                     return;
                 }
 

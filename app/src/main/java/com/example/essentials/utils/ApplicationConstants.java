@@ -112,4 +112,7 @@ public class ApplicationConstants {
     public static final String EMPTY_STRING = "";
     public static final String ZONE_ID = "2964";
     public static final String COUNTRY_ID = "193" ;
+    public static final String NULL_PRODUCT_ID = "Product Id is null" ;
+    public static final String NULL_CATEGORY_ID = "Category Id is null" ;
+    public static final String NULL_SPECIAL = "Special is null" ;
 }

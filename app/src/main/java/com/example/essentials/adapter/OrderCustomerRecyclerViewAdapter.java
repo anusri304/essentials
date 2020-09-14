@@ -71,7 +71,7 @@ public class OrderCustomerRecyclerViewAdapter extends RecyclerView.Adapter<Order
 
     @Override
     public void onBindViewHolder(OrderCustomerRecyclerViewAdapter.OrderViewHolder holder, int position) {
-        String orderDisplay =String.valueOf(mValues.get(position).getDateAdded());
+        String orderDisplay =mValues.get(position).getDateAdded();
         holder.orderTxtView.setText(orderDisplay);
     }
 

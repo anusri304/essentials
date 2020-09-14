@@ -199,25 +199,31 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
                     CustomerWishListTransportBean customerWishListTransportBeans = response.body();
                     if (customerWishListTransportBeans != null && customerWishListTransportBeans.getProducts().size() > 0) {
                         for (CustomerWishTransportBean customerWishlistTransportBean : customerWishListTransportBeans.getProducts()) {
-                            Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, Integer.parseInt(customerWishlistTransportBean.getProductId()));
-                            if (wishlist == null) {
-                                wishlist = new Wishlist();
-                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
-                                wishlist.setUserId(userId);
-                                wishlistViewModel.insertWishlist(wishlist);
+                            if (customerWishlistTransportBean.getProductId() != null && !customerWishlistTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                Wishlist wishlist = wishlistViewModel.getWishlistForUserAndProduct(userId, Integer.parseInt(customerWishlistTransportBean.getProductId()));
+                                if (wishlist == null) {
+                                    wishlist = new Wishlist();
+                                    wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                    wishlist.setUserId(userId);
+                                    wishlistViewModel.insertWishlist(wishlist);
+                                } else {
+                                    wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
+                                    wishlist.setUserId(userId);
+                                    wishlistViewModel.updateWishlist(wishlist);
+                                }
                             } else {
-                                wishlist.setProductId(Integer.valueOf(customerWishlistTransportBean.getProductId()));
-                                wishlist.setUserId(userId);
-                                wishlistViewModel.updateWishlist(wishlist);
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(new Gson().toJson(response)));
                             }
                         }
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat(" ").concat(new Gson().toJson(response)));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -289,7 +295,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(WishlistFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }

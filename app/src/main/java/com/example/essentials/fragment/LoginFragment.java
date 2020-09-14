@@ -213,41 +213,44 @@ public class LoginFragment extends Fragment {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     if (response.isSuccessful() && loginTransportBean.getMessage() != null && loginTransportBean.getMessage().contains(ApplicationConstants.LOGIN_SUCCESS)) {
                         // lOG successful event to google
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ApplicationConstants.USERNAME, APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
-                        bundle.putString(FirebaseAnalytics.Param.METHOD,ApplicationConstants.EMAIL);
-                        bundle.putLong(FirebaseAnalytics.Param.SUCCESS, 1);
-                        APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
+                        if (loginTransportBean.getCustomerId() != null && !loginTransportBean.getCustomerId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(ApplicationConstants.USERNAME, APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
+                            bundle.putString(FirebaseAnalytics.Param.METHOD, ApplicationConstants.EMAIL);
+                            bundle.putLong(FirebaseAnalytics.Param.SUCCESS, 1);
+                            APIUtils.getFirebaseAnalytics(getActivity().getApplicationContext()).logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
 
-                        APIUtils.getFirebaseCrashlytics().setUserId(APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
-                        EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
-                        User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
-                        // if the user has registered in website the user will  be in null
-                        if (user != null) {
-                            user.setApiToken(loginTransportBean.getApiToken());
-                            userViewModel.updateUser(user);
+                            APIUtils.getFirebaseCrashlytics().setUserId(APIUtils.getLoggedInUserName(getActivity().getApplicationContext()));
+                            EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_SUCCESS);
+                            User user = userViewModel.getUser(Integer.valueOf(loginTransportBean.getCustomerId()));
+                            // if the user has registered in website the user will  be in null
+                            if (user != null) {
+                                user.setApiToken(loginTransportBean.getApiToken());
+                                userViewModel.updateUser(user);
+                            } else {
+                                user = new User();
+                                user.setId(Integer.valueOf(loginTransportBean.getCustomerId()));
+                                user.setApiToken(loginTransportBean.getApiToken());
+                                user.setEmailAddress(loginTransportBean.getEmail());
+                                user.setFirstName(loginTransportBean.getFirstname());
+                                user.setLastName(loginTransportBean.getLastname());
+                                user.setMobileNumber(loginTransportBean.getTelephone());
+                                user.setPassword(fragmentLoginBinding.editTextPassword.getText().toString());
+                                userViewModel.insertUser(user);
+
+                            }
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putInt(ApplicationConstants.USER_ID, user.getId());
+                            editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
+                            editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
+                            editor.apply();
+                            Intent intent = new Intent(getActivity().getApplicationContext(), ProductActivity.class);
+                            startActivity(intent);
+
                         } else {
-                            user = new User();
-                            user.setId(Integer.valueOf(loginTransportBean.getCustomerId()));
-                            user.setApiToken(loginTransportBean.getApiToken());
-                            user.setEmailAddress(loginTransportBean.getEmail());
-                            user.setFirstName(loginTransportBean.getFirstname());
-                            user.setLastName(loginTransportBean.getLastname());
-                            user.setMobileNumber(loginTransportBean.getTelephone());
-                            user.setPassword(fragmentLoginBinding.editTextPassword.getText().toString());
-                            userViewModel.insertUser(user);
+                            EssentialsUtils.hideKeyboard(getActivity().getApplicationContext());
+                            EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
                         }
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putInt(ApplicationConstants.USER_ID, user.getId());
-                        editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
-                        editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
-                        editor.apply();
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ProductActivity.class);
-                        startActivity(intent);
-
-                    } else {
-                        EssentialsUtils.hideKeyboard(getActivity().getApplicationContext());
-                        EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
                     }
                 }
 
@@ -255,7 +258,7 @@ public class LoginFragment extends Fragment {
                 public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
                     EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
-                    APIUtils.getFirebaseCrashlytics().log(LoginFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                    APIUtils.getFirebaseCrashlytics().log(LoginFragment.class.getName().concat(" ").concat(throwable.getMessage()));
                     // lOG failure event to google
                 }
             });

@@ -24,6 +24,7 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
     DeliveryRecyclerViewAdapter.CartViewHolder holder;
     int check = 0;
     static int selectedPosition = 0;
+    double price;
 
 
 
@@ -80,7 +81,9 @@ public class DeliveryRecyclerViewAdapter extends RecyclerView.Adapter<DeliveryRe
                 .into(holder.imageView);
         int quantity = mValues.get(position).getQuantity();
         holder.productNameTxtView.setText(mValues.get(position).getName());
-        double price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
+        if(mValues.get(position).getPrice().substring(1)!=null || !mValues.get(position).getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)  ) {
+            price = Double.valueOf(mValues.get(position).getPrice().substring(1)) * quantity;
+        }
         holder.productPriceTxtView.setText(mValues.get(position).getPrice());
         holder.productQtyTxtView.setText( String.valueOf(mValues.get(position).getQuantity()));
     }

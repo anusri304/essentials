@@ -177,18 +177,29 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                             Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
                             if (cart == null) {
                                 cart = new Cart();
-                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
-                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                if(customercartTransportBean.getProductId()!=null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                    cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                }
+                                if(customercartTransportBean.getQuantity()!=null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                    cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                }
                                 cart.setUserId(userId);
                                 cartViewModel.insertCartItems(cart);
                             } else {
-                                cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
-                                cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                if(customercartTransportBean.getProductId()!=null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                    cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
+                                }
+                                if(customercartTransportBean.getQuantity()!=null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                    cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
+                                }
                                 cart.setUserId(userId);
                                 cartViewModel.updateCartItems(cart);
                             }
                         }
 
+                    }
+                    else {
+                        APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(new Gson().toJson(response)));
                     }
                 }
             }

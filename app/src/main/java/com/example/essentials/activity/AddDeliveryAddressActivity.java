@@ -140,7 +140,7 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
         int userId = pref.getInt(ApplicationConstants.USER_ID, 0);
         String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(AddressTransportBean.class, new AnnotatedDeserializer<AddressTransportBean>())
+                .registerTypeAdapter(AddressListTransportBean.class, new AnnotatedDeserializer<AddressListTransportBean>())
                 .setLenient().create();
         AddressService addressService = RetrofitUtils.getRetrofit(gson).create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()

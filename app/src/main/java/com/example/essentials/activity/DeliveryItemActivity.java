@@ -175,7 +175,9 @@ public class DeliveryItemActivity extends AppCompatActivity {
     private void saveOrderProductInDB(int orderId, CartPresentationBean cartPresentationBean) {
         OrderProduct orderProduct = new OrderProduct();
         orderProduct.setOrderId(orderId);
-        orderProduct.setPrice(Double.valueOf(cartPresentationBean.getPrice().substring(1)));
+        if(cartPresentationBean.getPrice()!=null && !cartPresentationBean.getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+            orderProduct.setPrice(Double.valueOf(cartPresentationBean.getPrice().substring(1)));
+        }
         orderProduct.setQuantity(cartPresentationBean.getQuantity());
         orderProduct.setTotal(total);
         orderProduct.setProductId(cartPresentationBean.getProductId());
