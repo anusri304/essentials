@@ -2,7 +2,7 @@ package com.example.essentials.utils;
 
 public class ApplicationConstants {
     // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-  //  public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+    //public static final String BASE_URL = "http://10.0.75.1/Opencart/";
     public static final String BASE_URL = "http://chozhansales.com/";
 
 
@@ -75,36 +75,35 @@ public class ApplicationConstants {
     public static final String EMAIL = "email";
     public static final String CART_PRESENTATION_BEAN = "cartPresentationBean";
     public static final String LOGIN_FAILED = "Login Failed";
-    public static final String FAILED_TO_GET_ALL_PRODUCTS = "Failed to retrieve all products" ;
-    public static final String FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER = "Failed to get products for Customer" ;
+    public static final String FAILED_TO_GET_ALL_PRODUCTS = "Failed to retrieve all products";
+    public static final String FAILED_TO_GET_PRODUCTS_FOR_CUSTOMER = "Failed to get products for Customer";
     public static final String FAILED_TO_DELETE_DELIVERY_ADDRESS = "Failed to delete delivery address";
     public static final String FAILED_TO_GET_WISHLIST_PRODUCTS = "Failed to get wishlist products";
     public static final String FAILED_TO_ADD_DELIVERY_ADDRESS = "Failed to add delivery address";
-    public static final String FAILED_TO_DELETE_CART_ITEMS = "Failed to delete products from cart" ;
-    public static final String FAILED_TO_ADD_CART_ITEMS =   "Failed to add products to cart"
-    ;
-    public static final String FAILED_TO_ADD_WISHLIST_ITEMS =  "Failed to add products to Wishlist" ;
-    public static final String FAILED_TO_DELETE_WISHLIST_ITEMS = "Failed to delete products from Wishlist" ;
-    public static final String FAILED_TO_EDIT_CART_ITEMS = "Failed to edit products in cart" ;
-    public static final String FAILED_TO_GET_DELIVERY_ADDRESS = "Failed to get delivery address" ;
-    public static final String FAILED_TO_GET_ALL_CATEGORIES = "Failed to get all categories" ;
-    public static final String FAILED_TO_REGISTER = "Failed to register" ;
-    public static final String FAILED_TO_EDIT_CUTOMER_DETAILS = "Failed to edit customer details" ;
-    public static final String FIRST_NAME = "firstName" ;
-    public static final String LAST_NAME = "lastName" ;
-    public static final String MOBILE_NUMBER = "mobileNumber" ;
-    public static final String PASSWORD = "password" ;
+    public static final String FAILED_TO_DELETE_CART_ITEMS = "Failed to delete products from cart";
+    public static final String FAILED_TO_ADD_CART_ITEMS = "Failed to add products to cart";
+    public static final String FAILED_TO_ADD_WISHLIST_ITEMS = "Failed to add products to Wishlist";
+    public static final String FAILED_TO_DELETE_WISHLIST_ITEMS = "Failed to delete products from Wishlist";
+    public static final String FAILED_TO_EDIT_CART_ITEMS = "Failed to edit products in cart";
+    public static final String FAILED_TO_GET_DELIVERY_ADDRESS = "Failed to get delivery address";
+    public static final String FAILED_TO_GET_ALL_CATEGORIES = "Failed to get all categories";
+    public static final String FAILED_TO_REGISTER = "Failed to register";
+    public static final String FAILED_TO_EDIT_CUTOMER_DETAILS = "Failed to edit customer details";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String MOBILE_NUMBER = "mobileNumber";
+    public static final String PASSWORD = "password";
     public static final String CATEGORY_ID = "category_id";
-    public static final String PRODUCT_NAME_ADDED_TO_CART = "Product name added to Cart" ;
-    public static final String PRODUCT_NAME_REMOVED_IN_CART = "Product name removed from Cart" ;
-    public static final String PRODUCT_NAME_ADDED_TO_WISHLIST ="Product name added to Wishlist" ;
-    public static final String PRODUCT_NAME_REMOVED_FROM_WISHLIST ="Product name removed from Wishlist" ;
-    public static final String CHECKOUT = "Checkout" ;
+    public static final String PRODUCT_NAME_ADDED_TO_CART = "Product name added to Cart";
+    public static final String PRODUCT_NAME_REMOVED_IN_CART = "Product name removed from Cart";
+    public static final String PRODUCT_NAME_ADDED_TO_WISHLIST = "Product name added to Wishlist";
+    public static final String PRODUCT_NAME_REMOVED_FROM_WISHLIST = "Product name removed from Wishlist";
+    public static final String CHECKOUT = "Checkout";
 
     public static final String NO_LOGIN_MESSAGE_WISHLIST = "Please login to add products to the Wishlist";
     public static final String EDIT_CUSTOMER_SUCCESS_MESSAGE = "Customer details updated successfully";
     public static final String ORDER_ID = "order_id";
-    public static final String ORDER_DATE = "order_date" ;
+    public static final String ORDER_DATE = "order_date";
     public static final String SELECT_ORDER = "select_order";
     public static final String PRODUCT_ID_LIST = "product_id_list";
     public static final String ITEM_ID_LIST = "item_id_list";

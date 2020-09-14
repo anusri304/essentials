@@ -32,15 +32,6 @@
         <item name="android:padding">10dp</item>
     </style>
 
-    <style name="widgetStyle">
-        <item name="android:background">#09C</item>
-        <item name="android:contentDescription">@string/app_name</item>
-        <item name="android:text">@string/app_name</item>
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold|italic</item>
-    </style>
-
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
@@ -49,8 +40,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="AppTheme.ActionBar" parent="Theme.MaterialComponents.Light"></style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -75,12 +64,6 @@
         <item name="android:textStyle">italic</item>
     </style>
 
-    <style name="spinnerItemStyle">
-        <item name="android:background">@color/gray</item>
-    </style>
-
-    <style name="Body_ThemeOverlay.MaterialComponents.MaterialAlertDialog" parent="Theme.MaterialComponents"></style>
-
     <style name="BodyMaterialAlertDialog.MaterialComponents.Body.Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
         <item name="android:textColor">@color/black</item>
         <item name="android:textAllCaps">false</item>
@@ -101,19 +84,4 @@
         <item name="cornerSize">16dp</item>
     </style>
 
-    <style name="CardViewStyle" parent="CardView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">8dp</item>
-    </style>
-
-    <style name="Widget.CardContent" parent="android:Widget">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">24dp</item>
-        <item name="android:orientation">vertical</item>
-    </style>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     int categoryId;
     MaterialCheckBox materialCheckBox;
     private SwipeRefreshLayout swipeContainer;
+    boolean showAlertDialog= true;
+    boolean showSpecialAlertDialog= true;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -180,7 +183,9 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         materialCheckBox.setOnCheckedChangeListener(new MaterialCheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                  setDataForCheckChange(checked);
+                showAlertDialog = true;
+                showSpecialAlertDialog = true;
+                setDataForCheckChange(checked);
             }
 
 
@@ -196,18 +201,26 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             }
             if (checked) {
                 List<ProductPresentationBean> onSpecialProductPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
-                if (onSpecialProductPresentationBeans.size() == 0) {
+                if (onSpecialProductPresentationBeans.size() == 0 && showSpecialAlertDialog) {
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                    showSpecialAlertDialog = false;
                     setData(onSpecialProductPresentationBeans);
+                    return;
                 } else {
                     setData(onSpecialProductPresentationBeans);
                 }
             } else {
-                if (productPresentationBeans.size() == 0) {
+                if (productPresentationBeans.size() == 0 && showAlertDialog) {
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+                    showAlertDialog = false;
                     setData(productPresentationBeans);
+                    return;
                 } else {
-                    APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
+                    if(productPresentationBeans != null && productPresentationBeans.size()>0) {
+                        APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
+                    }
+                    //TODO remove log
+                    //Log.d("Anandhi", String.valueOf(productPresentationBeans.size()));
                     setData(productPresentationBeans);
                 }
             }
@@ -300,12 +313,30 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             if (!products.isEmpty()) {
                 List<ProductPresentationBean> onSpecialProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
-                if (onSpecialProductPresentationBeans.size() == 0) {
-                    EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
-                    setData(onSpecialProductPresentationBeans);
-                } else {
-                    setData(onSpecialProductPresentationBeans);
+                if(materialCheckBox.isChecked()) {
+                    if (onSpecialProductPresentationBeans.size() == 0 && showSpecialAlertDialog) {
+                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                        setData(onSpecialProductPresentationBeans);
+                        showSpecialAlertDialog = false;
+                        return;
+                    } else {
+                        Log.d("Anandhi called", "Anandhi");
+                        setData(onSpecialProductPresentationBeans);
+                    }
                 }
+                else {
+                    List<ProductPresentationBean> productPresentationBeans = EssentialsUtils.getProductPresentationBeans(products);
+                    if (productPresentationBeans.size() == 0 && showAlertDialog) {
+                        EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+                        setData(productPresentationBeans);
+                        showAlertDialog = false;
+                        return;
+                    } else {
+                        Log.d("Anandhi called", "Anandhi");
+                        setData(productPresentationBeans);
+                    }
+                }
+
             }
         });
     }
@@ -412,7 +443,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             productPresentationBean.setDescription(productTransportBean.getDescription());
                             productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
                             //TODO: get disc perc
-                            productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
+                            productPresentationBean.setDiscPerc(productTransportBean.getDiscPerc());
                             //TODO: get inStock
                             productPresentationBean.setInStock(productTransportBean.getInStock());
                             //TODO: use dimensions in dimens.xml
@@ -497,8 +528,19 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
         }
-        if (productPresentationBeans.size() == 0) {
-            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+        if(!materialCheckBox.isChecked()) {
+            if (productPresentationBeans.size() == 0 && showAlertDialog == true) {
+                EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
+                showAlertDialog = false;
+                return;
+            }
+        }
+        else {
+            if (productPresentationBeans.size() == 0 && showSpecialAlertDialog == true) {
+                EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
+                showSpecialAlertDialog = false;
+                return;
+            }
         }
 
         adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);

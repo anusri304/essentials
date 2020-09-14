@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group
-        android:id="@+id/menu_top"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_top_home"
             android:title="@string/home"
             app:showAsAction="ifRoom" />
     </group>
-    <group
-        android:id="@+id/menu_middle"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_top_order"
             android:title="@string/order"
@@ -28,9 +24,7 @@
             app:showAsAction="ifRoom" />
     </group>
 
-    <group
-        android:id="@+id/menu_last"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_top_register"

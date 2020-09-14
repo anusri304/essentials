@@ -4,7 +4,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,6 @@
 
 
         <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/totalCardView"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:elevation="24dp"
@@ -28,7 +27,6 @@
 
 
                 <TextView
-                    android:id="@+id/total_txtvw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -52,7 +50,6 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/deliveryDateCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="24dp"
@@ -64,7 +61,6 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/delivery_date_txtvw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
@@ -100,7 +96,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/deliveryAddsTitleView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
@@ -125,7 +120,6 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/paymentCardView"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:elevation="24dp"
@@ -138,7 +132,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/payment_txtvw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
@@ -149,13 +142,11 @@
 
 
                 <RadioGroup
-                    android:id="@+id/radioPayment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp">
 
                     <RadioButton
-                        android:id="@+id/radioCOD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/colorPrimary"

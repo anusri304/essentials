@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:paddingTop="20dp"
-            android:text="Delivery Address"
+            android:text="@string/delivery_address"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />

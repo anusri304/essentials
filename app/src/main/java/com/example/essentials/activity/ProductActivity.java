@@ -332,7 +332,7 @@ public class ProductActivity extends AppCompatActivity {
                                 SharedPreferences pref = context.getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString(ApplicationConstants.API_TOKEN, "");
-                                editor.commit();
+                                editor.apply();
                                 configureNavigationDrawer();
                                 // clear wishlist
                                 drawBadge(0);

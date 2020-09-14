@@ -234,7 +234,7 @@ public class LoginFragment extends Fragment {
                         editor.putInt(ApplicationConstants.USER_ID, user.getId());
                         editor.putString(ApplicationConstants.API_TOKEN, user.getApiToken());
                         editor.putString(ApplicationConstants.USERNAME, (String) TextUtils.concat(user.getFirstName(), " ", user.getLastName()));
-                        editor.commit();
+                        editor.apply();
                         Intent intent = new Intent(getActivity().getApplicationContext(), ProductActivity.class);
                         startActivity(intent);
 

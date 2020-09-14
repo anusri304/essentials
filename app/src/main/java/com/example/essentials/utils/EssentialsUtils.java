@@ -66,7 +66,12 @@ public class EssentialsUtils {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.RoundShapeTheme);
                 builder.setTitle(title)
                         .setMessage(message)
-                        .setPositiveButton("Ok", null);
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                alertDialog.dismiss();
+                            }
+                        });
 
                 boolean isShowing = isAlertDialogShowing(alertDialog);
 

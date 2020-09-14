@@ -79,7 +79,7 @@ public class APIUtils {
                         //TODO: Only get special products
                         productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
                         //TODO: get disc perc
-                        productPresentationBean.setDiscPerc(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getDiscPerc());
+                        productPresentationBean.setDiscPerc(productTransportBean.getDiscPerc());
                         //TODO: get inStock
 
                         //TODO: REMOVE hardcoded tag in all activity.
