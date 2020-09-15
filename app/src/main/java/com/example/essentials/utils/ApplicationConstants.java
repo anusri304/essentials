@@ -115,6 +115,7 @@ public class ApplicationConstants {
     public static final String QUANTITY = "quantity" ;
     public static final String LOGIN_USER = "loginUser";
     public static final String KEY = "key";
+    public static final String ZERO = "0" ;
 
     public static String DATE_PATTERN= "dd-MM-yyyy";
 }

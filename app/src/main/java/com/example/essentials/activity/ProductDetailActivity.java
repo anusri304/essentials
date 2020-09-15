@@ -316,7 +316,12 @@ public class ProductDetailActivity extends AppCompatActivity {
             txtViewPrice.setText(productPresentationBean.getPrice());
             txtViewSpecialPrice.setText(productPresentationBean.getSpecial());
             txtViewPrice.setTextColor(getResources().getColor(R.color.red));
-            txtViewDiscPerc.setText(TextUtils.concat(productPresentationBean.getDiscPerc(), " ", ApplicationConstants.OFF));
+            if(!productPresentationBean.getDiscPerc().equalsIgnoreCase(ApplicationConstants.ZERO)) {
+                txtViewDiscPerc.setText(TextUtils.concat(productPresentationBean.getDiscPerc(), " ", ApplicationConstants.OFF));
+            }
+            else {
+                txtViewDiscPerc.setText(ApplicationConstants.EMPTY_STRING);
+            }
         }
 
         productStockTxtView.setText(productPresentationBean.getInStock().equalsIgnoreCase("Yes") ? ApplicationConstants.IN_STOCK : ApplicationConstants.OUT_OF_STOCK);
@@ -326,7 +331,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         ImageView imageView = (ImageView) findViewById(R.id.image_product_detail);
         Glide.with(this)
                 .load(productPresentationBean.getImage())
-                //  .load("https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58c5be64_sleepyhollow/sleepyhollow.jpg")
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(imageView);
