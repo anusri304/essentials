@@ -8,11 +8,11 @@ ext {
 
 android {
     signingConfigs {
-        release {
-            storeFile file(("$rootDir\\upload-keystore.jks"))
-            storePassword '!TDyn@m1c\\$'
-            keyAlias 'release'
-            keyPassword '!TDyn@m1c\\$'
+        config {
+            storeFile file('C:\\work\\android\\study\\projects\\essentials\\app-keystore.jks')
+            storePassword 'e$$ent1a1$'
+            keyAlias 'keyRelease'
+            keyPassword 'e$$ent1a1$k'
         }
     }
     compileSdkVersion 29
@@ -26,7 +26,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
+        signingConfig signingConfigs.config
     }
 
     buildTypes {
