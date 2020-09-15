@@ -115,4 +115,8 @@ public class ApplicationConstants {
     public static final String NULL_PRODUCT_ID = "Product Id is null" ;
     public static final String NULL_CATEGORY_ID = "Category Id is null" ;
     public static final String NULL_SPECIAL = "Special is null" ;
+    public static final String MOVE_ITEMS_CART = "Move items to Cart" ;
+    public static final String OUT_OF_STOCK_MESSAGE = "Cannot move item as it is out of stock" ;
+
+    public static String DATE_PATTERN= "dd-MM-yyyy";
 }

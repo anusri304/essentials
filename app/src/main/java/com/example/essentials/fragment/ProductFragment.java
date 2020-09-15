@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.essentials.R;
-import com.example.essentials.activity.ProductActivity;
 import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.adapter.ProductRecyclerViewAdapter;
@@ -296,7 +295,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void observeCartChanges() {
-        cartViewModel.getAllCartItems().observe(this, objCart -> {
+        cartViewModel.getAllCartItems().observe(getViewLifecycleOwner(), objCart -> {
             cartItems = objCart;
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
             if (APIUtils.isUserLogged(getActivity())) {
@@ -307,7 +306,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void observeWishlistChanges() {
-        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+        wishlistViewModel.getAllWishlist().observe(getViewLifecycleOwner(), objWishlist -> {
             wishListItems = objWishlist;
             drawBadgeForWishlist(wishListItems.size());
         });
@@ -327,7 +326,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     }
 
     private void observeChanges() {
-        productViewModel.getAllProducts().observe(this, objProducts -> {
+        productViewModel.getAllProducts().observe(getViewLifecycleOwner(), objProducts -> {
             products = objProducts;
 
             if (!products.isEmpty()) {

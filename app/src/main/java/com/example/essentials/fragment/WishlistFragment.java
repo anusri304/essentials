@@ -138,7 +138,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void observeCartChanges() {
-        cartViewModel.getAllCartItems().observe(this, objCart -> {
+        cartViewModel.getAllCartItems().observe(getViewLifecycleOwner(), objCart -> {
             cartItems = objCart;
             int totalQuantity = cartItems.stream().mapToInt(cart -> cart.getQuantity()).sum();
             drawBadgeForCart(totalQuantity);
@@ -171,7 +171,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
 
     private void getWishlistProducts() {
-        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+        wishlistViewModel.getAllWishlist().observe(getViewLifecycleOwner(), objWishlist -> {
             wishlists = objWishlist;
             if (wishlists.isEmpty()) {
                 EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_ITEMS, ApplicationConstants.NO_ITEMS_WISH_LIST);
@@ -229,7 +229,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void getAllProducts() {
-        productViewModel.getAllProducts().observe(this, objProducts -> {
+        productViewModel.getAllProducts().observe(getViewLifecycleOwner(), objProducts -> {
             products = objProducts;
 
         });
@@ -262,8 +262,13 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     @Override
     public void onListItemClick(ProductPresentationBean productPresentationBean) {
         // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-        callRemoveWishListEndpoint(productPresentationBean);
-        callCartEndPoint(productPresentationBean);
+        if(productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)){
+            EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.MOVE_ITEMS_CART, ApplicationConstants.OUT_OF_STOCK_MESSAGE);
+        }
+        else {
+            callRemoveWishListEndpoint(productPresentationBean);
+            callCartEndPoint(productPresentationBean);
+        }
 
     }
 

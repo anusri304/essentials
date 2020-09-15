@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -73,7 +74,8 @@
                 android:gravity="center"
                 android:paddingStart="10dp"
                 android:text="@string/edit"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:ignore="RtlSymmetry" />
         </TableRow>
 
     </TableLayout>
@@ -99,7 +101,8 @@
             android:text="@string/delivery_address"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/arrowForward"
@@ -109,7 +112,8 @@
             android:contentDescription="@string/arrow_forward_image"
             android:paddingStart="320dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/arrow_forward" />
+            android:src="@drawable/arrow_forward"
+            tools:ignore="RtlSymmetry" />
 
     </androidx.cardview.widget.CardView>
 

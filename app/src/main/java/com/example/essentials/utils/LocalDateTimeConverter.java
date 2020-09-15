@@ -10,8 +10,7 @@ public class LocalDateTimeConverter {
 
     @TypeConverter
     public static Date fromTimestamp(String value) {
-        String pattern = "dd-MM-yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ApplicationConstants.DATE_PATTERN, Locale.US);
         Date formatedDate =null;
         try {
             formatedDate = simpleDateFormat.parse(value);
@@ -24,8 +23,8 @@ public class LocalDateTimeConverter {
 
     @TypeConverter
     public static String dateToTimestamp(Date date) {
-        String pattern = "dd-MM-yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ApplicationConstants.DATE_PATTERN,Locale.US);
         return date == null ? null : simpleDateFormat.format(date);
     }
 

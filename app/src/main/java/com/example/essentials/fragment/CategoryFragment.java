@@ -84,7 +84,7 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
     }
 
     private void getCategories() {
-        categoryViewModel.getAllCategories().observe(this, objCategories -> {
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), objCategories -> {
             categories = objCategories;
             if (!categories.isEmpty()) {
                 setData(categories);

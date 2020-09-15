@@ -1,5 +1,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width = "match_parent" android:layout_height="match_parent">
     <androidx.cardview.widget.CardView
@@ -23,7 +24,8 @@
             android:paddingTop="25dp"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/add_delivery"
@@ -33,7 +35,8 @@
             android:contentDescription="@string/add_delivery_address_image"
             android:paddingTop="25dp"
             android:layout_toEndOf="@+id/capture_txtView"
-            android:paddingStart="320dp" />
+            android:paddingStart="320dp"
+            tools:ignore="RtlSymmetry" />
 
     </androidx.cardview.widget.CardView>
 

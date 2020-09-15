@@ -232,7 +232,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
 
     private void getAllProducts() {
-        productViewModel.getAllProducts().observe(this, objProducts -> {
+        productViewModel.getAllProducts().observe(getViewLifecycleOwner(), objProducts -> {
             products = objProducts;
             getCartItems();
 
@@ -240,7 +240,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     private void observeWishlistChanges() {
-        wishlistViewModel.getAllWishlist().observe(this, objWishlist -> {
+        wishlistViewModel.getAllWishlist().observe(getViewLifecycleOwner(), objWishlist -> {
             wishLists = objWishlist;
 
             drawBadgeForWishlist(wishLists.size());
@@ -259,7 +259,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     }
 
     private void getCartItems() {
-        cartViewModel.getAllCartItems().observe(this, objCart -> {
+        cartViewModel.getAllCartItems().observe(getViewLifecycleOwner(), objCart -> {
             cartItems = objCart;
             if (!cartItems.isEmpty()) {
                 setData(cartItems);

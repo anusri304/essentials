@@ -1,4 +1,5 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderCardView"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -23,14 +24,16 @@
             android:layout_width="wrap_content"
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:paddingStart="150dp"
             android:paddingTop="20dp"
               android:src="@drawable/arrow_forward"
-            android:layout_height="wrap_content" android:contentDescription="@string/forward_button"/>
+            android:layout_height="wrap_content" android:contentDescription="@string/forward_button"
+            tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
 

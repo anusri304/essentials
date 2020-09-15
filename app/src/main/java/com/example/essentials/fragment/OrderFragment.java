@@ -84,7 +84,7 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
     }
 
     private void observeOrderChanges() {
-        orderCustomerViewModel.getAllOrdercustomer().observe(this, objOrderCustomer -> {
+        orderCustomerViewModel.getAllOrdercustomer().observe(getViewLifecycleOwner(), objOrderCustomer -> {
             orderCustomers = objOrderCustomer;
             setData(orderCustomers);
 

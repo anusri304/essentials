@@ -102,7 +102,7 @@ public class OrderDetailFragment extends Fragment {
     }
 
     private void observeOrderDetailChanges() {
-        orderProductViewModel.getAllOrderProducts().observe(this, objOrderProduct -> {
+        orderProductViewModel.getAllOrderProducts().observe(getViewLifecycleOwner(), objOrderProduct -> {
             orderProducts = objOrderProduct;
             setData(orderProducts);
 

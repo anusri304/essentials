@@ -1,5 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -27,7 +28,8 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/imageView"/>
+            android:layout_toEndOf="@+id/imageView"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/product_special_price"
@@ -39,7 +41,8 @@
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_name"
-            android:layout_toEndOf="@+id/imageView"/>
+            android:layout_toEndOf="@+id/imageView"
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/product_price"
@@ -51,7 +54,8 @@
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/product_special_price"/>
+            android:layout_below="@+id/product_special_price"
+            tools:ignore="RtlSymmetry" />
 
 </RelativeLayout>
 

@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,7 +35,8 @@
                     android:text="@string/total"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlSymmetry" />
 
                 <TextView
                     android:id="@+id/totalValue"
@@ -44,7 +46,8 @@
                     android:paddingStart="5dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -67,7 +70,8 @@
                     android:text="@string/delivery_date"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlSymmetry" />
 
 
                 <TextView
@@ -78,7 +82,8 @@
                     android:paddingTop="25dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="RtlSymmetry" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -103,7 +108,8 @@
                     android:textColor="@color/colorPrimary"
                     android:text="@string/delivery_address"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlSymmetry" />
 
             <TextView
                 android:id="@+id/deliveryAddsView"
@@ -113,7 +119,8 @@
                 android:paddingTop="10dp"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                android:textSize="15sp"/>
+                android:textSize="15sp"
+                tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
 
@@ -138,7 +145,8 @@
                     android:text="@string/payment_method"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="RtlSymmetry" />
 
 
                 <RadioGroup
@@ -155,7 +163,8 @@
                         android:text="@string/radio_COD"
                         android:textColor="@color/colorPrimary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="RtlSymmetry" />
 
                 </RadioGroup>
 

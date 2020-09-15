@@ -58,6 +58,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     WishlistViewModel wishlistViewModel;
     CartViewModel cartViewModel;
     CategoryViewModel categoryViewModel;
+    MaterialButton addToCartButton;
 
 
     @Override
@@ -82,12 +83,19 @@ public class ProductDetailActivity extends AppCompatActivity {
             wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
             cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
             categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
+            initButton();
         } else {
             closeOnError();
         }
 
         logViewItemAnalyticsEvent();
 
+    }
+
+    private void initButton() {
+        if(productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)){
+            addToCartButton.setEnabled(false);
+        }
     }
 
     private void logViewItemAnalyticsEvent() {
@@ -107,6 +115,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private void initLayout() {
         TextView txtViewTitle = findViewById(R.id.product_title_txtview);
         txtViewTitle.setText(productPresentationBean.getName());
+        addToCartButton = (MaterialButton) findViewById(R.id.add_to_cart_button);
         setProductImageView();
         mUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +130,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void setCartButton() {
-        MaterialButton addToCartButton = (MaterialButton) findViewById(R.id.add_to_cart_button);
         addToCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
