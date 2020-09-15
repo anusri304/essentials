@@ -361,7 +361,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             fragmentRegisterBinding.textInputLayoutLastName.setError(null);
         }
 
-        if (fragmentRegisterBinding.editTextEmailAddress.getText().toString().isEmpty()) {
+        if (fragmentRegisterBinding.editTextEmailAddress.getText().toString().isEmpty() || !EssentialsUtils.isValidEmail(fragmentRegisterBinding.editTextEmailAddress.getText().toString())) {
             isValid = false;
             fragmentRegisterBinding.textInputLayoutEmailAdds.setError(ApplicationConstants.EMAIL_ADDRESS_ERROR_MESSAGE);
         } else {
@@ -417,11 +417,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             RegisterCustomerService registerCustomerService = RetrofitUtils.getRetrofit(gson).create(RegisterCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("email", fragmentRegisterBinding.editTextEmailAddress.getText().toString())
-                    .addFormDataPart("firstname", fragmentRegisterBinding.editTextFirstName.getText().toString())
-                    .addFormDataPart("lastname", fragmentRegisterBinding.editTextLastName.getText().toString())
-                    .addFormDataPart("telephone", fragmentRegisterBinding.editTextMobileNo.getText().toString())
-                    .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(getActivity())))
+                    .addFormDataPart(ApplicationConstants.EMAIL, fragmentRegisterBinding.editTextEmailAddress.getText().toString())
+                    .addFormDataPart(ApplicationConstants.FIRST_NAME, fragmentRegisterBinding.editTextFirstName.getText().toString())
+                    .addFormDataPart(ApplicationConstants.LAST_NAME, fragmentRegisterBinding.editTextLastName.getText().toString())
+                    .addFormDataPart(ApplicationConstants.TELEPHONE, fragmentRegisterBinding.editTextMobileNo.getText().toString())
+                    .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(APIUtils.getLoggedInUserId(getActivity())))
                     .build();
             Call<RegisterTransportBean> call = registerCustomerService.editCustomer(APIUtils.getLoggedInToken(getActivity()), requestBody);
 

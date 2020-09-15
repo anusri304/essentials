@@ -50,13 +50,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginFragment extends Fragment {
-    private static Retrofit retrofit = null;
     FragmentLoginBinding fragmentLoginBinding;
     UserViewModel userViewModel;
     SharedPreferences sharedpreferences;
     public static final String mypreference = ApplicationConstants.SHARED_PREF_NAME;
-    public static final String userId = "userId";
-    public static final String apiToken = "apiToken";
+    public static final String userId = ApplicationConstants.USER_ID;
+    public static final String apiToken = ApplicationConstants.API_TOKEN;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -198,10 +197,10 @@ public class LoginFragment extends Fragment {
             LoginCustomerService loginCustomerService = RetrofitUtils.getRetrofit(gson).create(LoginCustomerService.class);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("username", ApplicationConstants.API_USER)
-                    .addFormDataPart("key", ApplicationConstants.API_KEY)
-                    .addFormDataPart("loginUser", fragmentLoginBinding.editTextEmailAddress.getText().toString())
-                    .addFormDataPart("password", fragmentLoginBinding.editTextPassword.getText().toString())
+                    .addFormDataPart(ApplicationConstants.USERNAME, ApplicationConstants.API_USER)
+                    .addFormDataPart(ApplicationConstants.KEY, ApplicationConstants.API_KEY)
+                    .addFormDataPart(ApplicationConstants.LOGIN_USER, fragmentLoginBinding.editTextEmailAddress.getText().toString())
+                    .addFormDataPart(ApplicationConstants.PASSWORD, fragmentLoginBinding.editTextPassword.getText().toString())
                     .build();
             Call<LoginTransportBean> call = loginCustomerService.loginCustomer(requestBody);
             fragmentLoginBinding.progressBar.setVisibility(View.VISIBLE);
@@ -269,7 +268,7 @@ public class LoginFragment extends Fragment {
     private boolean validateFields() {
         boolean isValid = true;
 
-        if (fragmentLoginBinding.editTextEmailAddress.getText().toString().isEmpty()) {
+        if (fragmentLoginBinding.editTextEmailAddress.getText().toString().isEmpty() || !EssentialsUtils.isValidEmail(fragmentLoginBinding.editTextEmailAddress.getText().toString())) {
             isValid = false;
             fragmentLoginBinding.textInputLayoutEmailAdds.setError(ApplicationConstants.EMAIL_ADDRESS_ERROR_MESSAGE);
         } else {

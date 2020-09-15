@@ -117,8 +117,8 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
         AddressService addressService = RetrofitUtils.getRetrofit(gson).create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))
-                .addFormDataPart("addressId",  String.valueOf(addressId))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(APIUtils.getLoggedInUserId(DeliveryAddressActivity.this)))
+                .addFormDataPart(ApplicationConstants.ADDRESS_ID,  String.valueOf(addressId))
                 .build();
         Call<AddressListTransportBean> call = addressService.deleteAddress(apiToken, requestBody);
 

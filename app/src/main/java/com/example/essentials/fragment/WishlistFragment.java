@@ -285,8 +285,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         WishlistService wishlistService = RetrofitUtils.getRetrofit(gson).create(WishlistService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
-                .addFormDataPart("customerId", String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
                 .build();
         Call<WishlistTransportBean> call = wishlistService.removeFromWishlist(apiToken, requestBody);
 
@@ -323,8 +323,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", String.valueOf(productPresentationBean.getId()))
-                .addFormDataPart("customerId", String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productPresentationBean.getId()))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
                 .build();
         Call<CartTransportBean> call = cartService.addToCart(apiToken, requestBody);
 

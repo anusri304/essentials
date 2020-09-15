@@ -144,8 +144,8 @@ public class DeliveryItemActivity extends AppCompatActivity {
         CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", String.valueOf(cartPresentationBean.getProductId()))
-                .addFormDataPart("customerId", String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(cartPresentationBean.getProductId()))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
                 .build();
         Call<CartTransportBean> call = cartService.removeFromCart(apiToken, requestBody);
 

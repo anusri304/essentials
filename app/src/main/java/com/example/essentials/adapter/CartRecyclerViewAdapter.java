@@ -187,9 +187,9 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         CartService cartService = RetrofitUtils.getRetrofit(gson).create(CartService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("productId", String.valueOf(productId))
-                .addFormDataPart("customerId", String.valueOf(userId))
-                .addFormDataPart("quantity", String.valueOf(quantity))
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productId))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.QUANTITY, String.valueOf(quantity))
                 .build();
         Call<CartTransportBean> call = cartService.editCartItems(apiToken, requestBody);
 

@@ -144,15 +144,15 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
         AddressService addressService = RetrofitUtils.getRetrofit(gson).create(AddressService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("firstname", activityAddAddressBinding.editTextFirstname.getText().toString())
-                .addFormDataPart("customerId", String.valueOf(APIUtils.getLoggedInUserId(AddDeliveryAddressActivity.this)))
-                .addFormDataPart("lastname", activityAddAddressBinding.editTextLastname.getText().toString())
-                .addFormDataPart("address_1", activityAddAddressBinding.editTextAddress1.getText().toString())
-                .addFormDataPart("address_2", activityAddAddressBinding.editTextAddress2.getText().toString())
-                .addFormDataPart("postcode", activityAddAddressBinding.editTextPostalCode.getText().toString())
-                .addFormDataPart("city", activityAddAddressBinding.editTextCity.getText().toString())
-                .addFormDataPart("zone_id", ApplicationConstants.ZONE_ID)
-                .addFormDataPart("country_id", ApplicationConstants.COUNTRY_ID)
+                .addFormDataPart(ApplicationConstants.FIRST_NAME, activityAddAddressBinding.editTextFirstname.getText().toString())
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(APIUtils.getLoggedInUserId(AddDeliveryAddressActivity.this)))
+                .addFormDataPart(ApplicationConstants.LAST_NAME, activityAddAddressBinding.editTextLastname.getText().toString())
+                .addFormDataPart(ApplicationConstants.ADDRESS_1, activityAddAddressBinding.editTextAddress1.getText().toString())
+                .addFormDataPart(ApplicationConstants.ADDRESS_2, activityAddAddressBinding.editTextAddress2.getText().toString())
+                .addFormDataPart(ApplicationConstants.POSTCODE, activityAddAddressBinding.editTextPostalCode.getText().toString())
+                .addFormDataPart(ApplicationConstants.CITY, activityAddAddressBinding.editTextCity.getText().toString())
+                .addFormDataPart(ApplicationConstants.ZONE_ID, ApplicationConstants.ZONE_ID_VALUE)
+                .addFormDataPart(ApplicationConstants.COUNTRY_ID, ApplicationConstants.COUNTRY_ID_VALUE)
                 .build();
         Call<AddressListTransportBean> call = addressService.addAddress(apiToken,requestBody);
 
