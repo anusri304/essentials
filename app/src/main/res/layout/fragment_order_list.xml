@@ -11,7 +11,7 @@
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="#BDBDBD"
     app:cardCornerRadius="4dp"
-    app:pressedTranslationZ="8dp">
+    app:pressedTranslationZ="@dimen/pressed_translation">
 
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content">

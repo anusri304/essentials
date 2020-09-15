@@ -11,7 +11,7 @@
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="#E4DFDF"
     android:focusable="true"
-    app:pressedTranslationZ="8dp">
+    app:pressedTranslationZ="@dimen/pressed_translation">
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <TextView
