@@ -28,7 +28,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:gravity">left</item>
+        <item name="android:gravity">start</item>
         <item name="android:padding">10dp</item>
     </style>
 

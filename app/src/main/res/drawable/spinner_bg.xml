@@ -4,7 +4,7 @@
 
         <color android:color="@color/gray" />
     </item>
-    <item android:gravity="center_vertical|right" android:right="8dp">
+    <item android:gravity="center_vertical|end" android:end="8dp">
         <layer-list>
             <item android:width="12dp" android:height="12dp"  android:gravity="center" android:bottom="10dp">
                 <rotate
