@@ -27,8 +27,12 @@ import com.example.essentials.domain.Cart;
 import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.domain.OrderProduct;
 import com.example.essentials.domain.Product;
+import com.example.essentials.fragment.CartFragment;
 import com.example.essentials.service.CartService;
+import com.example.essentials.service.OrderService;
+import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
+import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
@@ -121,13 +125,46 @@ public class DeliveryItemActivity extends AppCompatActivity {
         });
     }
 
+    private void callOrderEndpoint(int userId, int productId) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
+                .setLenient().create();
+        OrderService orderService = RetrofitUtils.getRetrofit(gson).create(OrderService.class);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productId))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.TOTAL, EssentialsUtils.formatTotal(EssentialsUtils.getTotal(cartPresentationBeans)))
+                .addFormDataPart(ApplicationConstants.ORDERID, String.valueOf(userId))
+                .build();
+        Call<CartTransportBean> call = orderService.addOrder(apiToken, requestBody);
+
+        call.enqueue(new Callback<CartTransportBean>() {
+            @Override
+            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
+                CartTransportBean cartTransportBean = response.body();
+                if (response.isSuccessful()) {
+                    saveOrdersInDB();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+            }
+        });
+    }
+
     private void saveOrdersInDB() {
         OrderCustomer orderCustomer = new OrderCustomer();
         orderCustomer.setAddressId(addressId);
         orderCustomer.setId(new Random().nextInt());
         orderCustomer.setUserId(APIUtils.getLoggedInUserId(DeliveryItemActivity.this));
         orderCustomer.setPaymentCustomerName(APIUtils.getLoggedInUserName(DeliveryItemActivity.this));
-        orderCustomer.setTotal(total);
+        orderCustomer.setTotal(EssentialsUtils.getTotal(cartPresentationBeans));
         orderCustomer.setStatus(ApplicationConstants.STATUS_PENDING);
         orderCustomer.setDateAdded(new Date());
         orderCustomerViewModel.insertOrderCustomer(orderCustomer);
@@ -179,7 +216,6 @@ public class DeliveryItemActivity extends AppCompatActivity {
             orderProduct.setPrice(Double.valueOf(cartPresentationBean.getPrice().substring(1)));
         }
         orderProduct.setQuantity(cartPresentationBean.getQuantity());
-        orderProduct.setTotal(total);
         orderProduct.setProductId(cartPresentationBean.getProductId());
         orderProduct.setProductName(cartPresentationBean.getName());
         orderProduct.setProductImage(cartPresentationBean.getImage());

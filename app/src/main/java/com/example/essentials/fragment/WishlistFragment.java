@@ -89,7 +89,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
         observeCartChanges();
 
-        getWishlistProducts();
+        //getWishlistProducts();
 
         //  observeWishlistChanges();
 
@@ -231,8 +231,10 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     private void getAllProducts() {
         productViewModel.getAllProducts().observe(getViewLifecycleOwner(), objProducts -> {
             products = objProducts;
+            getWishlistProducts();
 
         });
+
     }
 
     private void setData(List<Wishlist> wishlists) {

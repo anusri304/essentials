@@ -116,6 +116,8 @@ public class ApplicationConstants {
     public static final String LOGIN_USER = "loginUser";
     public static final String KEY = "key";
     public static final String ZERO = "0" ;
+    public static final String TOTAL = "total" ;
+    public static final String ORDERID = "orderId";
 
     public static String DATE_PATTERN= "dd-MM-yyyy";
 }
