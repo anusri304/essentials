@@ -9,7 +9,7 @@ ext {
 android {
     signingConfigs {
         config {
-            storeFile file('C:\\work\\android\\study\\projects\\essentials\\app-keystore.jks')
+            storeFile file(("$rootDir\\app-keystore.jks"))
             storePassword 'e$$ent1a1$'
             keyAlias 'keyRelease'
             keyPassword 'e$$ent1a1$k'
