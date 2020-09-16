@@ -184,7 +184,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productId))
                 .addFormDataPart(ApplicationConstants.ORDERID, String.valueOf(orderId))
-                .addFormDataPart(ApplicationConstants.PRICE, cartPresentationBean.getPrice())
+                .addFormDataPart(ApplicationConstants.PRICE, String.valueOf(cartPresentationBean.getPrice()))
                 .addFormDataPart(ApplicationConstants.QUANTITY, String.valueOf(cartPresentationBean.getQuantity()))
                 .addFormDataPart(ApplicationConstants.TOTAL, String.valueOf(value))
                 .build();
