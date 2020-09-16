@@ -26,6 +26,7 @@ import com.example.essentials.transport.AddressTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -54,16 +55,21 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getString(R.string.delivery_address));
-        setContentView(R.layout.activity_address);
-        addImage = (ImageView) findViewById(R.id.add_delivery);
-        ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
-        addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
-        relativeLayout = findViewById(R.id.relativeLayout);
-        addressCardView = findViewById(R.id.addressCardView);
-        initImageView();
-        observeChanges();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!NetworkUtils.isNetworkConnected(DeliveryAddressActivity.this)) {
+            EssentialsUtils.showAlertDialog(DeliveryAddressActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+        }
+        else {
+            setTitle(getString(R.string.delivery_address));
+            setContentView(R.layout.activity_address);
+            addImage = (ImageView) findViewById(R.id.add_delivery);
+            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+            addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
+            relativeLayout = findViewById(R.id.relativeLayout);
+            addressCardView = findViewById(R.id.addressCardView);
+            initImageView();
+            observeChanges();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initImageView() {

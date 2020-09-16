@@ -89,48 +89,53 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     int categoryId;
     MaterialCheckBox materialCheckBox;
     private SwipeRefreshLayout swipeContainer;
-    boolean showAlertDialog= true;
-    boolean showSpecialAlertDialog= true;
+    boolean showAlertDialog = true;
+    boolean showSpecialAlertDialog = true;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
-        getAllCategories();
-        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
-        productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
-        cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
-        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-        categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
-        addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
-        if (getArguments() != null) {
-            categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+
+        } else {
+            getAllCategories();
+            ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+            productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+            cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+            wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+            categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
+            addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
+            if (getArguments() != null) {
+                categoryId = ProductFragmentArgs.fromBundle(getArguments()).getCategoryId();
+            }
+
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.app_name));
+
+            materialCheckBox = rootView.findViewById(R.id.checkbox);
+
+            initCheckBox();
+
+            actionBar.setDisplayShowCustomEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(true);
+            observeChanges();
+            observeCartChanges();
+            observeWishlistChanges();
+            if (APIUtils.isUserLogged(getActivity().getApplicationContext())) {
+                getDeliveryAddress();
+            }
+
+            swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+            swipeContainer.setOnRefreshListener(this);
         }
-
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
-
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.app_name));
-
-        materialCheckBox = rootView.findViewById(R.id.checkbox);
-
-        initCheckBox();
-
-        actionBar.setDisplayShowCustomEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(true);
-        observeChanges();
-        observeCartChanges();
-        observeWishlistChanges();
-        if (APIUtils.isUserLogged(getActivity().getApplicationContext())) {
-            getDeliveryAddress();
-        }
-
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
-
-        swipeContainer.setOnRefreshListener(this);
         return rootView;
     }
 
@@ -175,9 +180,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 addressViewModel.updateAddress(address);
                             }
                         }
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
 
                 }
@@ -186,7 +190,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<AddressListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(throwable.getMessage()));
 
             }
         });
@@ -227,7 +231,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     showAlertDialog = false;
                     setData(productPresentationBeans);
                 } else {
-                    if(productPresentationBeans != null && productPresentationBeans.size()>0) {
+                    if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
                         APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
                     }
                     //TODO remove log
@@ -266,9 +270,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 categoryViewModel.updateCategory(category);
                             }
                         }
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                     getAllProducts();
 
@@ -278,7 +281,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<CategoryListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -331,7 +334,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             if (!products.isEmpty()) {
                 List<ProductPresentationBean> onSpecialProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean -> !productPresentationBean.getSpecial().equalsIgnoreCase("")).collect(Collectors.toList());
-                if(materialCheckBox.isChecked()) {
+                if (materialCheckBox.isChecked()) {
                     if (onSpecialProductPresentationBeans.size() == 0 && showSpecialAlertDialog) {
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
                         setData(onSpecialProductPresentationBeans);
@@ -339,8 +342,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     } else {
                         setData(onSpecialProductPresentationBeans);
                     }
-                }
-                else {
+                } else {
                     List<ProductPresentationBean> productPresentationBeans = EssentialsUtils.getProductPresentationBeans(products);
                     if (productPresentationBeans.size() == 0 && showAlertDialog) {
                         EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
@@ -387,9 +389,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             }
                         }
 
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                     getWishlistProductsForCustomer();
                 }
@@ -397,7 +398,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -431,22 +432,21 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                                 wishlistViewModel.updateWishlist(wishlist);
                             }
                         }
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<CustomerWishListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
 
 
-    private void getAllProducts(){
+    private void getAllProducts() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(ProductTransportBean.class, new AnnotatedDeserializer<ProductTransportBean>())
                 .setLenient().create();
@@ -462,29 +462,26 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     if (productTransportBeans != null && productTransportBeans.getProducts().size() > 0) {
                         for (ProductTransportBean productTransportBean : productTransportBeans.getProducts()) {
                             ProductPresentationBean productPresentationBean = new ProductPresentationBean();
-                            if(productTransportBean.getProductId()!=null && !productTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                            if (productTransportBean.getProductId() != null && !productTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                 productPresentationBean.setId(Integer.valueOf(productTransportBean.getProductId()));
-                            }
-                            else {
-                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_PRODUCT_ID));
+                            } else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_PRODUCT_ID));
                             }
                             //TODO: Replace the path in Opencart
                             productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
                             // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                             productPresentationBean.setName(productTransportBean.getName());
                             productPresentationBean.setPrice(productTransportBean.getPrice());
-                            if(productTransportBean.getCategoryId()!=null && !productTransportBean.getCategoryId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                            if (productTransportBean.getCategoryId() != null && !productTransportBean.getCategoryId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                 productPresentationBean.setCategoryId(Integer.valueOf(productTransportBean.getCategoryId()));
-                            }
-                            else {
-                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_CATEGORY_ID));
+                            } else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_CATEGORY_ID));
                             }
                             productPresentationBean.setDescription(productTransportBean.getDescription());
-                            if(productTransportBean.getSpecial()!=null && !productTransportBean.getSpecial().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                            if (productTransportBean.getSpecial() != null && !productTransportBean.getSpecial().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                 productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
-                            }
-                            else {
-                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.NULL_SPECIAL));
+                            } else {
+                                APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_SPECIAL));
                             }
                             //TODO: get disc perc
                             productPresentationBean.setDiscPerc(productTransportBean.getDiscPerc());
@@ -494,9 +491,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             productPresentationBeans.add(productPresentationBean);
                         }
                         saveorUpdateProduct(productPresentationBeans);
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }
@@ -508,7 +504,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
                 } else { // If there is internet then there is an error retrieving data. display error retrieve message
                     EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.DATA_ERROR, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
-                    APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                    APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(throwable.getMessage()));
                 }
 
 
@@ -516,6 +512,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         });
 
     }
+
     private void saveorUpdateProduct(List<ProductPresentationBean> productPresentationBeans) {
 
         // Initially log for special items as they are shown.
@@ -576,14 +573,13 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             productPresentationBeans = productPresentationBeans.stream().filter(productPresentationBean ->
                     String.valueOf(productPresentationBean.getCategoryId()).equals(String.valueOf(categoryId))).collect(Collectors.toList());
         }
-        if(!materialCheckBox.isChecked()) {
+        if (!materialCheckBox.isChecked()) {
             if (productPresentationBeans.size() == 0 && showAlertDialog == true) {
                 EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_FOR_CATEGORY);
                 showAlertDialog = false;
                 return;
             }
-        }
-        else {
+        } else {
             if (productPresentationBeans.size() == 0 && showSpecialAlertDialog == true) {
                 EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.NO_PRODUCTS, ApplicationConstants.NO_PRODUCT_ON_SPECIAL_FOR_CATEGORY);
                 showSpecialAlertDialog = false;

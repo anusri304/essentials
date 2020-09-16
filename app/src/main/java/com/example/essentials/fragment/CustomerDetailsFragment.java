@@ -25,6 +25,9 @@ import com.example.essentials.R;
 import com.example.essentials.activity.DeliveryAddressActivity;
 import com.example.essentials.domain.User;
 import com.example.essentials.utils.APIUtils;
+import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.UserViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
@@ -36,47 +39,52 @@ public class CustomerDetailsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_customer_details, container, false);
-        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
-        userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+        } else {
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+            userViewModel = new ViewModelProvider(this, factory).get(UserViewModel.class);
 
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.customerdetails));
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
 
-        if (actionBar != null) {
-            // enable the customized view and disable title
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(actionBarView);
-            //  actionBar.setTitle(getResources().getString(R.string.categories));
-            actionBar.setDisplayShowTitleEnabled(false);
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.customerdetails));
+
+            if (actionBar != null) {
+                // enable the customized view and disable title
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(actionBarView);
+                //  actionBar.setTitle(getResources().getString(R.string.categories));
+                actionBar.setDisplayShowTitleEnabled(false);
 
 
-            // remove Burger Icon
-            toolbar.setNavigationIcon(null);
-        }
-        actionBarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionBar.setDisplayShowCustomEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(true);
-                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        getActivity(), drawer, toolbar, R.string.drawer_open,
-                        R.string.drawer_close);
-                // All that to re-synchronize the Drawer State
-                toggle.syncState();
-                getActivity().onBackPressed();
+                // remove Burger Icon
+                toolbar.setNavigationIcon(null);
             }
-        });
-        initEditButton();
-        getUserDetails();
-        initCardView();
+            actionBarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            getActivity(), drawer, toolbar, R.string.drawer_open,
+                            R.string.drawer_close);
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                    getActivity().onBackPressed();
+                }
+            });
+            initEditButton();
+            getUserDetails();
+            initCardView();
+        }
         return rootView;
     }
 
@@ -94,7 +102,7 @@ public class CustomerDetailsFragment extends Fragment {
     }
 
     private void initEditButton() {
-        editButton = (Button)  rootView.findViewById(R.id.edit_button);
+        editButton = (Button) rootView.findViewById(R.id.edit_button);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +111,7 @@ public class CustomerDetailsFragment extends Fragment {
 //                intent.putExtra(ApplicationConstants.EDIT_USER,true);
 //                startActivity(intent);
 
-               CustomerDetailsFragmentDirections.ActionNavTopCustomerDetailsToNavTopRegister action = CustomerDetailsFragmentDirections.actionNavTopCustomerDetailsToNavTopRegister();
+                CustomerDetailsFragmentDirections.ActionNavTopCustomerDetailsToNavTopRegister action = CustomerDetailsFragmentDirections.actionNavTopCustomerDetailsToNavTopRegister();
                 action.setEditUser(true);
                 // Navigation.findNavController(rootView).navigate(action);
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
@@ -112,8 +120,8 @@ public class CustomerDetailsFragment extends Fragment {
     }
 
     private void getUserDetails() {
-        User user =userViewModel.getUser(APIUtils.getLoggedInUserId(getActivity().getApplicationContext()));
-         TextView usernameTxtView = rootView.findViewById(R.id.firstname_value_txtVw);
+        User user = userViewModel.getUser(APIUtils.getLoggedInUserId(getActivity().getApplicationContext()));
+        TextView usernameTxtView = rootView.findViewById(R.id.firstname_value_txtVw);
         usernameTxtView.setText(TextUtils.concat(user.getFirstName()));
 
         TextView lastNameTxtView = rootView.findViewById(R.id.lastname_value_txtVw);

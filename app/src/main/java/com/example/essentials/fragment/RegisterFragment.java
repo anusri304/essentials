@@ -57,11 +57,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     boolean editUser = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        fragmentRegisterBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false);
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
             EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
 
         } else {
-            fragmentRegisterBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_register, container, false);
             fragmentRegisterBinding.registerButton.setOnClickListener(this);
             initLayout();
             ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());

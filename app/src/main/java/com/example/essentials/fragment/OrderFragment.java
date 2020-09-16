@@ -26,6 +26,7 @@ import com.example.essentials.domain.OrderCustomer;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.viewmodel.OrderCustomerViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
 
@@ -40,46 +41,50 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_order, container, false);
-        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
-        orderCustomerViewModel = new ViewModelProvider(this, factory).get(OrderCustomerViewModel.class);
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+        } else {
+            ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+            orderCustomerViewModel = new ViewModelProvider(this, factory).get(OrderCustomerViewModel.class);
 
-        observeOrderChanges();
+            observeOrderChanges();
 
-        final ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
 
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.order_history));
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.order_history));
 
-        if (actionBar != null) {
-            // enable the customized view and disable title
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(actionBarView);
-            //  actionBar.setTitle(getResources().getString(R.string.categories));
-            actionBar.setDisplayShowTitleEnabled(false);
+            if (actionBar != null) {
+                // enable the customized view and disable title
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(actionBarView);
+                //  actionBar.setTitle(getResources().getString(R.string.categories));
+                actionBar.setDisplayShowTitleEnabled(false);
 
 
-            // remove Burger Icon
-            toolbar.setNavigationIcon(null);
-        }
-        actionBarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionBar.setDisplayShowCustomEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(true);
-                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        getActivity(), drawer, toolbar, R.string.drawer_open,
-                        R.string.drawer_close);
-                // All that to re-synchronize the Drawer State
-                toggle.syncState();
-                getActivity().onBackPressed();
+                // remove Burger Icon
+                toolbar.setNavigationIcon(null);
             }
-        });
+            actionBarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            getActivity(), drawer, toolbar, R.string.drawer_open,
+                            R.string.drawer_close);
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                    getActivity().onBackPressed();
+                }
+            });
+        }
         return rootView;
     }
 

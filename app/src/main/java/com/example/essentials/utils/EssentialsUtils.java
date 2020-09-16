@@ -45,7 +45,7 @@ public class EssentialsUtils {
     }
 
     public static void showAlertDialog(Context context, String title, String message ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override

@@ -35,6 +35,7 @@ import com.example.essentials.transport.OrderTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.CartViewModel;
@@ -83,6 +84,10 @@ public class DeliveryItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!NetworkUtils.isNetworkConnected(DeliveryItemActivity.this)) {
+            EssentialsUtils.showAlertDialog(DeliveryItemActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+        }
+        else {
         setTitle(getString(R.string.delivery_items));
         setContentView(R.layout.activity_delivery);
         //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -109,6 +114,9 @@ public class DeliveryItemActivity extends AppCompatActivity {
         initOrder();
         getAllProducts();
     }
+
+
+}
 
 
     private void initAddress() {
@@ -161,14 +169,14 @@ public class DeliveryItemActivity extends AppCompatActivity {
     }
 
 
-    private void callOrderProductEndpoint(int productId,int orderId,CartPresentationBean cartPresentationBean) {
+    private void callOrderProductEndpoint(int productId, int orderId, CartPresentationBean cartPresentationBean) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(OrderTransportBean.class, new AnnotatedDeserializer<OrderTransportBean>())
                 .setLenient().create();
         OrderService orderService = RetrofitUtils.getRetrofit(gson).create(OrderService.class);
-        double value=0.0;
+        double value = 0.0;
         if (cartPresentationBean.getPrice() != null && !cartPresentationBean.getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
-           value =  Double.valueOf(cartPresentationBean.getPrice().substring(1))*cartPresentationBean.getQuantity();
+            value = Double.valueOf(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity();
         }
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -185,7 +193,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
             public void onResponse(Call<OrderTransportBean> call, Response<OrderTransportBean> response) {
                 OrderTransportBean orderTransportBean = response.body();
                 if (response.isSuccessful()) {
-                    saveOrderProductInDB(orderId,cartPresentationBean);
+                    saveOrderProductInDB(orderId, cartPresentationBean);
                 } else {
                     APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                 }
@@ -245,7 +253,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
     private void callOrderProductEndPoint(int orderId) {
         cartPresentationBeans.stream().forEach(cartPresentationBean -> {
-            callOrderProductEndpoint(cartPresentationBean.getProductId(),orderId,cartPresentationBean);
+            callOrderProductEndpoint(cartPresentationBean.getProductId(), orderId, cartPresentationBean);
         });
         showOrderAlertDialog(DeliveryItemActivity.this);
     }

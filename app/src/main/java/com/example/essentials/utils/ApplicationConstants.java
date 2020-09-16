@@ -2,8 +2,8 @@ package com.example.essentials.utils;
 
 public class ApplicationConstants {
     // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-    public static final String BASE_URL = "http://10.0.75.1/Opencart/";
-    // public static final String BASE_URL = "http://chozhansales.com/";
+   public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+   // public static final String BASE_URL = "http://chozhansales.com/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
@@ -28,6 +28,7 @@ public class ApplicationConstants {
     public static final String API_USER = "apiuser";
     public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
+    public static final String LOGIN_FAILED = "Please enter a valid  username/password";
     public static final String SUCCESS = "Success";
     public static final String SUCCESSFULLY = "successfully";
 

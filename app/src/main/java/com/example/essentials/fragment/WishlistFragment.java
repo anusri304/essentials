@@ -39,6 +39,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
@@ -79,61 +80,65 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = getActivity().findViewById(android.R.id.content);
 
-        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
-        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-        productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
-        getAllProducts();
-        rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
 
-        cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
-        observeCartChanges();
-
-        //getWishlistProducts();
-
-        //  observeWishlistChanges();
+        } else {
 
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+            wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+            productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+            getAllProducts();
+            rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
+            coordinatorLayout = rootView.findViewById(R.id.coordinatorLayout);
 
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+            cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+            observeCartChanges();
 
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.your_wish_list));
+            //getWishlistProducts();
 
-        if (actionBar != null) {
-            // enable the customized view and disable title
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(actionBarView);
-            //  actionBar.setTitle(getResources().getString(R.string.categories));
-            actionBar.setDisplayShowTitleEnabled(false);
+            //  observeWishlistChanges();
 
 
-            // remove Burger Icon
-            toolbar.setNavigationIcon(null);
-        }
-        actionBarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionBar.setDisplayShowCustomEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(true);
-                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        getActivity(), drawer, toolbar, R.string.drawer_open,
-                        R.string.drawer_close);
-                // All that to re-synchronize the Drawer State
-                toggle.syncState();
-                getActivity().onBackPressed();
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.your_wish_list));
+
+            if (actionBar != null) {
+                // enable the customized view and disable title
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(actionBarView);
+                //  actionBar.setTitle(getResources().getString(R.string.categories));
+                actionBar.setDisplayShowTitleEnabled(false);
+
+
+                // remove Burger Icon
+                toolbar.setNavigationIcon(null);
             }
-        });
-
-
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
-
-        swipeContainer.setOnRefreshListener(this);
+            actionBarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            getActivity(), drawer, toolbar, R.string.drawer_open,
+                            R.string.drawer_close);
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                    getActivity().onBackPressed();
+                }
+            });
+            swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+            swipeContainer.setOnRefreshListener(this);
+        }
         return rootView;
     }
 
@@ -264,10 +269,9 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     @Override
     public void onListItemClick(ProductPresentationBean productPresentationBean) {
         // ProductPresentationBean productPresentationBean = EssentialsUtils.getProductPresentationBeans(products).get(clickedItemIndex);
-        if(productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)){
+        if (productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)) {
             EssentialsUtils.showMessageAlertDialog(getActivity(), ApplicationConstants.MOVE_ITEMS_CART, ApplicationConstants.OUT_OF_STOCK_MESSAGE);
-        }
-        else {
+        } else {
             callRemoveWishListEndpoint(productPresentationBean);
             callCartEndPoint(productPresentationBean);
         }

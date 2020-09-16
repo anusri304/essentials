@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.essentials.R;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 
 public class ProductDescriptionActivity extends AppCompatActivity {
     String productDesc;
@@ -17,14 +19,20 @@ public class ProductDescriptionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_desc);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (getIntent() != null) {
-            productDesc = getIntent().getStringExtra(ApplicationConstants.PRODUCT_DESC);
-            productName = getIntent().getStringExtra(ApplicationConstants.PRODUCT_NAME);
-            setTitle(productName);
+
+        if (!NetworkUtils.isNetworkConnected(ProductDescriptionActivity.this)) {
+            EssentialsUtils.showAlertDialog(ProductDescriptionActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
         }
-        initLayout();
+        else {
+            setContentView(R.layout.activity_product_desc);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getIntent() != null) {
+                productDesc = getIntent().getStringExtra(ApplicationConstants.PRODUCT_DESC);
+                productName = getIntent().getStringExtra(ApplicationConstants.PRODUCT_NAME);
+                setTitle(productName);
+            }
+            initLayout();
+        }
     }
 
     private void initLayout() {

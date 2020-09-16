@@ -43,6 +43,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.ProductViewModel;
@@ -87,73 +88,71 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_cart, container, false);
-        ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
-        cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
-        view = getActivity().findViewById(android.R.id.content);
-        totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
-        checkoutButton = (MaterialButton) rootView.findViewById(R.id.checkout_button);
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
 
-        //tODO: Remove the below code if not used
-        //TODO remove log.d and toast
-        //TODO logo and color
+        } else {
 
+            ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
+            cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+            view = getActivity().findViewById(android.R.id.content);
+            totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
+            checkoutButton = (MaterialButton) rootView.findViewById(R.id.checkout_button);
 
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        //cartViewModel.getQuantity().observe(this,nameObserver);
-        productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
-        wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-
-        LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
-
-        TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-        titleView.setText(getResources().getString(R.string.your_cart_items));
-
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
-
-        swipeContainer.setOnRefreshListener(this);
+            //tODO: Remove the below code if not used
+            //TODO remove log.d and toast
+            //TODO logo and color
 
 
+            // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+            //cartViewModel.getQuantity().observe(this,nameObserver);
+            productViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
+            wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
 
-        if (actionBar != null) {
-            // enable the customized view and disable title
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(actionBarView);
-            //  actionBar.setTitle(getResources().getString(R.string.categories));
-            actionBar.setDisplayShowTitleEnabled(false);
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+
+            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+            titleView.setText(getResources().getString(R.string.your_cart_items));
+
+            swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+
+            swipeContainer.setOnRefreshListener(this);
 
 
-            // remove Burger Icon
-            toolbar.setNavigationIcon(null);
-        }
-        actionBarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionBar.setDisplayShowCustomEnabled(false);
-                actionBar.setDisplayShowTitleEnabled(true);
-                DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                        getActivity(), drawer, toolbar, R.string.drawer_open,
-                        R.string.drawer_close);
-                // All that to re-synchronize the Drawer State
-                toggle.syncState();
-                getActivity().onBackPressed();
+            if (actionBar != null) {
+                // enable the customized view and disable title
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(actionBarView);
+                //  actionBar.setTitle(getResources().getString(R.string.categories));
+                actionBar.setDisplayShowTitleEnabled(false);
+
+
+                // remove Burger Icon
+                toolbar.setNavigationIcon(null);
             }
-        });
-        getAllProducts();
-        initCheckoutButton();
-        observeWishlistChanges();
-
-//        swipeContainer.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                swipeContainer.setRefreshing(true);
-//            }
-//        });
+            actionBarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            getActivity(), drawer, toolbar, R.string.drawer_open,
+                            R.string.drawer_close);
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                    getActivity().onBackPressed();
+                }
+            });
+            getAllProducts();
+            initCheckoutButton();
+            observeWishlistChanges();
+        }
         return rootView;
     }
 
@@ -177,19 +176,19 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                             Cart cart = cartViewModel.getCartItemsForUserAndProduct(userId, Integer.parseInt(customercartTransportBean.getProductId()));
                             if (cart == null) {
                                 cart = new Cart();
-                                if(customercartTransportBean.getProductId()!=null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                if (customercartTransportBean.getProductId() != null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                     cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
                                 }
-                                if(customercartTransportBean.getQuantity()!=null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                if (customercartTransportBean.getQuantity() != null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                     cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
                                 }
                                 cart.setUserId(userId);
                                 cartViewModel.insertCartItems(cart);
                             } else {
-                                if(customercartTransportBean.getProductId()!=null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                if (customercartTransportBean.getProductId() != null && !customercartTransportBean.getProductId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                     cart.setProductId(Integer.valueOf(customercartTransportBean.getProductId()));
                                 }
-                                if(customercartTransportBean.getQuantity()!=null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                                if (customercartTransportBean.getQuantity() != null && !customercartTransportBean.getQuantity().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
                                     cart.setQuantity(Integer.valueOf(customercartTransportBean.getQuantity()));
                                 }
                                 cart.setUserId(userId);
@@ -197,16 +196,15 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                             }
                         }
 
-                    }
-                    else {
-                        APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                    } else {
+                        APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<CustomerCartListTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
 
@@ -219,9 +217,9 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
                 startActivity(intent);
-                String checkoutItems="";
-                for(CartPresentationBean cartPresentationBean:EssentialsUtils.getCartPresentationBeans(cartViewModel.getAllCartItems().getValue(),filteredProductPresentationBeans)) {
-                    checkoutItems= TextUtils.concat(",",String.valueOf(cartPresentationBean.getName())).toString();
+                String checkoutItems = "";
+                for (CartPresentationBean cartPresentationBean : EssentialsUtils.getCartPresentationBeans(cartViewModel.getAllCartItems().getValue(), filteredProductPresentationBeans)) {
+                    checkoutItems = TextUtils.concat(",", String.valueOf(cartPresentationBean.getName())).toString();
                     APIUtils.logCheckoutAnalyticsEvent(getActivity().getApplicationContext(), cartPresentationBean);
                 }
                 APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CHECKOUT, checkoutItems);
@@ -301,7 +299,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
             setProductData(EssentialsUtils.getCartPresentationBeans(cartItems, filteredProductPresentationBeans));
         }
-        if(swipeContainer.isRefreshing()){
+        if (swipeContainer.isRefreshing()) {
             swipeContainer.setRefreshing(false);
         }
 
@@ -331,7 +329,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
 
-        if(cartPresentationBeans!=null && cartPresentationBeans.size()>0) {
+        if (cartPresentationBeans != null && cartPresentationBeans.size() > 0) {
             logAnalyticsEvent(cartPresentationBeans);
         }
     }
@@ -368,13 +366,13 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
                     Product product = productViewModel.getProduct(cartPresentationBean.getProductId());
                     APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_REMOVED_FROM_WISHLIST, product.getName());
-                    APIUtils.logRemoveFromCartAnalyticsEvent(getActivity().getApplicationContext(),cartPresentationBean);
+                    APIUtils.logRemoveFromCartAnalyticsEvent(getActivity().getApplicationContext(), cartPresentationBean);
                 }
             }
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -415,14 +413,14 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
 
                     List<Product> analyticsList = new ArrayList<Product>();
                     analyticsList.add(product);
-                    APIUtils.logAddToWishlistAnalyticsEvent(getActivity().getApplicationContext(),EssentialsUtils.getProductPresentationBeans(new ArrayList<>(analyticsList)).get(0));
+                    APIUtils.logAddToWishlistAnalyticsEvent(getActivity().getApplicationContext(), EssentialsUtils.getProductPresentationBeans(new ArrayList<>(analyticsList)).get(0));
                 }
 
             }
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }

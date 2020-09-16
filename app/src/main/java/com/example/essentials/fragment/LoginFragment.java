@@ -59,11 +59,11 @@ public class LoginFragment extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        fragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
             EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
 
         } else {
-            fragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
             sharedpreferences = getActivity().getSharedPreferences(mypreference, Context.MODE_PRIVATE);
 
             final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -248,7 +248,7 @@ public class LoginFragment extends Fragment {
 
                         } else {
                             EssentialsUtils.hideKeyboard(getActivity().getApplicationContext());
-                            EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, loginTransportBean.getMessage());
+                            EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_FAILED);
                         }
                     }
                 }
@@ -256,7 +256,12 @@ public class LoginFragment extends Fragment {
                 @Override
                 public void onFailure(Call<LoginTransportBean> call, Throwable throwable) {
                     fragmentLoginBinding.progressBar.setVisibility(View.INVISIBLE);
-                    EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.SOCKET_ERROR);
+                    if(throwable.getMessage()!=null && throwable.getMessage().contains("apiToken")) {
+                        EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.LOGIN_FAILED);
+                    }
+                    else {
+                        EssentialsUtils.showMessage(fragmentLoginBinding.coordinatorLayout, ApplicationConstants.ERROR_RETRIEVE_MESSAGE);
+                    }
                     APIUtils.getFirebaseCrashlytics().log(LoginFragment.class.getName().concat(" ").concat(throwable.getMessage()));
                     // lOG failure event to google
                 }

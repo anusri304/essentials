@@ -30,6 +30,7 @@ import com.example.essentials.transport.WishlistTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.CartViewModel;
 import com.example.essentials.viewmodel.CategoryViewModel;
@@ -66,34 +67,37 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        if (getIntent() != null) {
-            productPresentationBean = getIntent().getParcelableExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
-            collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout));
-            collapsingToolbarLayout.setTitle(productPresentationBean.getName());
-
-            collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-
-            coordinatorLayout = findViewById(R.id.coordinatorLayout);
-
-            mUpButton = findViewById(R.id.app_bar);
-
-            initLayout();
-
-            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
-            wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
-            cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
-            categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
-            initButton();
+        if (!NetworkUtils.isNetworkConnected(ProductDetailActivity.this)) {
+            EssentialsUtils.showAlertDialog(ProductDetailActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
         } else {
-            closeOnError();
-        }
+            if (getIntent() != null) {
+                productPresentationBean = getIntent().getParcelableExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
+                collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout));
+                collapsingToolbarLayout.setTitle(productPresentationBean.getName());
 
-        logViewItemAnalyticsEvent();
+                collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+
+                coordinatorLayout = findViewById(R.id.coordinatorLayout);
+
+                mUpButton = findViewById(R.id.app_bar);
+
+                initLayout();
+
+                ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+                wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
+                cartViewModel = new ViewModelProvider(this, factory).get(CartViewModel.class);
+                categoryViewModel = new ViewModelProvider(this, factory).get(CategoryViewModel.class);
+                initButton();
+            } else {
+                closeOnError();
+            }
+            logViewItemAnalyticsEvent();
+        }
 
     }
 
     private void initButton() {
-        if(productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)){
+        if (productPresentationBean.getInStock().equalsIgnoreCase(ApplicationConstants.OUT_OF_STOCK)) {
             addToCartButton.setEnabled(false);
         }
     }
@@ -171,7 +175,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -230,12 +234,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                 saveWishListToDB(userId, productPresentationBean.getId());
 
                 APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.PRODUCT_NAME_ADDED_TO_WISHLIST, productPresentationBean.getName());
-                APIUtils.logAddToWishlistAnalyticsEvent(ProductDetailActivity.this,productPresentationBean);
+                APIUtils.logAddToWishlistAnalyticsEvent(ProductDetailActivity.this, productPresentationBean);
             }
 
             @Override
             public void onFailure(Call<WishlistTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(ProductDetailActivity.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
@@ -316,10 +320,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             txtViewPrice.setText(productPresentationBean.getPrice());
             txtViewSpecialPrice.setText(productPresentationBean.getSpecial());
             txtViewPrice.setTextColor(getResources().getColor(R.color.red));
-            if(!productPresentationBean.getDiscPerc().equalsIgnoreCase(ApplicationConstants.ZERO)) {
+            if (!productPresentationBean.getDiscPerc().equalsIgnoreCase(ApplicationConstants.ZERO)) {
                 txtViewDiscPerc.setText(TextUtils.concat(productPresentationBean.getDiscPerc(), " ", ApplicationConstants.OFF));
-            }
-            else {
+            } else {
                 txtViewDiscPerc.setText(ApplicationConstants.EMPTY_STRING);
             }
         }

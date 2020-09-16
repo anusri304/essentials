@@ -19,6 +19,8 @@ import com.example.essentials.service.AddressService;
 import com.example.essentials.transport.AddressListTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
+import com.example.essentials.utils.EssentialsUtils;
+import com.example.essentials.utils.NetworkUtils;
 import com.example.essentials.utils.RetrofitUtils;
 import com.example.essentials.viewmodel.AddressViewModel;
 import com.example.essentials.viewmodel.ViewModelFactory;
@@ -38,12 +40,17 @@ public class AddDeliveryAddressActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getString(R.string.add_delivery_address));
-        activityAddAddressBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_address);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
-        addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
-        initSaveButton();
+        if (!NetworkUtils.isNetworkConnected(AddDeliveryAddressActivity.this)) {
+            EssentialsUtils.showAlertDialog(AddDeliveryAddressActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
+        }
+        else {
+            setTitle(getString(R.string.add_delivery_address));
+            activityAddAddressBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_address);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
+            addressViewModel = new ViewModelProvider(this, factory).get(AddressViewModel.class);
+            initSaveButton();
+        }
     }
 
     private void initSaveButton() {
