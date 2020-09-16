@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressListTransportBean {
-    @JsonRequired
     @SerializedName("address_id")
     int id;
     String message;
