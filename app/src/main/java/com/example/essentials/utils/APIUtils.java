@@ -81,6 +81,12 @@ public class APIUtils {
         APIUtils.getFirebaseAnalytics(context).logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, bundle);
     }
 
+    public static void logAddOrderAnalyticsEvent(Context context, int orderId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(ApplicationConstants.ORDER_ID, orderId);
+        APIUtils.getFirebaseAnalytics(context).logEvent(ApplicationConstants.ADD_ORDER, bundle);
+    }
+
 
     public static void logViewCartAnalyticsEvent(Context context, ProductPresentationBean productPresentationBean) {
         Bundle bundle = new Bundle();

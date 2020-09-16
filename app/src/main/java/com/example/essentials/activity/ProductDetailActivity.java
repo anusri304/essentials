@@ -324,7 +324,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         }
 
-        productStockTxtView.setText(productPresentationBean.getInStock().equalsIgnoreCase("Yes") ? ApplicationConstants.IN_STOCK : ApplicationConstants.OUT_OF_STOCK);
+        productStockTxtView.setText(productPresentationBean.getInStock());
     }
 
     private void setProductImageView() {

@@ -30,9 +30,8 @@ import com.example.essentials.domain.Product;
 import com.example.essentials.fragment.CartFragment;
 import com.example.essentials.service.CartService;
 import com.example.essentials.service.OrderService;
-import com.example.essentials.service.WishlistService;
 import com.example.essentials.transport.CartTransportBean;
-import com.example.essentials.transport.WishlistTransportBean;
+import com.example.essentials.transport.OrderTransportBean;
 import com.example.essentials.utils.APIUtils;
 import com.example.essentials.utils.ApplicationConstants;
 import com.example.essentials.utils.EssentialsUtils;
@@ -53,7 +52,6 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -79,6 +77,8 @@ public class DeliveryItemActivity extends AppCompatActivity {
     int addressId;
     TextView addsTxtView;
     AddressViewModel addressViewModel;
+    int userId;
+    String apiToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,9 @@ public class DeliveryItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_delivery);
         //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
+        userId = pref.getInt(ApplicationConstants.USER_ID, 0);
+        apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
         if (getIntent() != null) {
             addressId = getIntent().getIntExtra(ApplicationConstants.ADDRESS_ID, 0);
         }
@@ -110,65 +112,103 @@ public class DeliveryItemActivity extends AppCompatActivity {
 
 
     private void initAddress() {
-        Address address=  addressViewModel.getAddressForId(addressId);
+        Address address = addressViewModel.getAddressForId(addressId);
         addsTxtView = findViewById(R.id.deliveryAddsView);
 
-        addsTxtView.setText(address.getFirstName() + "\n" + address.getLastName() + "\n"+ address.getAddressLine1() + "\n"+address.getAddressLine2()+ "\n"+ address.getCity()+ "\n"+address.getPostalCode()+ "\n"+address.getCountry());
+        addsTxtView.setText(address.getFirstName() + "\n" + address.getLastName() + "\n" + address.getAddressLine1() + "\n" + address.getAddressLine2() + "\n" + address.getCity() + "\n" + address.getPostalCode() + "\n" + address.getCountry());
     }
 
     private void initOrder() {
         confirmOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveOrdersInDB();
+                callOrderEndpoint();
             }
         });
     }
 
-    private void callOrderEndpoint(int userId, int productId) {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0); // 0 - for private mode
-        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");
-
+    private void callOrderEndpoint() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(CartTransportBean.class, new AnnotatedDeserializer<CartTransportBean>())
                 .setLenient().create();
         OrderService orderService = RetrofitUtils.getRetrofit(gson).create(OrderService.class);
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productId))
+                .addFormDataPart(ApplicationConstants.CUSTOMER_NAME, String.valueOf(APIUtils.getLoggedInUserName(DeliveryItemActivity.this)))
                 .addFormDataPart(ApplicationConstants.CUSTOMER_ID, String.valueOf(userId))
-                .addFormDataPart(ApplicationConstants.TOTAL, EssentialsUtils.formatTotal(EssentialsUtils.getTotal(cartPresentationBeans)))
-                .addFormDataPart(ApplicationConstants.ORDERID, String.valueOf(userId))
+                .addFormDataPart(ApplicationConstants.ADDRESS_ID, String.valueOf(addressId))
+                .addFormDataPart(ApplicationConstants.TOTAL, String.valueOf(EssentialsUtils.getTotal(cartPresentationBeans)))
                 .build();
-        Call<CartTransportBean> call = orderService.addOrder(apiToken, requestBody);
+        Call<OrderTransportBean> call = orderService.addOrder(apiToken, requestBody);
 
-        call.enqueue(new Callback<CartTransportBean>() {
+        call.enqueue(new Callback<OrderTransportBean>() {
             @Override
-            public void onResponse(Call<CartTransportBean> call, Response<CartTransportBean> response) {
-                CartTransportBean cartTransportBean = response.body();
-                if (response.isSuccessful()) {
-                    saveOrdersInDB();
+            public void onResponse(Call<OrderTransportBean> call, Response<OrderTransportBean> response) {
+                OrderTransportBean orderTransportBean = response.body();
+                if (response.isSuccessful() && orderTransportBean.getOrderId() != null && !orderTransportBean.getOrderId().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+                    saveOrdersInDB(Integer.valueOf(orderTransportBean.getOrderId()));
+                    APIUtils.logAddOrderAnalyticsEvent(getApplicationContext(), Integer.valueOf(orderTransportBean.getOrderId()));
+                } else {
+                    APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
                 }
             }
 
             @Override
-            public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat( " ").concat(throwable.getMessage()));
+            public void onFailure(Call<OrderTransportBean> call, Throwable throwable) {
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
 
-    private void saveOrdersInDB() {
+
+    private void callOrderProductEndpoint(int productId,int orderId,CartPresentationBean cartPresentationBean) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(OrderTransportBean.class, new AnnotatedDeserializer<OrderTransportBean>())
+                .setLenient().create();
+        OrderService orderService = RetrofitUtils.getRetrofit(gson).create(OrderService.class);
+        double value=0.0;
+        if (cartPresentationBean.getPrice() != null && !cartPresentationBean.getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+           value =  Double.valueOf(cartPresentationBean.getPrice().substring(1))*cartPresentationBean.getQuantity();
+        }
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(ApplicationConstants.PRODUCT_ID, String.valueOf(productId))
+                .addFormDataPart(ApplicationConstants.ORDERID, String.valueOf(orderId))
+                .addFormDataPart(ApplicationConstants.PRICE, cartPresentationBean.getPrice())
+                .addFormDataPart(ApplicationConstants.QUANTITY, String.valueOf(cartPresentationBean.getQuantity()))
+                .addFormDataPart(ApplicationConstants.TOTAL, String.valueOf(value))
+                .build();
+        Call<OrderTransportBean> call = orderService.addOrderProducts(apiToken, requestBody);
+
+        call.enqueue(new Callback<OrderTransportBean>() {
+            @Override
+            public void onResponse(Call<OrderTransportBean> call, Response<OrderTransportBean> response) {
+                OrderTransportBean orderTransportBean = response.body();
+                if (response.isSuccessful()) {
+                    saveOrderProductInDB(orderId,cartPresentationBean);
+                } else {
+                    APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(ApplicationConstants.ERROR_RETRIEVE_MESSAGE));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrderTransportBean> call, Throwable throwable) {
+                APIUtils.getFirebaseCrashlytics().log(CartFragment.class.getName().concat(" ").concat(throwable.getMessage()));
+            }
+        });
+    }
+
+    private void saveOrdersInDB(int orderId) {
         OrderCustomer orderCustomer = new OrderCustomer();
         orderCustomer.setAddressId(addressId);
-        orderCustomer.setId(new Random().nextInt());
+        orderCustomer.setId(orderId);
         orderCustomer.setUserId(APIUtils.getLoggedInUserId(DeliveryItemActivity.this));
         orderCustomer.setPaymentCustomerName(APIUtils.getLoggedInUserName(DeliveryItemActivity.this));
         orderCustomer.setTotal(EssentialsUtils.getTotal(cartPresentationBeans));
         orderCustomer.setStatus(ApplicationConstants.STATUS_PENDING);
         orderCustomer.setDateAdded(new Date());
         orderCustomerViewModel.insertOrderCustomer(orderCustomer);
-        saveOrderProducts(orderCustomer.getId());
+        callOrderProductEndPoint(orderCustomer.getId());
     }
 
     private void callCartEndPoint(CartPresentationBean cartPresentationBean) {
@@ -192,27 +232,28 @@ public class DeliveryItemActivity extends AppCompatActivity {
                 CartTransportBean cartTransportBean = response.body();
                 if (response.isSuccessful()) {
                     deleteCartItemsFromDB(userId, cartPresentationBean.getProductId());
-                    APIUtils.logRemoveFromCartAnalyticsEvent(DeliveryItemActivity.this,cartPresentationBean);
+                    APIUtils.logRemoveFromCartAnalyticsEvent(DeliveryItemActivity.this, cartPresentationBean);
                 }
             }
 
             @Override
             public void onFailure(Call<CartTransportBean> call, Throwable throwable) {
-                APIUtils.getFirebaseCrashlytics().log(DeliveryItemActivity.class.getName().concat( " ").concat(throwable.getMessage()));
+                APIUtils.getFirebaseCrashlytics().log(DeliveryItemActivity.class.getName().concat(" ").concat(throwable.getMessage()));
             }
         });
     }
 
-    private void saveOrderProducts(int orderId) {
+    private void callOrderProductEndPoint(int orderId) {
         cartPresentationBeans.stream().forEach(cartPresentationBean -> {
-            saveOrderProductInDB(orderId, cartPresentationBean);
+            callOrderProductEndpoint(cartPresentationBean.getProductId(),orderId,cartPresentationBean);
         });
+        showOrderAlertDialog(DeliveryItemActivity.this);
     }
 
     private void saveOrderProductInDB(int orderId, CartPresentationBean cartPresentationBean) {
         OrderProduct orderProduct = new OrderProduct();
         orderProduct.setOrderId(orderId);
-        if(cartPresentationBean.getPrice()!=null && !cartPresentationBean.getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
+        if (cartPresentationBean.getPrice() != null && !cartPresentationBean.getPrice().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
             orderProduct.setPrice(Double.valueOf(cartPresentationBean.getPrice().substring(1)));
         }
         orderProduct.setQuantity(cartPresentationBean.getQuantity());
@@ -229,7 +270,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
         if (cart != null) {
             cartViewModel.deleteCartItems(cart);
         }
-        showOrderAlertDialog(DeliveryItemActivity.this);
+
 
     }
 
@@ -297,7 +338,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
         //  LocalDate.parse(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(today)).plusDays(2);
 
         deliveryDateValueView.setText(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(today));
-        if(cartPresentationBeans !=null && cartPresentationBeans.size()>0) {
+        if (cartPresentationBeans != null && cartPresentationBeans.size() > 0) {
             logAnalyticsEvent(cartPresentationBeans);
         }
     }

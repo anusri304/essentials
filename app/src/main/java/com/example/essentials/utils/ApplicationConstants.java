@@ -118,6 +118,9 @@ public class ApplicationConstants {
     public static final String ZERO = "0" ;
     public static final String TOTAL = "total" ;
     public static final String ORDERID = "orderId";
+    public static final String CUSTOMER_NAME = "customerName";
+    public static final String ADD_ORDER = "add_order" ;
+    public static final String PRICE = "price";
 
     public static String DATE_PATTERN= "dd-MM-yyyy";
 }
