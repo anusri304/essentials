@@ -27,6 +27,7 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
     final Context mContext;
     private final AddressRecyclerViewAdapter.ListItemClickListener mOnClickListener;
     AddressPresentationBean addressPresentationBean;
+    String customerDetails = ApplicationConstants.NO;
 
     public interface ListItemClickListener {
 
@@ -35,24 +36,25 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
     }
 
 
-    public AddressRecyclerViewAdapter(Context context, List<AddressPresentationBean> address, AddressRecyclerViewAdapter.ListItemClickListener listener) {
+    public AddressRecyclerViewAdapter(Context context, List<AddressPresentationBean> address, AddressRecyclerViewAdapter.ListItemClickListener listener, String customerDetails) {
         mValues = address;
         mOnClickListener = listener;
         mContext = context;
+        this.customerDetails = customerDetails;
     }
 
     public class AddressViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView addressTxtView;
-       Button deleteButton;
-       ImageView arrowForward;
-       CardView cardView;
+        Button deleteButton;
+        ImageView arrowForward;
+        CardView cardView;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
-            addressTxtView = (TextView)  itemView.findViewById(R.id.address_name);
-            deleteButton = (Button)  itemView.findViewById(R.id.delete_button);
-            arrowForward = (ImageView)  itemView.findViewById(R.id.arrowForward);
+            addressTxtView = (TextView) itemView.findViewById(R.id.address_name);
+            deleteButton = (Button) itemView.findViewById(R.id.delete_button);
+            arrowForward = (ImageView) itemView.findViewById(R.id.arrowForward);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
 
             deleteButton.setOnClickListener(this);
@@ -60,17 +62,25 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent (mContext, DeliveryItemActivity.class);
-                    intent.putExtra(ApplicationConstants.ADDRESS_ID,mValues.get(getAdapterPosition()).getId());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent);
+                    // if launched from customer details do not launch delivery items
+                    if (!customerDetails.equalsIgnoreCase(ApplicationConstants.YES)) {
+                        Intent intent = new Intent(mContext, DeliveryItemActivity.class);
+                        intent.putExtra(ApplicationConstants.ADDRESS_ID, mValues.get(getAdapterPosition()).getId());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    }
                 }
             });
+            // The activity is launched from customer details
+            if (customerDetails.equalsIgnoreCase(ApplicationConstants.YES)) {
+                arrowForward.setVisibility(View.GONE);
+            }
         }
+
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick( mValues.get(clickedPosition));
+            mOnClickListener.onListItemClick(mValues.get(clickedPosition));
         }
 
 
@@ -89,7 +99,8 @@ public class AddressRecyclerViewAdapter extends RecyclerView.Adapter<AddressRecy
     public void onBindViewHolder(AddressViewHolder holder, int position) {
         //clickedPosition = position;
         //mValues.get(position).getImage()
-        holder.addressTxtView.setText( mValues.get(position).getName());
+        holder.addressTxtView.setText(mValues.get(position).getName());
+
 
     }
 

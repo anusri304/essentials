@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -16,20 +15,18 @@
             android:layout_height="wrap_content"
             android:text="@string/total"
             android:paddingStart="75dp"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            tools:ignore="RtlSymmetry" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/total_value_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size"
             android:paddingStart="76dp"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            tools:ignore="RtlSymmetry" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

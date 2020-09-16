@@ -115,10 +115,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
-
-
-        //TODO: network connection and rotation
-
         return fragmentRegisterBinding.getRoot();
     }
 

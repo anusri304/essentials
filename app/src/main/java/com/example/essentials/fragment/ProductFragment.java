@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -91,6 +93,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     private SwipeRefreshLayout swipeContainer;
     boolean showAlertDialog = true;
     boolean showSpecialAlertDialog = true;
+    RecyclerView recyclerView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
@@ -234,8 +237,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                     if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
                         APIUtils.logViewItemsAnalyticsEvent(getActivity().getApplicationContext(), productPresentationBeans);
                     }
-                    //TODO remove log
-                    //Log.d("Anandhi", String.valueOf(productPresentationBeans.size()));
                     setData(productPresentationBeans);
                 }
             }
@@ -249,8 +250,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                 .setLenient().create();
         CategoryService categoryService = RetrofitUtils.getRetrofit(gson).create(CategoryService.class);
         SharedPreferences pref = getActivity().getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF_NAME, 0);
-        String apiToken = pref.getString(ApplicationConstants.API_TOKEN, "");// 0 - for private mode
-        Call<CategoryListTransportBean> call = categoryService.getAllCategories(apiToken);
+        Call<CategoryListTransportBean> call = categoryService.getAllCategories();
 
         call.enqueue(new Callback<CategoryListTransportBean>() {
             @Override
@@ -467,8 +467,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             } else {
                                 APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_PRODUCT_ID));
                             }
-                            //TODO: Replace the path in Opencart
-                            productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
+                            productPresentationBean.setImage(productTransportBean.getImage());
                             // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                             productPresentationBean.setName(productTransportBean.getName());
                             productPresentationBean.setPrice(productTransportBean.getPrice());
@@ -483,11 +482,8 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
                             } else {
                                 APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_SPECIAL));
                             }
-                            //TODO: get disc perc
                             productPresentationBean.setDiscPerc(productTransportBean.getDiscPerc());
-                            //TODO: get inStock
                             productPresentationBean.setInStock(productTransportBean.getInStock());
-                            //TODO: use dimensions in dimens.xml
                             productPresentationBeans.add(productPresentationBean);
                         }
                         saveorUpdateProduct(productPresentationBeans);
@@ -588,7 +584,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         }
 
         adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_products);
+        recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
@@ -600,6 +596,31 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if(recyclerView!=null && productPresentationBeans!=null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(productPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        productPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+        // Restoring adapter items
+        if(recyclerView!=null && productPresentationBeans!=null) {
+            setData(productPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
+    }
 
     public void filter(String query) {
         if (adapter != null) {

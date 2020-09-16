@@ -8,5 +8,5 @@ import retrofit2.http.Query;
 
 public interface CategoryService {
     @GET("index.php?route=api/category/getCategories")
-    Call<CategoryListTransportBean> getAllCategories(@Query("api_token") String apiToken);
+    Call<CategoryListTransportBean> getAllCategories();
 }

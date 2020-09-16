@@ -1,9 +1,8 @@
 package com.example.essentials.utils;
 
 public class ApplicationConstants {
-    // public static final String BASE_URL = "http://10.0.2.2/Opencart/";
-   public static final String BASE_URL = "http://10.0.75.1/Opencart/";
-   // public static final String BASE_URL = "http://chozhansales.com/";
+    //  public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+    public static final String BASE_URL = "http://chozhansales.com/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
@@ -26,7 +25,8 @@ public class ApplicationConstants {
     public static final String NO_INTERNET_TITLE = "No Internet Connection";
 
     public static final String API_USER = "apiuser";
-    public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
+    //  public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
+    public static final String API_KEY = "XvsYcbQ5OzJfPyqp5tRXaxZ7llV6S7SJKvtEAvlCtzndLxNh06XhJO6IGfNRlFpFkal3HLptz0qFhzgMKfEpnzsnv48xxMvDNJXnu8FMgJCm6lzu2sYLuhCZ3qcY4OWqzY0fcp0kKmyyqCvAGjFJhUJeX30MgZ7uqu3XeagSkmLsOJL3yMKnLs0Xk5jGSvhIT1IgVrRl1olgNWGmfz5SnkgKxXmoLkQb5jruElkTM7PA7M2EminTXvkoYmfsocoQ";
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
     public static final String LOGIN_FAILED = "Please enter a valid  username/password";
     public static final String SUCCESS = "Success";
@@ -95,33 +95,39 @@ public class ApplicationConstants {
     public static final String SELECT_ORDER = "select_order";
     public static final String PRODUCT_ID_LIST = "product_id_list";
     public static final String ITEM_ID_LIST = "item_id_list";
-    public static final String INSTOCK = "In Stock" ;
+    public static final String INSTOCK = "In Stock";
     public static final String EMPTY_STRING = "";
     public static final String ZONE_ID_VALUE = "2964";
-    public static final String COUNTRY_ID_VALUE = "193" ;
-    public static final String NULL_PRODUCT_ID = "Product Id is null" ;
-    public static final String NULL_CATEGORY_ID = "Category Id is null" ;
-    public static final String NULL_SPECIAL = "Special is null" ;
-    public static final String MOVE_ITEMS_CART = "Move items to Cart" ;
-    public static final String OUT_OF_STOCK_MESSAGE = "Cannot move item as it is out of stock" ;
+    public static final String COUNTRY_ID_VALUE = "193";
+    public static final String NULL_PRODUCT_ID = "Product Id is null";
+    public static final String NULL_CATEGORY_ID = "Category Id is null";
+    public static final String NULL_SPECIAL = "Special is null";
+    public static final String MOVE_ITEMS_CART = "Move items to Cart";
+    public static final String OUT_OF_STOCK_MESSAGE = "Cannot move item as it is out of stock";
     public static final String CUSTOMER_ID = "customerId";
     public static final String ADDRESS_ID = "addressId";
-    public static final String PRODUCT_ID = "productId" ;
+    public static final String PRODUCT_ID = "productId";
     public static final String ADDRESS_1 = "address_1";
     public static final String ADDRESS_2 = "address_2";
     public static final String POSTCODE = "postcode";
     public static final String CITY = "city";
     public static final String ZONE_ID = "zone_id";
     public static final String COUNTRY_ID = "country_id";
-    public static final String QUANTITY = "quantity" ;
+    public static final String QUANTITY = "quantity";
     public static final String LOGIN_USER = "loginUser";
     public static final String KEY = "key";
-    public static final String ZERO = "0" ;
-    public static final String TOTAL = "total" ;
+    public static final String ZERO = "0";
+    public static final String TOTAL = "total";
     public static final String ORDERID = "orderId";
     public static final String CUSTOMER_NAME = "customerName";
-    public static final String ADD_ORDER = "add_order" ;
+    public static final String ADD_ORDER = "add_order";
     public static final String PRICE = "price";
-
-    public static String DATE_PATTERN= "dd-MM-yyyy";
+    public static final String SAVED_PRODUCT = "savedProduct";
+    public static final String SAVED_ORDER = "savedOrder";
+    public static final String CUSTOMER_DETAILS = "customerDetails" ;
+    public static final String YES = "yes" ;
+    public static final String NO ="no" ;
+    public static String DATE_PATTERN = "dd-MM-yyyy";
+    public static final String SAVED_RECYCLER_VIEW_STATUS_ID = "recyclerPosition";
+    public static final String SAVED_RECYCLER_VIEW_DATASET_ID = "recyclerData";
 }

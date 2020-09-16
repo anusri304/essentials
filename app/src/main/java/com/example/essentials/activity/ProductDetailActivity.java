@@ -50,6 +50,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.essentials.utils.ApplicationConstants.SAVED_PRODUCT;
+
 public class ProductDetailActivity extends AppCompatActivity {
     ProductPresentationBean productPresentationBean;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -81,7 +83,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 mUpButton = findViewById(R.id.app_bar);
 
-                initLayout();
+                initLayout(productPresentationBean);
 
                 ViewModelFactory factory = new ViewModelFactory((Application) getApplicationContext());
                 wishlistViewModel = new ViewModelProvider(this, factory).get(WishlistViewModel.class);
@@ -116,7 +118,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         Toast.makeText(this, ApplicationConstants.PRODUCT_DETAILS_NOT_AVAILABLE, Toast.LENGTH_SHORT).show();
     }
 
-    private void initLayout() {
+    private void initLayout(ProductPresentationBean productPresentationBean) {
         TextView txtViewTitle = findViewById(R.id.product_title_txtview);
         txtViewTitle.setText(productPresentationBean.getName());
         addToCartButton = (MaterialButton) findViewById(R.id.add_to_cart_button);
@@ -337,5 +339,20 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(imageView);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if(productPresentationBean!=null) {
+            savedInstanceState.putParcelable(SAVED_PRODUCT, productPresentationBean);
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        productPresentationBean = savedInstanceState.getParcelable(SAVED_PRODUCT);
+        if(productPresentationBean!=null) {
+            initLayout(productPresentationBean);
+        }
     }
 }

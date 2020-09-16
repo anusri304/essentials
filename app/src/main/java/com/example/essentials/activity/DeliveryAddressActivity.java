@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -50,7 +52,9 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
     RelativeLayout relativeLayout;
     CardView addressCardView;
     AddressRecyclerViewAdapter addressRecyclerViewAdapter;
-
+    RecyclerView recyclerView;
+    List<AddressPresentationBean> addressPresentationBeans = new ArrayList<AddressPresentationBean>();
+    String customerDetails="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,12 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
             EssentialsUtils.showAlertDialog(DeliveryAddressActivity.this, ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
         }
         else {
+            if(getIntent()!=null && getIntent().getStringExtra(ApplicationConstants.CUSTOMER_DETAILS)!=null){
+                customerDetails= getIntent().getStringExtra(ApplicationConstants.CUSTOMER_DETAILS);
+            }
+            else {
+                customerDetails= ApplicationConstants.NO;
+            }
             setTitle(getString(R.string.delivery_address));
             setContentView(R.layout.activity_address);
             addImage = (ImageView) findViewById(R.id.add_delivery);
@@ -86,15 +96,19 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
         addressViewModel.getAllAddress().observe(this, objAddress -> {
             address = objAddress;
 
-
-            addressRecyclerViewAdapter = new AddressRecyclerViewAdapter(getApplicationContext(), EssentialsUtils.getAddressPresentationBeans(address), this);
-            RecyclerView recyclerView = findViewById(R.id.rv_address);
-            recyclerView.setAdapter(addressRecyclerViewAdapter);
-
-            GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), EssentialsUtils.getSpan(getApplicationContext()));
-            recyclerView.setLayoutManager(manager);
+            addressPresentationBeans = EssentialsUtils.getAddressPresentationBeans(address);
+            setData(addressPresentationBeans);
 
         });
+    }
+
+    private void setData(List<AddressPresentationBean> addressPresentationBeans) {
+        addressRecyclerViewAdapter = new AddressRecyclerViewAdapter(getApplicationContext(), EssentialsUtils.getAddressPresentationBeans(address), this,customerDetails);
+        recyclerView = findViewById(R.id.rv_address);
+        recyclerView.setAdapter(addressRecyclerViewAdapter);
+
+        GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), EssentialsUtils.getSpan(getApplicationContext()));
+        recyclerView.setLayoutManager(manager);
     }
 
     @Override
@@ -148,5 +162,30 @@ public class DeliveryAddressActivity extends AppCompatActivity implements Addres
                 APIUtils.getFirebaseCrashlytics().log(DeliveryAddressActivity.class.getName().concat( " ").concat(throwable.getMessage()));
             }
         });
+    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if (recyclerView != null && addressPresentationBeans != null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(addressPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        addressPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+        // Restoring adapter items
+        if (recyclerView != null && addressPresentationBeans != null) {
+            setData(addressPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
     }
 }

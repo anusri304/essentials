@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -72,10 +71,9 @@
                 android:layout_marginStart="10dp"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/padding_start"
                 android:text="@string/edit"
-                android:textColor="@color/white"
-                tools:ignore="RtlSymmetry" />
+                android:textColor="@color/white"/>
         </TableRow>
 
     </TableLayout>
@@ -86,9 +84,9 @@
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_below="@+id/tableLayoutItemDetail"
-        android:elevation="24dp"
+        android:elevation="@dimen/elevation"
         app:cardBackgroundColor="@color/lightGray"
-        app:cardCornerRadius="4dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardUseCompatPadding="true">
 
 
@@ -97,12 +95,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
-            android:paddingTop="20dp"
+            android:paddingTop="@dimen/padding_top"
             android:text="@string/delivery_address"
             android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:ignore="RtlSymmetry" />
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/arrowForward"
@@ -112,8 +109,8 @@
             android:contentDescription="@string/arrow_forward_image"
             android:paddingStart="320dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/arrow_forward"
-            tools:ignore="RtlSymmetry" />
+            android:src="@drawable/arrow_forward" />
+
 
     </androidx.cardview.widget.CardView>
 

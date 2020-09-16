@@ -18,7 +18,17 @@
         <item name="android:textColor">@color/red</item>
     </style>
 
+    <style name="textViewStyle">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="textLayoutStyle">
+        <item name="android:layout_marginStart">@dimen/margin_start</item>
+        <item name="android:layout_marginTop">@dimen/margin_top</item>
+        <item name="android:layout_marginEnd">1dp</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -53,6 +54,7 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -80,7 +82,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
     AddressViewModel addressViewModel;
     int userId;
     String apiToken;
-
+    RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -258,6 +260,11 @@ public class DeliveryItemActivity extends AppCompatActivity {
         showOrderAlertDialog(DeliveryItemActivity.this);
     }
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     private void saveOrderProductInDB(int orderId, CartPresentationBean cartPresentationBean) {
         OrderProduct orderProduct = new OrderProduct();
         orderProduct.setOrderId(orderId);
@@ -329,7 +336,7 @@ public class DeliveryItemActivity extends AppCompatActivity {
     private void setProductData(List<CartPresentationBean> cartPresentationBeans) {
         this.cartPresentationBeans = cartPresentationBeans;
         deliveryRecyclerViewAdapter = new DeliveryRecyclerViewAdapter(DeliveryItemActivity.this, cartPresentationBeans);
-        RecyclerView recyclerView = findViewById(R.id.rv_delivery_items);
+        recyclerView = findViewById(R.id.rv_delivery_items);
         recyclerView.setAdapter(deliveryRecyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(DeliveryItemActivity.this, EssentialsUtils.getSpan(DeliveryItemActivity.this));
@@ -371,6 +378,31 @@ public class DeliveryItemActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if (recyclerView != null && cartPresentationBeans != null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(cartPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        cartPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+        // Restoring adapter items
+        if (recyclerView != null && cartPresentationBeans != null) {
+            setProductData(cartPresentationBeans);
+            // Restoring cartPresentationBeans view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
     }
 
 }

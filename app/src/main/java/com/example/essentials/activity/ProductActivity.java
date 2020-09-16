@@ -75,7 +75,6 @@ public class ProductActivity extends AppCompatActivity {
         appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.nav_top_home, R.id.nav_top_login, R.id.nav_top_customer_details, R.id.nav_top_logout, R.id.nav_top_register, R.id.nav_top_order, R.id.nav_top_cart, R.id.nav_bottom_home, R.id.nav_bottom_category, R.id.nav_bottom_cart, R.id.nav_bottom_wishlist).setDrawerLayout(drawerLayout).build();
 //        configureNavigationDrawer();
-        //TODO: elevation for navigation drawer
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
@@ -115,8 +114,7 @@ public class ProductActivity extends AppCompatActivity {
         menu.findItem(R.id.search).setOnActionExpandListener(onActionExpandListener);
         searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
 
-        // TODO: Add code so that search view is visible in only certain fragments
-        if (navController.getCurrentDestination().getDisplayName().contains("nav_top_home") || navController.getCurrentDestination().getDisplayName().contains("nav_bottom_home") ) {
+        if (navController.getCurrentDestination().getDisplayName().contains("nav_top_home") || navController.getCurrentDestination().getDisplayName().contains("nav_bottom_home")) {
             menu.findItem(R.id.search).setVisible(true);
 
             searchView.setQueryHint(getString(R.string.search_hint));
@@ -295,6 +293,14 @@ public class ProductActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.nav_top_logout) {
                     showLogoutMessageAlertDialog(ProductActivity.this, ApplicationConstants.LOG_OUT_TITLE, ApplicationConstants.LOG_OUT_MESSAGE);
+                    return true;
+                } else if (itemId == R.id.nav_top_cart) {
+                    if (APIUtils.isUserLogged(ProductActivity.this)) {
+                        Navigation.findNavController(ProductActivity.this, R.id.nav_host_fragment).navigate(R.id.nav_top_cart);
+                        return true;
+                    } else {
+                        EssentialsUtils.showMessageAlertDialog(ProductActivity.this, ApplicationConstants.NO_LOGIN, ApplicationConstants.NO_LOGIN_MESSAGE_CUSTOMER_DETAILS);
+                    }
                     return true;
                 } else if (itemId == R.id.nav_top_customer_details) {
                     bottomNavigationView.setVisibility(View.INVISIBLE);

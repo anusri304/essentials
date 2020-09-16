@@ -85,12 +85,9 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
         holder.imageView.setAspectRatio(ApplicationConstants.ASPECT_RATIO);
         Glide.with(mContext)
                 .load(mValues.get(position).getImage())
-                //  .load("https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58c5be64_sleepyhollow/sleepyhollow.jpg")
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
-        //todo Special
-        //todo remove unused code like unused method or unused code
         if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
             holder.productSpecialPriceTxtView.setVisibility(View.GONE);
         }

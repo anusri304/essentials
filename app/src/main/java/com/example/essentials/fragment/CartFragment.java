@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -77,6 +79,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private static Retrofit retrofit = null;
     WishlistViewModel wishlistViewModel;
     CartRecyclerViewAdapter cartRecyclerViewAdapter;
+    RecyclerView recyclerView;
 
     private SwipeRefreshLayout swipeContainer;
     List<Wishlist> wishLists = new ArrayList<>();
@@ -98,11 +101,6 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
             view = getActivity().findViewById(android.R.id.content);
             totalTxtView = (TextView) rootView.findViewById(R.id.total_value_text_view);
             checkoutButton = (MaterialButton) rootView.findViewById(R.id.checkout_button);
-
-            //tODO: Remove the below code if not used
-            //TODO remove log.d and toast
-            //TODO logo and color
-
 
             // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
             //cartViewModel.getQuantity().observe(this,nameObserver);
@@ -320,7 +318,7 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     private void setProductData(List<CartPresentationBean> cartPresentationBeans) {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.navigationView);
         cartRecyclerViewAdapter = new CartRecyclerViewAdapter(getActivity(), cartPresentationBeans, cartViewModel, this);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_cart);
+        recyclerView = rootView.findViewById(R.id.rv_cart);
         recyclerView.setAdapter(cartRecyclerViewAdapter);
         //   double totalPrice = cartPresentationBeans.stream().mapToDouble(cartPresentationBean -> Double.parseDouble(cartPresentationBean.getPrice().substring(1)) * cartPresentationBean.getQuantity()).sum();
 
@@ -457,4 +455,34 @@ public class CartFragment extends Fragment implements CartRecyclerViewAdapter.Li
     public void onRefresh() {
         getProductsForCustomer();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if (recyclerView != null && cartPresentationBeans != null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(cartPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        cartPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+        // Restoring adapter items
+        if (recyclerView != null && cartPresentationBeans != null) {
+            setProductData(cartPresentationBeans);
+
+        // Restoring recycler view position
+        Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
+    }
+
+
 }

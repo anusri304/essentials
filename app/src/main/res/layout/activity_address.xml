@@ -1,8 +1,7 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
-    android:layout_width = "match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.cardview.widget.CardView
         android:id="@+id/addressCardView"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,10 +9,10 @@
         android:layout_height="100dp"
         android:layout_margin="16dp"
         android:paddingTop="150dp"
-        android:elevation="24dp"
+        android:elevation="@dimen/elevation"
         app:cardUseCompatPadding="true"
         app:cardBackgroundColor="#E4DFDF"
-        app:cardCornerRadius="4dp">
+        app:cardCornerRadius="@dimen/card_corner_radius">
 
         <TextView
             android:id="@+id/capture_txtView"
@@ -23,9 +22,9 @@
             android:paddingStart="20dp"
             android:paddingTop="25dp"
             android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_large"
             android:textStyle="bold"
-            tools:ignore="RtlSymmetry" />
+            />
 
         <ImageView
             android:id="@+id/add_delivery"
@@ -35,8 +34,7 @@
             android:contentDescription="@string/add_delivery_address_image"
             android:paddingTop="25dp"
             android:layout_toEndOf="@+id/capture_txtView"
-            android:paddingStart="320dp"
-            tools:ignore="RtlSymmetry" />
+            android:paddingStart="320dp"/>
 
     </androidx.cardview.widget.CardView>
 

@@ -94,7 +94,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
-        //todo Special
         if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
             holder.productSpecialPriceTxtView.setVisibility(View.GONE);
         }

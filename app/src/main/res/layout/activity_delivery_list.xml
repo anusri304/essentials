@@ -1,12 +1,11 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:elevation="24dp"
+    android:elevation="@dimen/elevation"
     app:cardUseCompatPadding="true"
     android:background="@drawable/shadow"
     android:focusable="true"
@@ -25,51 +24,37 @@
             android:textSize="15sp"
             android:paddingStart="10dp"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/imageView"
-            tools:ignore="RtlSymmetry" />
+            android:layout_toEndOf="@+id/imageView" />
 
         <TextView
             android:id="@+id/product_Qty_txtView"
-            android:paddingTop="5dp"
             android:text="@string/quantity"
-            android:textSize="15sp"
-            android:paddingStart="10dp"
+            android:theme="@style/textViewStyle"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/product_name"
-            tools:ignore="RtlSymmetry" />
+            android:layout_below="@+id/product_name" />
 
         <TextView
             android:id="@+id/product_Qty"
-            android:paddingTop="5dp"
-            android:textSize="15sp"
-            android:paddingStart="10dp"
+            android:theme="@style/textViewStyle"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_name"
-            android:layout_toEndOf="@+id/product_Qty_txtView"
-            tools:ignore="RtlSymmetry" />
+            android:layout_toEndOf="@+id/product_Qty_txtView" />
 
         <TextView
             android:id="@+id/product_price"
-            android:paddingTop="5dp"
-            android:paddingStart="10dp"
-            android:textSize="15sp"
+            android:theme="@style/textViewStyle"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_below="@+id/product_Qty"
-            tools:ignore="RtlSymmetry" />
+            android:layout_below="@+id/product_Qty" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -3,6 +3,7 @@ package com.example.essentials.fragment;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +32,15 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CategoryFragment extends Fragment implements CategoryRecyclerViewAdapter.ListItemClickListener{
     CategoryViewModel categoryViewModel;
     CategoryRecyclerViewAdapter categoryRecyclerViewAdapter;
     View rootView;
     List<Category> categories = new ArrayList<>();
+    List<CategoryPresentationBean> categoryPresentationBeans = new ArrayList<>();
+    RecyclerView recyclerView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
@@ -87,14 +91,15 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), objCategories -> {
             categories = objCategories;
             if (!categories.isEmpty()) {
-                setData(categories);
+                categoryPresentationBeans = EssentialsUtils.getCategoryPresentationBean(categories);
+                setData(categoryPresentationBeans);
             }
         });
     }
 
-    private void setData(List<Category> categories) {
-        categoryRecyclerViewAdapter = new CategoryRecyclerViewAdapter(getActivity(), EssentialsUtils.getCategoryPresentationBean(categories), this);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_category);
+    private void setData(List<CategoryPresentationBean> categoryPresentationBeans) {
+        categoryRecyclerViewAdapter = new CategoryRecyclerViewAdapter(getActivity(), categoryPresentationBeans, this);
+        recyclerView = rootView.findViewById(R.id.rv_category);
         recyclerView.setAdapter(categoryRecyclerViewAdapter);
 
 
@@ -111,5 +116,30 @@ public class CategoryFragment extends Fragment implements CategoryRecyclerViewAd
         APIUtils.getFirebaseCrashlytics().setCustomKey(ApplicationConstants.CATEGORY_ID, categoryPresentationBean.getId());
        // Navigation.findNavController(rootView).navigate(action);
         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if(recyclerView!=null && categoryPresentationBeans!=null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(categoryPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        if(recyclerView!=null && categoryPresentationBeans!=null) {
+            categoryPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+            // Restoring adapter items
+            setData(categoryPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
     }
 }

@@ -27,7 +27,7 @@
             android:checked="true"
             android:text="@string/all_promotions"
             android:textColor="@color/colorPrimary"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_size"
             android:textStyle="bold"
             app:buttonTint="@color/colorPrimary"
             app:useMaterialThemeColors="false" />

@@ -95,6 +95,7 @@ public class CustomerDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), DeliveryAddressActivity.class);
+                intent.putExtra(ApplicationConstants.CUSTOMER_DETAILS,ApplicationConstants.YES);
                 startActivity(intent);
             }
         });

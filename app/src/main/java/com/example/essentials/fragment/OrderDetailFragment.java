@@ -3,6 +3,7 @@ package com.example.essentials.fragment;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,10 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.example.essentials.utils.ApplicationConstants.SAVED_PRODUCT;
 
 public class OrderDetailFragment extends Fragment {
     View rootView;
@@ -40,63 +44,64 @@ public class OrderDetailFragment extends Fragment {
     DeliveryRecyclerViewAdapter deliveryRecyclerViewAdapter;
     OrderCustomerPresentationBean orderCustomerPresentationBean;
     List<CartPresentationBean> cartPresentationBeans = new ArrayList<CartPresentationBean>();
+    RecyclerView recyclerView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_order_detail, container, false);
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
             EssentialsUtils.showAlertDialog(getActivity(), ApplicationConstants.NO_INTERNET_TITLE, ApplicationConstants.NO_INTERNET_MESSAGE);
-        }
-        else {
+        } else {
             ViewModelFactory factory = new ViewModelFactory((Application) getActivity().getApplicationContext());
             orderProductViewModel = new ViewModelProvider(this, factory).get(OrderProductViewModel.class);
 
             if (getArguments() != null) {
                 orderCustomerPresentationBean = OrderDetailFragmentArgs.fromBundle(getArguments()).getOrderCustomerPresentationBean();
-            }
-            observeOrderDetailChanges();
 
-            initTextView();
+                observeOrderDetailChanges();
 
-            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+                initTextView(orderCustomerPresentationBean);
 
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
+                final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                final Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
 
-            TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
-            titleView.setText(getResources().getString(R.string.order_detail));
+                LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View actionBarView = layoutInflater.inflate(R.layout.fragment_actionbar, null);
 
-            if (actionBar != null) {
-                // enable the customized view and disable title
-                actionBar.setDisplayShowCustomEnabled(true);
-                actionBar.setCustomView(actionBarView);
-                //  actionBar.setTitle(getResources().getString(R.string.categories));
-                actionBar.setDisplayShowTitleEnabled(false);
+                TextView titleView = actionBarView.findViewById(R.id.actionbar_view);
+                titleView.setText(getResources().getString(R.string.order_detail));
+
+                if (actionBar != null) {
+                    // enable the customized view and disable title
+                    actionBar.setDisplayShowCustomEnabled(true);
+                    actionBar.setCustomView(actionBarView);
+                    //  actionBar.setTitle(getResources().getString(R.string.categories));
+                    actionBar.setDisplayShowTitleEnabled(false);
 
 
-                // remove Burger Icon
-                toolbar.setNavigationIcon(null);
-            }
-            actionBarView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    actionBar.setDisplayShowCustomEnabled(false);
-                    actionBar.setDisplayShowTitleEnabled(true);
-                    DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
-                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                            getActivity(), drawer, toolbar, R.string.drawer_open,
-                            R.string.drawer_close);
-                    // All that to re-synchronize the Drawer State
-                    toggle.syncState();
-                    getActivity().onBackPressed();
+                    // remove Burger Icon
+                    toolbar.setNavigationIcon(null);
                 }
-            });
+                actionBarView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        actionBar.setDisplayShowCustomEnabled(false);
+                        actionBar.setDisplayShowTitleEnabled(true);
+                        DrawerLayout drawer = getActivity().findViewById(R.id.drawer_layout);
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                                getActivity(), drawer, toolbar, R.string.drawer_open,
+                                R.string.drawer_close);
+                        // All that to re-synchronize the Drawer State
+                        toggle.syncState();
+                        getActivity().onBackPressed();
+                    }
+                });
+            }
         }
         return rootView;
     }
 
-    private void initTextView() {
+    private void initTextView(OrderCustomerPresentationBean orderCustomerPresentationBean) {
 
         TextView orderIdTextView = rootView.findViewById(R.id.order_id_text_view);
         TextView orderStatusTextView = rootView.findViewById(R.id.order_status_text_view);
@@ -127,12 +132,46 @@ public class OrderDetailFragment extends Fragment {
             cartPresentationBean.setPrice(ApplicationConstants.CURRENCY_SYMBOL.concat(String.valueOf(orderProduct.getPrice())));
             cartPresentationBeans.add(cartPresentationBean);
         }
+        setOrderData(cartPresentationBeans);
+    }
+
+    private void setOrderData(List<CartPresentationBean> cartPresentationBeans) {
+
         deliveryRecyclerViewAdapter = new DeliveryRecyclerViewAdapter(getActivity(), cartPresentationBeans);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_item_detail);
+        recyclerView = rootView.findViewById(R.id.rv_item_detail);
         recyclerView.setAdapter(deliveryRecyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
         recyclerView.setLayoutManager(manager);
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if (recyclerView != null && orderCustomerPresentationBean != null && cartPresentationBeans!=null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_ORDER, orderCustomerPresentationBean);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(cartPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+
+        orderCustomerPresentationBean = savedInstanceState.getParcelable(SAVED_PRODUCT);
+        if (recyclerView != null && orderCustomerPresentationBean != null && cartPresentationBeans!=null) {
+            initTextView(orderCustomerPresentationBean);
+            // getting recyclerview items
+            cartPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+            // Restoring adapter items
+            setOrderData(cartPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.essentials.fragment;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,15 @@ import com.example.essentials.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OrderFragment  extends Fragment implements OrderCustomerRecyclerViewAdapter.ListItemClickListener{
     View rootView;
     OrderCustomerViewModel orderCustomerViewModel;
     List<OrderCustomer> orderCustomers = new ArrayList<>();
     OrderCustomerRecyclerViewAdapter orderRecyclerViewAdapter;
-
+    RecyclerView recyclerView;
+    List<OrderCustomerPresentationBean> orderCustomerPresentationBeans = new ArrayList<OrderCustomerPresentationBean>();
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_order, container, false);
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
@@ -91,14 +94,16 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
     private void observeOrderChanges() {
         orderCustomerViewModel.getAllOrdercustomer().observe(getViewLifecycleOwner(), objOrderCustomer -> {
             orderCustomers = objOrderCustomer;
-            setData(orderCustomers);
+            orderCustomerPresentationBeans= EssentialsUtils.getOrderCustomerPresentationBeans(orderCustomers);
+            setData(orderCustomerPresentationBeans);
 
         });
     }
 
-    private void setData(List<OrderCustomer> orderCustomers) {
-        orderRecyclerViewAdapter = new OrderCustomerRecyclerViewAdapter(getActivity(), EssentialsUtils.getOrderCustomerPresentationBeans(orderCustomers), this);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_order);
+    private void setData(List<OrderCustomerPresentationBean> orderCustomers) {
+
+        orderRecyclerViewAdapter = new OrderCustomerRecyclerViewAdapter(getActivity(), orderCustomers, this);
+        recyclerView = rootView.findViewById(R.id.rv_order);
         recyclerView.setAdapter(orderRecyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
@@ -120,6 +125,31 @@ public class OrderFragment  extends Fragment implements OrderCustomerRecyclerVie
         Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(action);
         if(orderCustomerPresentationBean!=null) {
             logAnalyticsEvent(orderCustomerPresentationBean);
+        }
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if (recyclerView != null && orderCustomerPresentationBeans != null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(orderCustomerPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        if (recyclerView != null && orderCustomerPresentationBeans != null) {
+            orderCustomerPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+            // Restoring adapter items
+            setData(orderCustomerPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
         }
     }
 }

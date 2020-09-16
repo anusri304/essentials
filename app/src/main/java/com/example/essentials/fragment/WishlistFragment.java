@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import okhttp3.MultipartBody;
@@ -76,6 +78,8 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     CoordinatorLayout coordinatorLayout;
     private SwipeRefreshLayout swipeContainer;
     View view;
+    RecyclerView recyclerView;
+    List<ProductPresentationBean> filteredProductPresentationBeans;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = getActivity().findViewById(android.R.id.content);
@@ -243,7 +247,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
     }
 
     private void setData(List<Wishlist> wishlists) {
-        List<ProductPresentationBean> filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
+        filteredProductPresentationBeans = EssentialsUtils.getProductPresentationBeans(products).stream().filter(productPresentationBean ->
                 wishlists.stream().map(wishList -> wishList.getProductId()).collect(Collectors.toSet())
                         .contains(productPresentationBean.getId())).collect(Collectors.toList());
         setProductData(filteredProductPresentationBeans);
@@ -256,7 +260,7 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
 
     private void setProductData(List<ProductPresentationBean> productPresentationBeans) {
         wishlistRecyclerViewAdapter = new WishlistRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
-        RecyclerView recyclerView = rootView.findViewById(R.id.rv_wishlist);
+        recyclerView = rootView.findViewById(R.id.rv_wishlist);
         recyclerView.setAdapter(wishlistRecyclerViewAdapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), EssentialsUtils.getSpan(getActivity()));
@@ -403,4 +407,31 @@ public class WishlistFragment extends Fragment implements WishlistRecyclerViewAd
         getWishlistProductsForCustomer();
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can save the view hierarchy state
+        if(recyclerView!=null && filteredProductPresentationBeans!=null) {
+            Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
+            // putting recyclerview position
+            savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
+            // putting recyclerview items
+            savedInstanceState.putParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID, new ArrayList<>(filteredProductPresentationBeans));
+            super.onSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    public void restorePreviousState(Bundle savedInstanceState) {
+        // getting recyclerview position
+        Parcelable listState = savedInstanceState.getParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID);
+        // getting recyclerview items
+        filteredProductPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
+        // Restoring adapter items
+        if(recyclerView!=null && filteredProductPresentationBeans!=null) {
+            setProductData(filteredProductPresentationBeans);
+            // Restoring recycler view position
+            Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);
+        }
+    }
+
 }
