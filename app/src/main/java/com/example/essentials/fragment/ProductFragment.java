@@ -1,5 +1,6 @@
 package com.example.essentials.fragment;
 
+import android.app.ActivityOptions;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -75,7 +76,7 @@ import retrofit2.Retrofit;
 
 import static com.example.essentials.utils.RetrofitUtils.getRetrofit;
 
-public class ProductFragment extends Fragment implements ProductRecyclerViewAdapter.ListItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class ProductFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static Retrofit retrofit = null;
     List<ProductPresentationBean> productPresentationBeans;
     View rootView;
@@ -543,18 +544,6 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         }
     }
 
-
-    @Override
-    public void onListItemClick(ProductPresentationBean selectedProductPresentationBean) {
-        Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
-        intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, selectedProductPresentationBean);
-        startActivity(intent);
-
-        if (productPresentationBeans != null && productPresentationBeans.size() > 0) {
-            logAnalyticsEvent(productPresentationBeans, selectedProductPresentationBean);
-        }
-    }
-
     private void logAnalyticsEvent(List<ProductPresentationBean> productPresentationBeans, ProductPresentationBean selectedProductPresentationBean) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ApplicationConstants.PRODUCT_PRESENTATION_BEAN);
@@ -583,7 +572,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
             }
         }
 
-        adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans, this);
+        adapter = new ProductRecyclerViewAdapter(getActivity(), productPresentationBeans);
         recyclerView = rootView.findViewById(R.id.rv_products);
         recyclerView.setAdapter(adapter);
 
@@ -599,7 +588,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can save the view hierarchy state
-        if(recyclerView!=null && productPresentationBeans!=null) {
+        if (recyclerView != null && productPresentationBeans != null) {
             Parcelable listState = Objects.requireNonNull(recyclerView.getLayoutManager()).onSaveInstanceState();
             // putting recyclerview position
             savedInstanceState.putParcelable(ApplicationConstants.SAVED_RECYCLER_VIEW_STATUS_ID, listState);
@@ -615,7 +604,7 @@ public class ProductFragment extends Fragment implements ProductRecyclerViewAdap
         // getting recyclerview items
         productPresentationBeans = savedInstanceState.getParcelableArrayList(ApplicationConstants.SAVED_RECYCLER_VIEW_DATASET_ID);
         // Restoring adapter items
-        if(recyclerView!=null && productPresentationBeans!=null) {
+        if (recyclerView != null && productPresentationBeans != null) {
             setData(productPresentationBeans);
             // Restoring recycler view position
             Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(listState);

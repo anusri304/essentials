@@ -1,6 +1,9 @@
 package com.example.essentials.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.essentials.R;
+import com.example.essentials.activity.ProductDetailActivity;
 import com.example.essentials.activity.bean.ProductPresentationBean;
 import com.example.essentials.activity.ui.DynamicHeightNetworkImageView;
 import com.example.essentials.activity.ui.ImageLoaderHelper;
@@ -32,19 +36,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     List<ProductPresentationBean> mValues;
     final Context mContext;
-    private final ListItemClickListener mOnClickListener;
-
     private final List<ProductPresentationBean> unfilteredProductList;
 
-    public interface ListItemClickListener {
 
-        void onListItemClick(ProductPresentationBean productPresentationBean);
 
-    }
-
-    public ProductRecyclerViewAdapter(Context context, List<ProductPresentationBean> products, ListItemClickListener listener) {
+    public ProductRecyclerViewAdapter(Context context, List<ProductPresentationBean> products) {
         mValues = products;
-        mOnClickListener = listener;
         mContext = context;
         unfilteredProductList = Collections.synchronizedList(new ArrayList<ProductPresentationBean>(products));
     }
@@ -59,18 +56,23 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         public ProductViewHolder(View itemView) {
             super(itemView);
             imageView = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.imageView);
-            productNameTxtView = (TextView)  itemView.findViewById(R.id.product_name);
-            productPriceTxtView = (TextView)  itemView.findViewById(R.id.product_price);
-            productSpecialPriceTxtView = (TextView)  itemView.findViewById(R.id.product_special_price);
+            productNameTxtView = (TextView) itemView.findViewById(R.id.product_name);
+            productPriceTxtView = (TextView) itemView.findViewById(R.id.product_price);
+            productSpecialPriceTxtView = (TextView) itemView.findViewById(R.id.product_special_price);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(mValues.get(clickedPosition));
+            // mOnClickListener.onListItemClick(mValues.get(clickedPosition));
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, imageView, imageView.getTransitionName()).toBundle();
+            Intent intent = new Intent(mContext, ProductDetailActivity.class);
+            intent.putExtra(ApplicationConstants.PRODUCT_PRESENTATION_BEAN, (mValues.get(clickedPosition)));
+            mContext.startActivity(intent, bundle);
         }
     }
+
 
     @NonNull
     @Override
@@ -94,16 +96,15 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.imageView);
-        if(mValues.get(position).getSpecial().equalsIgnoreCase("")){
+        if (mValues.get(position).getSpecial().equalsIgnoreCase("")) {
             holder.productSpecialPriceTxtView.setVisibility(View.GONE);
-        }
-        else {
-            holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.productSpecialPriceTxtView.setText( mValues.get(position).getSpecial());
+        } else {
+            holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.productSpecialPriceTxtView.setText(mValues.get(position).getSpecial());
             holder.productPriceTxtView.setTextColor(mContext.getResources().getColor(R.color.red));
         }
-        holder.productNameTxtView.setText( mValues.get(position).getName());
-        holder.productPriceTxtView.setText( mValues.get(position).getPrice());
+        holder.productNameTxtView.setText(mValues.get(position).getName());
+        holder.productPriceTxtView.setText(mValues.get(position).getPrice());
 
     }
 
@@ -127,7 +128,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
                     synchronized (unfilteredProductList) {
                         for (ProductPresentationBean productPresentationBean : unfilteredProductList) {
-                            if (productPresentationBean.getImage().toLowerCase(Locale.getDefault()).contains(constraint.toString() )) {
+                            if (productPresentationBean.getImage().toLowerCase(Locale.getDefault()).contains(constraint.toString())) {
                                 filteredList.add(productPresentationBean);
                             }
                         }
@@ -157,13 +158,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     public void performFilter(String query) {
         if (query == null) {
-           return;
+            return;
         }
         getFilter().filter(query);
     }
 
 
-    private void logAnalyticsEvent(String query){
+    private void logAnalyticsEvent(String query) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
         APIUtils.getFirebaseAnalytics(mContext).logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
