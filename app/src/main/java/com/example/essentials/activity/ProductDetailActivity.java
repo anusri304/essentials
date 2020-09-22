@@ -77,7 +77,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout));
                 collapsingToolbarLayout.setTitle(productPresentationBean.getName());
 
-                collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+                collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
 
                 coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
@@ -343,7 +343,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        if(productPresentationBean!=null) {
+        if (productPresentationBean != null) {
             savedInstanceState.putParcelable(SAVED_PRODUCT, productPresentationBean);
             super.onSaveInstanceState(savedInstanceState);
         }
@@ -351,7 +351,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void restorePreviousState(Bundle savedInstanceState) {
         productPresentationBean = savedInstanceState.getParcelable(SAVED_PRODUCT);
-        if(productPresentationBean!=null) {
+        if (productPresentationBean != null) {
             initLayout(productPresentationBean);
         }
     }

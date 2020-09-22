@@ -15,8 +15,8 @@ c
   -->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/coordinatorLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,13 +33,27 @@ c
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+
+            <FrameLayout
+                android:id="@+id/photo_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/photo_placeholder">
+
             <ImageView
                 android:id="@+id/image_product_detail"
-                android:transitionName="@string/app_name"
-           android:contentDescription="@string/product_content_description"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY" />
+                android:contentDescription="@string/product_content_description"
+                android:background="@color/photo_placeholder"
+                android:scaleType="fitXY"
+                android:transitionName="@string/app_name"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/photo_background_protection"/>
+            </FrameLayout>
 
 
             <androidx.appcompat.widget.Toolbar
@@ -78,19 +92,19 @@ c
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="@dimen/padding_top"
-                android:textAppearance="@style/stockTextStyle"
-                android:layout_toEndOf="@+id/product_title_txtview"/>
+                android:layout_toEndOf="@+id/product_title_txtview"
+                android:textAppearance="@style/stockTextStyle" />
 
             <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/productCardView"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
+                android:layout_below="@+id/product_title_txtview"
                 android:elevation="24dp"
-                app:cardUseCompatPadding="true"
                 app:cardBackgroundColor="#BDBDBD"
                 app:cardCornerRadius="@dimen/card_corner_radius"
-                android:layout_below="@+id/product_title_txtview">
+                app:cardUseCompatPadding="true">
 
 
                 <TextView
@@ -128,36 +142,36 @@ c
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/productDescCardView"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/productDescCardView"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
+                android:layout_below="@+id/productCardView"
                 android:elevation="24dp"
-                app:cardUseCompatPadding="true"
                 app:cardBackgroundColor="#E4DFDF"
                 app:cardCornerRadius="@dimen/card_corner_radius"
-                android:layout_below="@+id/productCardView">
+                app:cardUseCompatPadding="true">
 
                 <TextView
                     android:id="@+id/product_desc_txtView"
-                    android:text="@string/product_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
                     android:paddingTop="20dp"
+                    android:text="@string/product_desc"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_large"
                     android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/arrowForward"
-                    android:src="@drawable/arrow_forward"
                     android:layout_width="wrap_content"
-                    android:contentDescription="@string/arrow_forward_image"
                     android:layout_height="match_parent"
                     android:layout_toEndOf="@+id/product_desc_txtView"
+                    android:contentDescription="@string/arrow_forward_image"
                     android:paddingStart="280dp"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/arrow_forward" />
 
             </androidx.cardview.widget.CardView>
 
@@ -185,7 +199,6 @@ c
         </RelativeLayout>
 
     </com.example.essentials.activity.ui.ObservableScrollView>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
