@@ -468,7 +468,8 @@ public class ProductFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             } else {
                                 APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_PRODUCT_ID));
                             }
-                            productPresentationBean.setImage(productTransportBean.getImage());
+                            productPresentationBean.setImage(productTransportBean.getImage().replace("http://localhost/OpenCart/", ApplicationConstants.BASE_URL));
+                           // productPresentationBean.setImage(productTransportBean.getImage());
                             // productPresentationBean.setImage("http://10.0.75.1/Opencart/image/cache/catalog/demo/canon_eos_5d_1-228x228.jpg");
                             productPresentationBean.setName(productTransportBean.getName());
                             productPresentationBean.setPrice(productTransportBean.getPrice());
@@ -479,7 +480,7 @@ public class ProductFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             }
                             productPresentationBean.setDescription(productTransportBean.getDescription());
                             if (productTransportBean.getSpecial() != null && !productTransportBean.getSpecial().equalsIgnoreCase(ApplicationConstants.EMPTY_STRING)) {
-                                productPresentationBean.setSpecial(productTransportBean.getSpecial().equals(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
+                                productPresentationBean.setSpecial(productTransportBean.getSpecial().equalsIgnoreCase(ApplicationConstants.FALSE) ? "" : productTransportBean.getSpecial());
                             } else {
                                 APIUtils.getFirebaseCrashlytics().log(ProductFragment.class.getName().concat(" ").concat(ApplicationConstants.NULL_SPECIAL));
                             }

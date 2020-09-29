@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="155dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#9c9c9c"
+    android:background="@color/colorPrimaryLight"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/profile_image"
-        android:layout_width="200dp"
-        android:layout_height="85dp"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
         android:src="@mipmap/ic_launcher"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -20,7 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_image"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/white"
+        android:layout_marginStart="20dp"
         android:textSize="@dimen/text_size"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/profile_image"/>

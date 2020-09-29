@@ -1,8 +1,8 @@
 package com.example.essentials.utils;
 
 public class ApplicationConstants {
-    //  public static final String BASE_URL = "http://10.0.75.1/Opencart/";
-    public static final String BASE_URL = "http://chozhansales.com/";
+    public static final String BASE_URL = "http://10.0.75.1/Opencart/";
+    //  public static final String BASE_URL = "http://chozhansales.com/";
 
 
     public static final String SOCKET_ERROR = "Error connecting to server. Please try again";
@@ -25,8 +25,8 @@ public class ApplicationConstants {
     public static final String NO_INTERNET_TITLE = "No Internet Connection";
 
     public static final String API_USER = "apiuser";
-    //  public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
-    public static final String API_KEY = "XvsYcbQ5OzJfPyqp5tRXaxZ7llV6S7SJKvtEAvlCtzndLxNh06XhJO6IGfNRlFpFkal3HLptz0qFhzgMKfEpnzsnv48xxMvDNJXnu8FMgJCm6lzu2sYLuhCZ3qcY4OWqzY0fcp0kKmyyqCvAGjFJhUJeX30MgZ7uqu3XeagSkmLsOJL3yMKnLs0Xk5jGSvhIT1IgVrRl1olgNWGmfz5SnkgKxXmoLkQb5jruElkTM7PA7M2EminTXvkoYmfsocoQ";
+    public static final String API_KEY = "CLqoPaBLiAhTs4PhjWdOiNXUBCEXAXWN8yphxHzycRpI542Eui8nkGTezCgsgHnp24WYQtUF5hoZwcPlQjjAkftgnzghCv07AADo5MzMRoyhA6yzQtZuCq8uuWBwIAMfk7A4dvqvEGxlUIvxvt8rmy4EQ6GqjjMsjiVRUDoZeiQMUS5ZyuyzgzYjZc4I5ofPoGplxbIWdfOE0o2rdZLHIfOnPkjSduIrmLAgBLdGpoG2E48ftWmh4K1kyd7mj1YF";
+    // public static final String API_KEY = "XvsYcbQ5OzJfPyqp5tRXaxZ7llV6S7SJKvtEAvlCtzndLxNh06XhJO6IGfNRlFpFkal3HLptz0qFhzgMKfEpnzsnv48xxMvDNJXnu8FMgJCm6lzu2sYLuhCZ3qcY4OWqzY0fcp0kKmyyqCvAGjFJhUJeX30MgZ7uqu3XeagSkmLsOJL3yMKnLs0Xk5jGSvhIT1IgVrRl1olgNWGmfz5SnkgKxXmoLkQb5jruElkTM7PA7M2EminTXvkoYmfsocoQ";
     public static final String LOGIN_SUCCESS = "You have logged in successfully";
     public static final String LOGIN_FAILED = "Please enter a valid  username/password";
     public static final String SUCCESS = "Success";
@@ -124,9 +124,9 @@ public class ApplicationConstants {
     public static final String PRICE = "price";
     public static final String SAVED_PRODUCT = "savedProduct";
     public static final String SAVED_ORDER = "savedOrder";
-    public static final String CUSTOMER_DETAILS = "customerDetails" ;
-    public static final String YES = "yes" ;
-    public static final String NO ="no" ;
+    public static final String CUSTOMER_DETAILS = "customerDetails";
+    public static final String YES = "yes";
+    public static final String NO = "no";
     public static String DATE_PATTERN = "dd-MM-yyyy";
     public static final String SAVED_RECYCLER_VIEW_STATUS_ID = "recyclerPosition";
     public static final String SAVED_RECYCLER_VIEW_DATASET_ID = "recyclerData";

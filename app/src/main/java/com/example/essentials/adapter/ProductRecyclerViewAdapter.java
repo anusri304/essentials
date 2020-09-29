@@ -39,7 +39,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     private final List<ProductPresentationBean> unfilteredProductList;
 
 
-
     public ProductRecyclerViewAdapter(Context context, List<ProductPresentationBean> products) {
         mValues = products;
         mContext = context;
@@ -98,6 +97,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 .into(holder.imageView);
         if (mValues.get(position).getSpecial().equalsIgnoreCase("")) {
             holder.productSpecialPriceTxtView.setVisibility(View.GONE);
+            holder.productPriceTxtView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+            holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         } else {
             holder.productPriceTxtView.setPaintFlags(holder.productPriceTxtView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.productSpecialPriceTxtView.setText(mValues.get(position).getSpecial());
